@@ -11,9 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class AuthController extends AbstractController
+class SignUpController extends AbstractController
 {
-    #[Route('/signup', name: 'app_auth')]
+    #[Route('/signup', name: 'signup')]
     public function index(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
@@ -31,11 +31,11 @@ class AuthController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_home'); // Change to your desired route.
+            return $this->redirectToRoute('home'); // Change to your desired route.
         }
 
         return $this->render('auth/signup.html.twig', [
-            'controller_name' => 'AuthController',
+            'controller_name' => 'SignUpController',
             'form' => $form->createView(),
         ]);
     }

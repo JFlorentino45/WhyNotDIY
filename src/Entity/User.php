@@ -3,12 +3,12 @@
 
 namespace App\Entity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-
+use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements PasswordAuthenticatedUserInterface
+class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -93,4 +93,30 @@ class User implements PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    public function getRoles(): array
+{
+    // Usually roles are stored as an array; however, since you've modeled it as a string, 
+    // we return it inside an array. You may want to modify this approach if you plan 
+    // to support multiple roles for a user in the future.
+    return [$this->role];
+}
+
+public function getSalt(): ?string
+{
+    // If you're using bcrypt or argon2i/hashing algorithm, then you don't need a separate salt.
+    // It's included in the hash itself. Return null in that case.
+    return null;
+}
+
+public function eraseCredentials(): void
+{
+    // If you store any temporary authentication-related information on the entity, clear it here.
+    $this->plainPassword = null;
+}
+
+public function getUserIdentifier(): string
+{
+    // This can be the same as your getUsername() or getEmailAddress() method, depending on your needs.
+    return $this->emailAddress;
+}
 }
