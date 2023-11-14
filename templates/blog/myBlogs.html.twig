@@ -1,21 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}WhyNotDIY{% endblock %}
+{% block title %}My Blogs{% endblock %}
 
 {% block body %}
 <main>
         <section>
-        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-            <h2>Latest Blog Posts {{ app.user.userName }}</h2>
+            <h2>Your Blogs, {{ app.user.userName }}</h2>
             {% for post in blogs %}
                 <h3><a href="{{ path('view_blog', {'id': post.id}) }}">{{ post.title }}</a></h3>
                 <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ post.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 <p>{{ post.createdAt|date('Y-M-d') }}
             {% endfor %}
-        {% else %}
-            <p>User is not authenticated.</p>
-        
-        {% endif %}
         </section>
     </main>
 {% endblock %}

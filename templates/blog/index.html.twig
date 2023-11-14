@@ -9,7 +9,7 @@
         <iframe width="700" height="394" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <p>{{ blog.text }}</p>
         <p>Posted by: {{ blog.createdBy.username }}</p>
-        <p>{{ blog.createdAt|date('Y-M-d') }}</p>
+        <p>{{ blog.createdAt|date('Y-M-d H:i') }}</p>
     </section>
 </main>
 {% endblock %}

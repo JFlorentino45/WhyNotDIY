@@ -2,6 +2,8 @@
     <ul>
         <li><a href="{{ path('home') }}">Home</a></li>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <li><a href="{{ path('create_blog') }}">Create blog</a></li>
+        <li><a href="{{ path('my_blogs') }}">My blogs</a></li>
         <li><a href="{{ path('logout') }}">Logout</a></li>
         {% else %}
         <li><a href="{{ path('signup') }}">Sign Up</a></li>
