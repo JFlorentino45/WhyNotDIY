@@ -20,23 +20,22 @@ class Blog
     #[ORM\Column(length: 255)]
     private ?string $videoUrl = null;
 
-    #[ORM\Column]
-    private ?int $createdBy = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $commentId = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $likedBy = null;
 
     #[ORM\Column]
     private ?bool $edited = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $editedAt = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $text = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $createdBy = null;
 
     public function getId(): ?int
     {
@@ -67,17 +66,6 @@ class Blog
         return $this;
     }
 
-    public function getCreatedBy(): ?int
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(int $createdBy): static
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
@@ -87,30 +75,6 @@ class Blog
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getCommentId(): ?int
-    {
-        return $this->commentId;
-    }
-
-    public function setCommentId(?int $commentId): static
-    {
-        $this->commentId = $commentId;
-
-        return $this;
-    }
-
-    public function getLikedBy(): ?int
-    {
-        return $this->likedBy;
-    }
-
-    public function setLikedBy(?int $likedBy): static
-    {
-        $this->likedBy = $likedBy;
 
         return $this;
     }
@@ -135,6 +99,30 @@ class Blog
     public function setEditedAt(?\DateTimeImmutable $editedAt): static
     {
         $this->editedAt = $editedAt;
+
+        return $this;
+    }
+
+    public function getText(): ?string
+    {
+        return $this->text;
+    }
+
+    public function setText(string $text): static
+    {
+        $this->text = $text;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
 
         return $this;
     }

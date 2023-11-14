@@ -22,16 +22,14 @@ class SignUpController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hash the plain password
             $hashedPassword = $passwordHasher->hashPassword($user, $user->getPlainPassword());
             
-            $user->setPasswordHash($hashedPassword); // Note: Consider renaming this method to reflect its purpose better (e.g., setHashedPassword).
+            $user->setPasswordHash($hashedPassword);
             $user->setRole('user');
-            // Save the user to the database
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home'); // Change to your desired route.
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('auth/signup.html.twig', [

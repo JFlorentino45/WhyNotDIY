@@ -5,8 +5,18 @@
 {% block body %}
 <main>
         <section>
-            <h2>Latest Blog Posts {{ app.user.username }}</h2>
-            {# You can loop through and display your latest blog posts here #}
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <a href="{{ path('create_blog') }}" class="btn btn-primary">Create a New Blog</a>
+            <h2>Latest Blog Posts {{ app.user.userName }}</h2>
+            {% for post in blogs %}
+                <h3><a href="{{ path('view_blog', {'id': post.id}) }}">{{ post.title }}</a></h3>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ post.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <p>{{ post.createdAt|date('Y-M-d') }}
+            {% endfor %}
+        {% else %}
+            <p>User is not authenticated.</p>
+        
+        {% endif %}
         </section>
     </main>
 {% endblock %}

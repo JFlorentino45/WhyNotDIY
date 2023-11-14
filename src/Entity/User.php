@@ -4,10 +4,18 @@
 namespace App\Entity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(
+    fields:'emailAddress',
+    message:'This Email already exists')]
+    #[UniqueEntity(
+        fields:'userName',
+        message:'This username already exists')]
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
@@ -19,6 +27,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?string $userName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Email]
     private ?string $emailAddress = null;
 
     #[ORM\Column(length: 30)]
@@ -34,12 +43,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->id;
     }
 
-    public function getUserName(): ?string
+    public function getUsername(): ?string
     {
         return $this->userName;
     }
 
-    public function setUserName(string $userName): static
+    public function setUsername(string $userName): static
     {
         $this->userName = $userName;
 
@@ -94,29 +103,17 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
     public function getRoles(): array
-{
-    // Usually roles are stored as an array; however, since you've modeled it as a string, 
-    // we return it inside an array. You may want to modify this approach if you plan 
-    // to support multiple roles for a user in the future.
-    return [$this->role];
-}
+    {
+        return [$this->role];
+    }
 
-public function getSalt(): ?string
-{
-    // If you're using bcrypt or argon2i/hashing algorithm, then you don't need a separate salt.
-    // It's included in the hash itself. Return null in that case.
-    return null;
-}
+    public function eraseCredentials(): void
+    {
+        $this->plainPassword = null;
+    }
 
-public function eraseCredentials(): void
-{
-    // If you store any temporary authentication-related information on the entity, clear it here.
-    $this->plainPassword = null;
-}
-
-public function getUserIdentifier(): string
-{
-    // This can be the same as your getUsername() or getEmailAddress() method, depending on your needs.
-    return $this->emailAddress;
-}
+    public function getUserIdentifier(): string
+    {
+        return $this->id;
+    }
 }
