@@ -1,5 +1,3 @@
-Create 'edit/delete blog'
-
 Create 5 more blogs/posts
 
 Create edit Profile
@@ -11,3 +9,5 @@ Integrate roles and admin control
 Comments
 
 Likes
+
+Style

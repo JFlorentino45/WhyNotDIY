@@ -31,6 +31,9 @@ class BlogType extends AbstractType
                 $blog->setCreatedAt(now());
                 $blog->setEdited(false);
                 $blog->setEditedAt(null);
+            } else {
+                $blog->setEdited(true);
+                $blog->setEditedAt(now());
             }
             
         });

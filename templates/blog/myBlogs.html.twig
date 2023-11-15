@@ -10,7 +10,9 @@
                 <h3><a href="{{ path('app_blog_show', {'id': blog.id}) }}">{{ blog.title }}</a></h3>
                 <p>{{ blog.createdAt|date('Y-M-d') }}
                 <p><iframe width="560" height="315" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
+                <p>{{ blog.text|nl2br|raw }}</p>
                 <button><a href="{{ path('app_blog_edit', {'id': blog.id}) }}">Edit</a></button>
+                {{ include('blog/_delete_form.html.twig') }}
             {% endfor %}
         </section>
     </main>

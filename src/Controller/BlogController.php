@@ -34,7 +34,7 @@ class BlogController extends AbstractController
             'form' => $form,
         ]);
     }
-    
+
     #[Route('/my-blogs', name: 'app_blog_mine')]
     public function myBlogs(Security $security, BlogRepository $blogRepository): Response
     {
@@ -57,12 +57,17 @@ class BlogController extends AbstractController
     public function edit(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(BlogType::class, $blog);
+        $oldData = clone $blog;
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
+            if ($blog->isModified($oldData)) {
+                $entityManager->flush();
+                return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
+            } else {
+                $this->addFlash('warning', 'No changes detected.');
+                return $this->redirectToRoute('app_blog_edit', ['id' => $blog->getId()]);
+            }
         }
 
         return $this->render('blog/edit.html.twig', [

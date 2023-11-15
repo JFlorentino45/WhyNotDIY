@@ -126,4 +126,11 @@ class Blog
 
         return $this;
     }
+
+    public function isModified(Blog $original): bool
+    {
+        return $original->getTitle() !== $this->getTitle()
+            || $original->getVideoUrl() !== $this->getVideoUrl()
+            || $original->getText() !== $this->getText();
+    }
 }
