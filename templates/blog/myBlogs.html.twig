@@ -6,10 +6,11 @@
 <main>
         <section>
             <h2>Your Blogs, {{ app.user.userName }}</h2>
-            {% for post in blogs %}
-                <h3><a href="{{ path('view_blog', {'id': post.id}) }}">{{ post.title }}</a></h3>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ post.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                <p>{{ post.createdAt|date('Y-M-d') }}
+            {% for blog in blogs %}
+                <h3><a href="{{ path('app_blog_show', {'id': blog.id}) }}">{{ blog.title }}</a></h3>
+                <p>{{ blog.createdAt|date('Y-M-d') }}
+                <p><iframe width="560" height="315" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
+                <button><a href="{{ path('app_blog_edit', {'id': blog.id}) }}">Edit</a></button>
             {% endfor %}
         </section>
     </main>

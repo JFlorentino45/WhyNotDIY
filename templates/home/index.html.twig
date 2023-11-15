@@ -1,21 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}WhyNotDIY{% endblock %}
+{% block title %}Blog index{% endblock %}
 
 {% block body %}
-<main>
-        <section>
-        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-            <h2>Latest Blog Posts {{ app.user.userName }}</h2>
-            {% for post in blogs %}
-                <h3><a href="{{ path('view_blog', {'id': post.id}) }}">{{ post.title }}</a></h3>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ post.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                <p>{{ post.createdAt|date('Y-M-d') }}
-            {% endfor %}
+    <h1>Latest Blogs</h1>
+        {% for blog in blogs %}
+        <div>
+            <p><h1><a href="{{ path('app_blog_show', {'id': blog.id}) }}">{{ blog.title }}</a></h1></p>
+            <p>{{ blog.createdAt ? blog.createdAt|date('Y-m-d H:i:s') : '' }} By: {{ blog.createdBy }}</p>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         {% else %}
-            <p>User is not authenticated.</p>
-        
-        {% endif %}
-        </section>
-    </main>
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        </div>
+        {% endfor %}
 {% endblock %}

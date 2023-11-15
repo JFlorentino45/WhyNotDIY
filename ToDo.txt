@@ -1,0 +1,13 @@
+Create 'edit/delete blog'
+
+Create 5 more blogs/posts
+
+Create edit Profile
+
+update myBlogs/profile page
+
+Integrate roles and admin control
+
+Comments
+
+Likes

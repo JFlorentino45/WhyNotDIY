@@ -13,9 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[UniqueEntity(
     fields:'emailAddress',
     message:'This Email already exists')]
-    #[UniqueEntity(
-        fields:'userName',
-        message:'This username already exists')]
+#[UniqueEntity(
+    fields:'userName',
+    message:'This username already exists')]
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
@@ -115,5 +115,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function getUserIdentifier(): string
     {
         return $this->id.'';
+    }
+    
+    public function __toString()
+    {
+        return $this->userName;
     }
 }
