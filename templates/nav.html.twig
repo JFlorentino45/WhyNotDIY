@@ -2,11 +2,13 @@
     <ul>
         <li><a href="{{ path('home') }}">Home</a></li>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-        <li><a href="{{ path('app_blog_new') }}">Create blog</a></li>
         {% if is_granted('ROLE_admin') %}
         <li><a href="{{ path('app_admin_blogs') }}">All Blogs</a></li>
+        <li><a href="{{ path('app_admin_users') }}">Users</a></li>
         {% else %}
+        <li><a href="{{ path('app_blog_new') }}">Create blog</a></li>
         <li><a href="{{ path('app_blog_mine') }}">My blogs</a></li>
+        <li><a href="{{ path('app_user_show', {'id': app.user.id}) }}">Profile</a></li>
         {% endif %}
         <li><a href="{{ path('logout') }}">Logout</a></li>
         {% else %}
