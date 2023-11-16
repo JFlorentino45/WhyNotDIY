@@ -22,6 +22,7 @@ class SignupType extends AbstractType
             ->add('emailAddress', EmailType::class)
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Password',
+                'mapped' => false,
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter a password',

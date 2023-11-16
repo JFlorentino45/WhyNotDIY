@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
+use Doctrine\ORM\EntityManagerInterface;
+use App\form\EditPasswordType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
+class ChangePasswordController extends AbstractController
+{
+    #[Route('/edit/password', name: 'app_change_password')]
+    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, Security $security,): Response
+    {
+        $user = $security->getUser();
+
+        if (!$user instanceof User) {
+            throw new AccessDeniedException();
+        }
+
+        $form = $this->createForm(EditPasswordType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $currentPassword = $form->get('currentPassword')->getData();
+            if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
+                $this->addFlash('error', 'Invalid current password');
+            } else {
+                $newPassword = $form->get('plainPassword')->getData();
+                $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
+                $user->setPasswordHash($hashedPassword);
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Password updated successfully');
+
+                
+                return $this->redirectToRoute('app_login');
+            }
+        }
+
+        return $this->render('security/password.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+}
