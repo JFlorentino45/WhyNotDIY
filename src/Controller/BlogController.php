@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\BlogRepository;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/blog')]
 class BlogController extends AbstractController
@@ -56,6 +57,11 @@ class BlogController extends AbstractController
     #[Route('/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+        if ($user !== $blog->getCreatedBy() && !$this->isGranted('ROLE_admin')) {
+            throw new AccessDeniedException();
+        }
+
         $form = $this->createForm(BlogType::class, $blog);
         $oldData = clone $blog;
         $form->handleRequest($request);

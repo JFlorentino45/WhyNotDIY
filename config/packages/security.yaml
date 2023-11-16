@@ -19,6 +19,8 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            login_throttling:
+                max_attempts: 3
             form_login:
                 login_path: login
                 check_path: login
@@ -27,8 +29,11 @@ security:
                 target: home
 
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin/, roles: ROLE_admin}
+        - { path: ^/profile, roles: ROLE_user }
+        - { path: '^/blog/\d+/edit$', roles: ['ROLE_user', 'ROLE_admin'] }
+
+    access_denied_url: 'access_denied'
 
 when@test:
     security:

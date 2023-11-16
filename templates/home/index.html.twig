@@ -9,10 +9,5 @@
             <p><h1><a href="{{ path('app_blog_show', {'id': blog.id}) }}">{{ blog.title }}</a></h1></p>
             <p>{{ blog.createdAt ? blog.createdAt|date('Y-m-d H:i:s') : '' }} By: {{ blog.createdBy }}</p>
             <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        </div>
         {% endfor %}
 {% endblock %}
