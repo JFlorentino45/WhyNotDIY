@@ -25,7 +25,7 @@ class SignUpController extends AbstractController
             $hashedPassword = $passwordHasher->hashPassword($user, $user->getPlainPassword());
             
             $user->setPasswordHash($hashedPassword);
-            $user->setRole('user');
+            $user->setRole('ROLE_user');
             $entityManager->persist($user);
             $entityManager->flush();
 

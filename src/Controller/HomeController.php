@@ -15,7 +15,7 @@ class HomeController extends AbstractController
     public function index(BlogRepository $blogRepository): Response
     {
         return $this->render('home/index.html.twig', [
-            'blogs' => $blogRepository->findAll(),
+            'blogs' => $blogRepository->findAllOrderedByLatest(),
         ]);
     }
 }
