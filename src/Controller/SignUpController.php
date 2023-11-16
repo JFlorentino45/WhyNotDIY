@@ -13,7 +13,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class SignUpController extends AbstractController
 {
-    #[Route('/signup', name: 'signup')]
+    #[Route('/signup', name: 'app_signup')]
     public function index(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
@@ -29,10 +29,10 @@ class SignUpController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('auth/signup.html.twig', [
+        return $this->render('security/signup.html.twig', [
             'controller_name' => 'SignUpController',
             'form' => $form->createView(),
         ]);

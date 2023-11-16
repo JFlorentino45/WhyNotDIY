@@ -1,4 +1,4 @@
-Create edit Profile
+Create edit Profile (password)
 
 update myBlogs/profile page
 
