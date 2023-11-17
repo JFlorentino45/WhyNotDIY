@@ -18,8 +18,11 @@ class Likes
     private ?User $UserId = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
-    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[ORM\JoinColumn(nullable: true, onDelete: "CASCADE")]
     private ?Blog $BlogId = null;
+
+    #[ORM\ManyToOne]
+    private ?Comments $commentId = null;
 
     public function getId(): ?int
     {
@@ -46,6 +49,18 @@ class Likes
     public function setBlogId(?Blog $BlogId): static
     {
         $this->BlogId = $BlogId;
+
+        return $this;
+    }
+
+    public function getCommentId(): ?Comments
+    {
+        return $this->commentId;
+    }
+
+    public function setCommentId(?Comments $commentId): static
+    {
+        $this->commentId = $commentId;
 
         return $this;
     }
