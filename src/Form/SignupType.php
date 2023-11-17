@@ -34,6 +34,10 @@ class SignupType extends AbstractType
                     ]),
                 ],
             ])
+            ->add('confirmPassword', PasswordType::class, [
+                'label' => 'Confirm Password',
+                'mapped' => false,
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Sign Up',
             ])

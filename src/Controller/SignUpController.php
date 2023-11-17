@@ -22,15 +22,19 @@ class SignUpController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPlainPassword());
-            
+            $password = $user->getPlainPassword();
+            $validation = $form->get('confirmPassword')->getData();
+            if ($password !== $validation) {
+                $this->addFlash('error', 'Passwords do not match');
+            } else {
+            $hashedPassword = $passwordHasher->hashPassword($user, $password);
             $user->setPasswordHash($hashedPassword);
             $user->setRole('ROLE_user');
             $entityManager->persist($user);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_login');
-        }
+        }}
 
         return $this->render('security/signup.html.twig', [
             'controller_name' => 'SignUpController',

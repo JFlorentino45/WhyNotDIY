@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Form\EditPasswordType;
 use Symfony\Component\HttpFoundation\Response;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Repository\UserRepository;
 use App\Repository\BlogRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/admin')]
@@ -36,4 +40,35 @@ class AdminController extends AbstractController
             'userName' => $user->getUsername(),
         ]);
     }
+
+    #[Route('/password/{id}', name: 'app_admin_password')]
+    public function changePassword($id, UserRepository $userRepository, Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
+    {
+        $user = $userRepository->find($id);
+
+        $form = $this->createForm(EditPasswordType::class);
+        $form->remove('currentPassword');
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $newPassword = $form->get('plainPassword')->getData();
+            $validation = $form->get('confirmPassword')->getData();
+            if ($newPassword !== $validation) {
+                $this->addFlash('error', 'Passwords do not match');
+            } else {
+            $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
+            $user->setPasswordHash($hashedPassword);
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Password updated successfully');
+
+            return $this->redirectToRoute('app_blog_index');
+        }}
+        
+        return $this->render('security/password.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 }
+
