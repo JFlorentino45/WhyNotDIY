@@ -1,5 +1,3 @@
-Create edit Profile (password)
-
 update myBlogs/profile page
 
 Integrate roles and admin control (create admin nav bar with options under basic nav bar)

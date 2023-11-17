@@ -15,6 +15,21 @@
         {% include 'nav.html.twig' %}
     </header>
     <body>
+        {% for flashMessage in app.flashes('error') %}
+        <div class="alert alert-error">
+            {{ flashMessage }}
+        </div>
+        {% endfor %}
+        {% for flashMessage in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ flashMessage }}
+        </div>
+        {% endfor %}
+        {% for flash_message in app.flashes('warning') %}
+        <div class="alert alert-warning">
+            {{ flash_message }}
+        </div>
+        {% endfor %}
         {% block body %}{% endblock %}
     </body>
     <footer>

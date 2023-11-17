@@ -2,10 +2,9 @@
 
 namespace App\Controller;
 
+use App\Form\EditPasswordType;
 use App\Entity\User;
-use Symfony\Bundle\SecurityBundle\Security;
 use Doctrine\ORM\EntityManagerInterface;
-use App\form\EditPasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,9 +15,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class ChangePasswordController extends AbstractController
 {
     #[Route('/edit/password', name: 'app_change_password')]
-    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, Security $security,): Response
+    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
-        $user = $security->getUser();
+        $user = $this->getUser();
 
         if (!$user instanceof User) {
             throw new AccessDeniedException();
@@ -40,8 +39,8 @@ class ChangePasswordController extends AbstractController
 
                 $this->addFlash('success', 'Password updated successfully');
 
-                
-                return $this->redirectToRoute('app_login');
+
+                return $this->redirectToRoute('app_blog_index');
             }
         }
 
