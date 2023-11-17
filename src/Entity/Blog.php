@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BlogRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -36,6 +38,14 @@ class Blog
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?User $createdBy = null;
+
+    #[ORM\OneToMany(mappedBy: 'BlogId', targetEntity: Likes::class)]
+    private Collection $likes;
+
+    public function __construct()
+    {
+        $this->likes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -132,5 +142,50 @@ class Blog
         return $original->getTitle() !== $this->getTitle()
             || $original->getVideoUrl() !== $this->getVideoUrl()
             || $original->getText() !== $this->getText();
+    }
+
+    /**
+     * @return Collection<int, Likes>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Likes $like): static
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+            $like->setBlogId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Likes $like): static
+    {
+        if ($this->likes->removeElement($like)) {
+            if ($like->getBlogId() === $this) {
+                $like->setBlogId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isLikedByUser(User $user): bool
+    {
+        foreach ($this->likes as $like) {
+        if ($like->getUserId() === $user) {
+            return true;
+        }
+    }
+
+        return false;
+    }
+
+    public function getLikesCount(): int
+    {
+        return $this->likes->count();
     }
 }

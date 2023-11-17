@@ -11,6 +11,17 @@
     {% if (blog.edited) %}
         <p>Edited : {{ blog.editedAt|date('d-M-Y H:i') }}</p>
     {% endif %}
+    {% if app.user %}
+        {% if blog.isLikedByUser(app.user) %}
+        <form action="{{ path('app_blog_like', {'id': blog.id}) }}" method="post">
+            <button type="submit">Unlike</button>
+        </form>
+        {% else %}
+        <form action="{{ path('app_blog_like', {'id': blog.id}) }}" method="post">
+            <button type="submit">Like</button>
+        </form>
+        {% endif %}
+    {% endif %}
     <p><button><a href="{{ path('app_blog_index') }}">Back to Home</a></button></p>
 
 {% endblock %}

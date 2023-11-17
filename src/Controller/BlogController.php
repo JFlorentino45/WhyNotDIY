@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Blog;
+use App\Entity\Likes;
 use App\Form\BlogType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -49,9 +50,15 @@ class BlogController extends AbstractController
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET'])]
     public function show(Blog $blog): Response
     {
+        $user = $this->getUser();
+        if ($user === null) {
+            $this->addFlash('warning', 'You must be loggin in.');
+            return $this->redirectToRoute('app_login');
+        } else {
         return $this->render('blog/show.html.twig', [
             'blog' => $blog,
         ]);
+        }
     }
 
     #[Route('/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]
@@ -92,5 +99,33 @@ class BlogController extends AbstractController
 
         return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{id}/like', name: 'app_blog_like', methods: ['POST'])]
+    public function like(Blog $blog, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+
+        if ($user === null) {
+            throw new AccessDeniedException();
+        }
+
+        if ($blog->isLikedByUser($user)) {
+        $like = $blog->getLikes()->filter(function (Likes $like) use ($user) {
+            return $like->getUserId() === $user;
+        })->first();
+
+        $entityManager->remove($like);
+        } else {
+        $like = new Likes();
+        $like->setUserId($user);
+        $like->setBlogId($blog);
+
+        $entityManager->persist($like);
+        }
+
+    $entityManager->flush();
+
+    return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
+}
 
 }

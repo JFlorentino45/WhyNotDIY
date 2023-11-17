@@ -1,9 +1,7 @@
-update myBlogs/profile page
-
-Integrate roles and admin control (create admin nav bar with options under basic nav bar)
-
 Comments
 
 Likes
 
 Style
+
+Create admin nav bar with options under basic nav bar
