@@ -34,7 +34,7 @@ class Blog
     private ?string $text = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?User $createdBy = null;
 
     public function getId(): ?int

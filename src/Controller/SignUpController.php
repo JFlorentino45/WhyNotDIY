@@ -22,7 +22,7 @@ class SignUpController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $password = $user->getPlainPassword();
+            $password = $form->get('plainPassword')->getData();
             $validation = $form->get('confirmPassword')->getData();
             if ($password !== $validation) {
                 $this->addFlash('error', 'Passwords do not match');
