@@ -42,9 +42,13 @@ class Blog
     #[ORM\OneToMany(mappedBy: 'BlogId', targetEntity: Likes::class)]
     private Collection $likes;
 
+    #[ORM\OneToMany(mappedBy: 'blog', targetEntity: Comments::class, cascade: ['persist', 'remove'])]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->likes = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -187,5 +191,10 @@ class Blog
     public function getLikesCount(): int
     {
         return $this->likes->count();
+    }
+
+    public function getComments(): Collection
+    {
+        return $this->comments;
     }
 }

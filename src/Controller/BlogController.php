@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Blog;
 use App\Entity\Likes;
+use App\Entity\Comments;
+use App\Form\CommentType;
 use App\Form\BlogType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -13,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Repository\BlogRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+
+use function Symfony\Component\Clock\now;
 
 #[Route('/blog')]
 class BlogController extends AbstractController
@@ -47,58 +51,77 @@ class BlogController extends AbstractController
         ]);
     }
     
-    #[Route('/{id}', name: 'app_blog_show', methods: ['GET'])]
-    public function show(Blog $blog): Response
+    #[Route('/{id}', name: 'app_blog_show', methods: ['GET', 'POST'])]
+    public function show(Blog $blog, Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
         if ($user === null) {
             $this->addFlash('warning', 'You must be loggin in.');
             return $this->redirectToRoute('app_login');
-        } else {
+        } 
+
+        $comment = new Comments();
+        $commentForm = $this->createForm(CommentType::class, $comment);
+        $commentForm->handleRequest($request);
+
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $comment->setCreatedBy($user);
+            $comment->setCreatedAt(now());
+            $comment->setEdited(false);
+            $comment->setEditedAt(null);
+            $comment->setBlog($blog);
+
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
+        }
+
         return $this->render('blog/show.html.twig', [
             'blog' => $blog,
+            'commentForm' => $commentForm->createView(),
         ]);
-        }
+        
     }
 
-    #[Route('/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
-    {
-        $user = $this->getUser();
-        if ($user !== $blog->getCreatedBy() && !$this->isGranted('ROLE_admin')) {
-            throw new AccessDeniedException();
-        }
+    // #[Route('/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]
+    // public function edit(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
+    // {
+    //     $user = $this->getUser();
+    //     if ($user !== $blog->getCreatedBy() && !$this->isGranted('ROLE_admin')) {
+    //         throw new AccessDeniedException();
+    //     }
 
-        $form = $this->createForm(BlogType::class, $blog);
-        $oldData = clone $blog;
-        $form->handleRequest($request);
+    //     $form = $this->createForm(BlogType::class, $blog);
+    //     $oldData = clone $blog;
+    //     $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($blog->isModified($oldData)) {
-                $entityManager->flush();
-                return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
-            } else {
-                $this->addFlash('warning', 'No changes detected.');
-                return $this->redirectToRoute('app_blog_edit', ['id' => $blog->getId()]);
-            }
-        }
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         if ($blog->isModified($oldData)) {
+    //             $entityManager->flush();
+    //             return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
+    //         } else {
+    //             $this->addFlash('warning', 'No changes detected.');
+    //             return $this->redirectToRoute('app_blog_edit', ['id' => $blog->getId()]);
+    //         }
+    //     }
 
-        return $this->render('blog/edit.html.twig', [
-            'blog' => $blog,
-            'form' => $form,
-        ]);
-    }
+    //     return $this->render('blog/edit.html.twig', [
+    //         'blog' => $blog,
+    //         'form' => $form,
+    //     ]);
+    // }
 
-    #[Route('/{id}', name: 'app_blog_delete', methods: ['POST'])]
-    public function delete(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$blog->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($blog);
-            $entityManager->flush();
-        }
+    // #[Route('/{id}', name: 'app_blog_delete', methods: ['POST'])]
+    // public function delete(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
+    // {
+    //     if ($this->isCsrfTokenValid('delete'.$blog->getId(), $request->request->get('_token'))) {
+    //         $entityManager->remove($blog);
+    //         $entityManager->flush();
+    //     }
 
-        return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
-    }
+    //     return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
+    // }
 
     #[Route('/{id}/like', name: 'app_blog_like', methods: ['POST'])]
     public function like(Blog $blog, EntityManagerInterface $entityManager): Response
@@ -126,6 +149,5 @@ class BlogController extends AbstractController
     $entityManager->flush();
 
     return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
-}
-
+    }
 }

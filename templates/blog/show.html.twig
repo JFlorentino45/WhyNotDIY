@@ -21,7 +21,16 @@
             <button type="submit">Like</button>
         </form>
         {% endif %}
+        <h2>Comments</h2>
+        <h3>Add a comment</h3>
+        {{ form_start(commentForm) }}
+        {{ form_row(commentForm.text) }}
+        {{ form_end(commentForm) }}
+        {% for comment in blog.comments %}
+            <p>{{ comment.getCreatedBy() }} at {{ comment.getCreatedAt()|date('Y-m-d H:i') }}:</p>
+            <p>{{ comment.getText()|nl2br|raw }}</p>
+        {% endfor %}
     {% endif %}
-    <p><button><a href="{{ path('app_blog_index') }}">Back to Home</a></button></p>
+        <p><button><a href="{{ path('app_blog_index') }}">Back to Home</a></button></p>
 
 {% endblock %}
