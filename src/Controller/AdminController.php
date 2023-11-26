@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Repository\UserRepository;
+use App\Repository\CommentsRepository;
 use App\Repository\BlogRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -68,6 +69,14 @@ class AdminController extends AbstractController
         
         return $this->render('security/password.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/comments', name: 'app_admin_comments', methods: ['GET'])]
+    public function getComments(CommentsRepository $commentsRepository): Response
+    {
+        return $this->render('admin/comments.html.twig', [
+            'comments' => $commentsRepository->findAll(),
         ]);
     }
 }

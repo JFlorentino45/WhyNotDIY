@@ -15,7 +15,7 @@ class Comments
     private ?int $id = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?User $createdBy = null;
 
     #[ORM\Column]
@@ -30,7 +30,7 @@ class Comments
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $editedAt = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Blog $blog = null;
 
@@ -97,6 +97,11 @@ class Comments
         $this->editedAt = $editedAt;
 
         return $this;
+    }
+
+    public function isModified(Comments $original): bool
+    {
+        return $original->getText() !== $this->getText();
     }
 
     public function getBlog(): ?Blog

@@ -193,6 +193,11 @@ class Blog
         return $this->likes->count();
     }
 
+    public function getCommentsCount(): int
+    {
+        return $this->comments->count();
+    }
+
     public function getComments(): Collection
     {
         return $this->comments;

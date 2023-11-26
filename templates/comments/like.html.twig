@@ -1,0 +1,12 @@
+{% block body %}
+
+{% if blog.isLikedByUser(app.user) %}
+        <form action="{{ path('app_blog_like', {'id': blog.id}) }}" method="post">
+            <button type="submit">Unlike</button>
+        </form>
+        {% else %}
+        <form action="{{ path('app_blog_like', {'id': blog.id}) }}" method="post">
+            <button type="submit">Like</button>
+        </form>
+        {% endif %}
+{% endblock %}
