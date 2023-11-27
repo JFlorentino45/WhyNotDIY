@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Comment{% endblock %}
+
+{% block body %}
+    <h1>Comment</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>user</th>
+                <td>{{ comment.createdBy }}</td>
+            </tr>
+            <tr>
+                <th>Words</th>
+                <td>{{ comment.text }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_notifications') }}">back to notifications</a>
+
+    {{ include('admin/comment_delete_form.html.twig') }}
+{% endblock %}

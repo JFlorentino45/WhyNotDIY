@@ -1,10 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}AdminNotification index{% endblock %}
+{% block title %}Notifications{% endblock %}
 
 {% block body %}
-    <h1>AdminNotification index</h1>
+    <h1>Notifications</h1>
 
+        {% for admin_notification in admin_notifications %}
     <table class="table">
         <thead>
             <tr>
@@ -14,22 +15,25 @@
             </tr>
         </thead>
         <tbody>
-        {% for admin_notification in admin_notifications %}
             <tr>
                 <td>{{ admin_notification.createdAt ? admin_notification.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ admin_notification.text }}</td>
                 <td>
-                    <a href="{{ path('app_admin_notification_show', {'id': admin_notification.id}) }}">show</a>
-                    <a href="{{ path('app_admin_notification_edit', {'id': admin_notification.id}) }}">edit</a>
+                {% if (admin_notification.user) %}
+                    <a href="{{ path('app_user_edit', {'id': admin_notification.user.id}) }}">show</a>
+                {% elseif (admin_notification.blog) %}
+                    <a href="{{ path('app_blog_edit', {'id': admin_notification.blog.id}) }}">show</a>
+                {% elseif (admin_notification.comment) %}
+                    <a href="{{ path('app_admin_comment', {'id': admin_notification.comment.id}) }}">show</a>
+                {% endif %}
+                {{ include('admin/notification_delete_form.html.twig') }}
                 </td>
             </tr>
+        </tbody>
+    </table>
         {% else %}
             <tr>
                 <td colspan="4">no records found</td>
             </tr>
         {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_admin_notification_new') }}">Create new</a>
 {% endblock %}
