@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\AdminNotification;
+use App\Service\BlacklistService;
 use App\Service\ForbiddenWordService;
 use App\Repository\AdminNotificationRepository;
 use App\Form\UserType;
@@ -33,12 +34,16 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, ForbiddenWordService $forbiddenWordService, AdminNotificationRepository $adminNotificationRepo): Response
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, ForbiddenWordService $forbiddenWordService, AdminNotificationRepository $adminNotificationRepo, BlacklistService $blacklist): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $email = $form->get('emailAddress')->getData();
+            if ($blacklist->isBanned($email)) {
+                $this->addFlash('error', 'This E-mail is banned.');
+            } else {
             $underInvestigation = $adminNotificationRepo->findOneBy(['user' => ($user)]);
             if ($underInvestigation) {
                 $entityManager->remove($underInvestigation);
@@ -69,7 +74,7 @@ class UserController extends AbstractController
                     return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
                 }
             }
-        }
+        }}
 
         return $this->render('user/edit.html.twig', [
             'user' => $user,

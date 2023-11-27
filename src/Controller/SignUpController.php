@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Form\SignupType;
 use App\Entity\User;
 use App\Entity\AdminNotification;
+use App\Service\BlacklistService;
 use App\Service\ForbiddenWordService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +18,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class SignUpController extends AbstractController
 {
     #[Route('/signup', name: 'app_signup')]
-    public function index(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, ForbiddenWordService $forbiddenWordService): Response
+    public function index(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, ForbiddenWordService $forbiddenWordService, BlacklistService $blacklist): Response
     {
         $user = new User();
         $form = $this->createForm(SignupType::class, $user);
@@ -25,7 +26,10 @@ class SignUpController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
+            $email = $form->get('emailAddress')->getData();
+            if ($blacklist->isBanned($email)) {
+                $this->addFlash('error', 'This E-mail is banned.');
+            } else {
             $username = $form->get('userName')->getData();
             if ($forbiddenWordService->isForbidden($username)) {
                 $this->addFlash('error', 'Username contains forbidden words.');
@@ -70,6 +74,7 @@ class SignUpController extends AbstractController
                         return $this->redirectToRoute('app_login');
                     }
                 }
+            }
             }
 
         }

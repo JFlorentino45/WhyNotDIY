@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Blacklist{% endblock %}
+
+{% block body %}
+    <h1>Create new Blacklist</h1>
+
+    {{ include('admin/blacklist_form.html.twig') }}
+
+    <a href="{{ path('app_admin_blacklist') }}">back to list</a>
+{% endblock %}

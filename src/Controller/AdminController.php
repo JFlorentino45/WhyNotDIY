@@ -4,15 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Comments;
 use App\Entity\ForbiddenWords;
+use App\Entity\Blacklist;
 use App\Entity\Blog;
 use App\Entity\AdminNotification;
+use App\Form\BlacklistType;
 use App\Form\EditPasswordType;
 use App\Repository\ForbiddenWordsRepository;
 use App\Repository\CommentsRepository;
 use App\Repository\AdminNotificationRepository;
+use App\Repository\BlacklistRepository;
 use App\Repository\UserRepository;
 use App\Repository\BlogRepository;
 use App\Form\ForbiddenWordsType;
+use function Symfony\Component\Clock\now;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -156,7 +160,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/forbidden/new', name: 'app_admin_forbidden_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function forbiddenNew(Request $request, EntityManagerInterface $entityManager): Response
     {
         $forbiddenWord = new ForbiddenWords();
         $form = $this->createForm(ForbiddenWordsType::class, $forbiddenWord);
@@ -186,6 +190,57 @@ class AdminController extends AbstractController
             'forbidden_word' => $forbiddenWord,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/blacklist', name: 'app_admin_blacklist', methods: ['GET'])]
+    public function blacklist(BlacklistRepository $blacklistRepository): Response
+    {
+        return $this->render('admin/blacklist.html.twig', [
+            'blacklists' => $blacklistRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/blacklist/new', name: 'app_admin_blacklist_new', methods: ['GET', 'POST'])]
+    public function blacklistNew(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $blacklist = new Blacklist();
+        $form = $this->createForm(BlacklistType::class, $blacklist);
+        $form->handleRequest($request);
+        $blacklist->setCreatedAt(now());
+        if ($form->isSubmitted() && $form->isValid()) {
+            $emails = explode(',', $blacklist->getEmailAddress());
+
+            foreach ($emails as $email) {
+                $email = trim($email);
+                if ($email !== '') {
+                    $existingWord = $entityManager->getRepository(Blacklist::class)->findOneBy(['emailAddress' => $email]);
+                    if (!$existingWord) {
+                    $emailClone = clone $blacklist;
+                    $emailClone->setEmailAddress($email);
+                    $entityManager->persist($emailClone);
+                    }
+                }
+            }
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_admin_blacklist', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('admin/blacklist_new.html.twig', [
+            'blacklist' => $blacklist,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/blacklist/{id}/delete', name: 'app_admin_blacklist_delete', methods: ['POST'])]
+    public function delete(Request $request, Blacklist $blacklist, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$blacklist->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($blacklist);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_admin_blacklist', [], Response::HTTP_SEE_OTHER);
     }
 }
 

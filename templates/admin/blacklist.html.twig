@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blacklist index{% endblock %}
+
+{% block body %}
+    <h1>Blacklist index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>EmailAddress</th>
+                <th>CreatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for blacklist in blacklists %}
+            <tr>
+                <td>{{ blacklist.emailAddress }}</td>
+                <td>{{ blacklist.createdAt ? blacklist.createdAt|date('Y-m-d H:i') : '' }}</td>
+                <td>
+                {{ include('admin/blacklist_delete_form.html.twig') }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_blacklist_new') }}">Create new</a>
+{% endblock %}

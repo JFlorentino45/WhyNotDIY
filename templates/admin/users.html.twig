@@ -8,7 +8,6 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>UserName</th>
                 <th>EmailAddress</th>
                 <th>Role</th>
@@ -18,23 +17,20 @@
         <tbody>
         {% for user in users %}
             <tr>
-                <td>{{ user.id }}</td>
                 <td>{{ user.userName }}</td>
                 <td>{{ user.emailAddress }}</td>
                 <td>{{ user.role }}</td>
                 <td>
-                    <a href="{{ path('app_admin_userblogs', {'id': user.id}) }}">Show blogs</a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">Edit profile</a>
-                    <a href="{{ path('app_admin_password', {'id': user.id}) }}">Change Password</a>
+                    <a href="{{ path('app_admin_userblogs', {'id': user.id}) }}">Blogs</a>
+                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">Profile</a>
+                    <a href="{{ path('app_admin_password', {'id': user.id}) }}">Password</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="6">no records found</td>
+                <td colspan="6">no Users found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_user_new') }}">Create new</a>
 {% endblock %}

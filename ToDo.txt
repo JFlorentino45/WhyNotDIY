@@ -1,6 +1,8 @@
-Forbidden Words
+Search
 
-blacklist
+paganation
+
+category
 
 Style
 
