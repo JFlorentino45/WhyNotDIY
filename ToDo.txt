@@ -1,7 +1,5 @@
 Comments (add limits)
 
-Likes
-
 Style
 
 Create admin nav bar with options under basic nav bar

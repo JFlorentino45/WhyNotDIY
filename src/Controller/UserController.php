@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -66,14 +67,19 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage): Response
+    public function delete(Request $request, User $user, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $auth): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
-            $tokenStorage->setToken(null);
         }
-        $this->addFlash('error', 'Sorry to see you go, hope you return soon');
-        return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
+
+        if ($auth->isGranted('ROLE_admin')) {
+            return $this->redirectToRoute('app_admin_users', [], Response::HTTP_SEE_OTHER);
+        } else {
+            $tokenStorage->setToken(null);
+            $this->addFlash('error', 'Sorry to see you go, hope you return soon');
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
     }
 }
