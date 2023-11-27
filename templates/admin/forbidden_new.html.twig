@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Create new ForbiddenWords</h1>
 
-    {{ include('forbidden_words/_form.html.twig') }}
+    {{ include('admin/forbidden_form.html.twig') }}
 
-    <a href="{{ path('app_forbidden_words_index') }}">back to list</a>
+    <a href="{{ path('app_admin_forbidden_words') }}">back to list</a>
 {% endblock %}

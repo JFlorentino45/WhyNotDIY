@@ -8,7 +8,6 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>CreatedAt</th>
                 <th>User</th>
                 <th>Comment</th>
@@ -20,12 +19,11 @@
         <tbody>
         {% for comment in comments %}
             <tr>
-                <td>{{ comment.id }}</td>
-                <td>{{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i') : '' }}</td>
                 <td>{{ comment.createdBy }}</td>
                 <td>{{ comment.text }}</td>
                 <td>{{ comment.edited ? 'Yes' : 'No' }}</td>
-                <td>{{ comment.editedAt ? comment.editedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ comment.editedAt ? comment.editedAt|date('Y-m-d H:i') : '' }}</td>
                 <td>
                     {{ include('admin/comment_delete_form.html.twig') }}
                 </td>

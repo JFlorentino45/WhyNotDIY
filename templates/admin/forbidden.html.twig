@@ -3,12 +3,12 @@
 {% block title %}ForbiddenWords index{% endblock %}
 
 {% block body %}
-    <h1>ForbiddenWords index</h1>
+    <h1>Inappropriate Words</h1>
 
+    <a href="{{ path('app_admin_forbidden_new') }}">Add more</a>
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Words</th>
                 <th>actions</th>
             </tr>
@@ -16,11 +16,9 @@
         <tbody>
         {% for forbidden_word in forbidden_words %}
             <tr>
-                <td>{{ forbidden_word.id }}</td>
                 <td>{{ forbidden_word.words }}</td>
                 <td>
-                    <a href="{{ path('app_forbidden_words_show', {'id': forbidden_word.id}) }}">show</a>
-                    <a href="{{ path('app_forbidden_words_edit', {'id': forbidden_word.id}) }}">edit</a>
+                    {{ include('admin/forbidden_delete_form.html.twig') }}
                 </td>
             </tr>
         {% else %}
@@ -31,5 +29,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_forbidden_words_new') }}">Create new</a>
 {% endblock %}
