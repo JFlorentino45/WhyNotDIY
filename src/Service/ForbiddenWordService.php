@@ -25,12 +25,16 @@ class ForbiddenWordService
     public function isForbidden(string $text): bool
     {
         $forbiddenWords = $this->getForbiddenWords();
-        $lowercaseWord = strtolower($text);
-        if (in_array($lowercaseWord, $forbiddenWords)) {
-            return true;
-        } else {
-            return false;
+        $words = explode(' ', $text);
+        $forbiddenWords = array_map('strtolower', $forbiddenWords);
+
+        foreach ($words as $word) {
+            $lowercaseWord = strtolower($word);
+            if (in_array($lowercaseWord, $forbiddenWords)) {
+                return true;
+            }
         }
+        return false;
     }
 
     public function containsForbiddenWord(string $text): bool

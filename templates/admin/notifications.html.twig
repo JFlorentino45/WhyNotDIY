@@ -8,26 +8,16 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>CreatedAt</th>
                 <th>Text</th>
-                <th>IsSignUp</th>
-                <th>IsComment</th>
-                <th>IsBlog</th>
-                <th>Identifier</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for admin_notification in admin_notifications %}
             <tr>
-                <td>{{ admin_notification.id }}</td>
                 <td>{{ admin_notification.createdAt ? admin_notification.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ admin_notification.text }}</td>
-                <td>{{ admin_notification.isSignUp ? 'Yes' : 'No' }}</td>
-                <td>{{ admin_notification.isComment ? 'Yes' : 'No' }}</td>
-                <td>{{ admin_notification.isBlog ? 'Yes' : 'No' }}</td>
-                <td>{{ admin_notification.identifier }}</td>
                 <td>
                     <a href="{{ path('app_admin_notification_show', {'id': admin_notification.id}) }}">show</a>
                     <a href="{{ path('app_admin_notification_edit', {'id': admin_notification.id}) }}">edit</a>
@@ -35,7 +25,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="8">no records found</td>
+                <td colspan="4">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

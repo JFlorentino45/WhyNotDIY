@@ -33,10 +33,9 @@ class SignUpController extends AbstractController
                 if ($forbiddenWordService->containsForbiddenWord($username)) {
                     $adminNotification = new AdminNotification();
                     $adminNotification->setCreatedAt(now());
-                    $adminNotification->setText("$username has a forbidden word in their username. Please verify.");
-                    $adminNotification->setIsSignUp(true);
-                    $adminNotification->setIsBlog(false);
-                    $adminNotification->setIsComment(false);
+                    $adminNotification->setText("$username may have a forbidden word in their username. Please verify.");
+                    $adminNotification->setBlog(null);
+                    $adminNotification->setComment(null);
 
                     $password = $form->get('plainPassword')->getData();
                     $validation = $form->get('confirmPassword')->getData();
@@ -48,7 +47,7 @@ class SignUpController extends AbstractController
                         $user->setRole('ROLE_user');
                         $entityManager->persist($user);
                         $entityManager->flush();
-                        $adminNotification->setIdentifier($user->getId());
+                        $adminNotification->setUser($user);
                         $entityManager->persist($adminNotification);
                         $entityManager->flush();
 

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\AdminNotification;
-use App\Form\AdminNotificationType;
+use App\Form\AdminNotification1Type;
 use App\Repository\AdminNotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +26,7 @@ class AdminNotificationController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $adminNotification = new AdminNotification();
-        $form = $this->createForm(AdminNotificationType::class, $adminNotification);
+        $form = $this->createForm(AdminNotification1Type::class, $adminNotification);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -53,7 +53,7 @@ class AdminNotificationController extends AbstractController
     #[Route('/{id}/edit', name: 'app_admin_notification_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, AdminNotification $adminNotification, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(AdminNotificationType::class, $adminNotification);
+        $form = $this->createForm(AdminNotification1Type::class, $adminNotification);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

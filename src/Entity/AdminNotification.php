@@ -19,17 +19,17 @@ class AdminNotification
     #[ORM\Column(length: 255)]
     private ?string $text = null;
 
-    #[ORM\Column]
-    private ?bool $isSignUp = null;
+    #[ORM\OneToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: "CASCADE")]
+    private ?User $user = null;
 
-    #[ORM\Column]
-    private ?bool $isComment = null;
+    #[ORM\OneToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: "CASCADE")]
+    private ?Comments $Comment = null;
 
-    #[ORM\Column]
-    private ?bool $isBlog = null;
-
-    #[ORM\Column]
-    private ?int $identifier = null;
+    #[ORM\OneToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: "CASCADE")]
+    private ?Blog $blog = null;
 
     public function getId(): ?int
     {
@@ -60,50 +60,38 @@ class AdminNotification
         return $this;
     }
 
-    public function isIsSignUp(): ?bool
+    public function getUser(): ?User
     {
-        return $this->isSignUp;
+        return $this->user;
     }
 
-    public function setIsSignUp(bool $isSignUp): static
+    public function setUser(?User $user): static
     {
-        $this->isSignUp = $isSignUp;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function isIsComment(): ?bool
+    public function getComment(): ?Comments
     {
-        return $this->isComment;
+        return $this->Comment;
     }
 
-    public function setIsComment(bool $isComment): static
+    public function setComment(?Comments $Comment): static
     {
-        $this->isComment = $isComment;
+        $this->Comment = $Comment;
 
         return $this;
     }
 
-    public function isIsBlog(): ?bool
+    public function getBlog(): ?Blog
     {
-        return $this->isBlog;
+        return $this->blog;
     }
 
-    public function setIsBlog(bool $isBlog): static
+    public function setBlog(?Blog $blog): static
     {
-        $this->isBlog = $isBlog;
-
-        return $this;
-    }
-
-    public function getIdentifier(): ?int
-    {
-        return $this->identifier;
-    }
-
-    public function setIdentifier(int $identifier): static
-    {
-        $this->identifier = $identifier;
+        $this->blog = $blog;
 
         return $this;
     }

@@ -3,13 +3,13 @@
 {% block title %}Blog{% endblock %}
 
 {% block body %}
-    <h1>{{blog.title}}</h1>
+    <p><h1>{{blog.title}}</h1></p>
 
     <p>{{ blog.createdAt|date('d-M-Y H:i') }} By: {{ blog.createdBy }}
     {% if (blog.edited) %}
-        (Edited : {{ blog.editedAt|date('d-M-Y H:i') }})</p>
-    {% endif %}
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        (Edited : {{ blog.editedAt|date('d-M-Y H:i') }})
+    {% endif %}</p>
+    <p><iframe width="560" height="315" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
     <p>{{ blog.text|nl2br|raw }}</p>
     {% if app.user %}
         {% include './comments/like.html.twig' %}

@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Repository\UserRepository;
 use App\Repository\CommentsRepository;
+use App\Repository\AdminNotificationRepository;
 use App\Repository\BlogRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -77,6 +78,14 @@ class AdminController extends AbstractController
     {
         return $this->render('admin/comments.html.twig', [
             'comments' => $commentsRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/notifications', name: 'app_admin_notifications', methods: ['GET'])]
+    public function index(AdminNotificationRepository $adminNotificationRepository): Response
+    {
+        return $this->render('admin/notifications.html.twig', [
+            'admin_notifications' => $adminNotificationRepository->findAll(),
         ]);
     }
 }
