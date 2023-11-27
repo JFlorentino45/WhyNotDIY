@@ -7,7 +7,7 @@
 
     {{ include('comments/_form.html.twig', {'button_label': 'Save'}) }}
 
-    <a href="{{ path('app_blog_show', {'id': comment.blog.id}) }}">back to list</a>
+    <a href="{{ path('app_blog_show', {'id': comment.blog.id}) }}">Back to blog</a>
 
     {{ include('comments/_delete_form.html.twig') }}
 {% endblock %}

@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\AdminNotification;
+use App\Service\ForbiddenWordService;
+use App\Repository\AdminNotificationRepository;
 use App\Form\UserType;
-use Doctrine\ORM\EntityManagerInterface;
+use function Symfony\Component\Clock\now;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,30 +15,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/user')]
 class UserController extends AbstractController
 {
-
-    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('user/new.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
-    }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
@@ -49,15 +33,42 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, ForbiddenWordService $forbiddenWordService, AdminNotificationRepository $adminNotificationRepo): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $underInvestigation = $adminNotificationRepo->findOneBy(['user' => ($user)]);
+            if ($underInvestigation) {
+                $entityManager->remove($underInvestigation);
+            }
+            $username = $form->get('userName')->getData();
+            if ($forbiddenWordService->isForbidden($username)) {
+                $this->addFlash('error', 'Username contains forbidden words.');
+            } else {
+                if ($forbiddenWordService->containsForbiddenWord($username)) {
+                    $adminNotification = new AdminNotification();
+                    $adminNotification->setCreatedAt(now());
+                    $adminNotification->setText("$username may have a forbidden word in their username. Please verify.");
+                    $adminNotification->setBlog(null);
+                    $adminNotification->setComment(null);
+                    $entityManager->persist($user);
+                    $entityManager->flush();
+                    $adminNotification->setUser($user);
+                    $entityManager->persist($adminNotification);
+                    $entityManager->flush();
+                        
+                    $this->addFlash('success', 'Profile Updated.');
 
-            return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
+                    return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
+                } else {
+                    $entityManager->persist($user);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Profile Updated.');
+                    return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
+                }
+            }
         }
 
         return $this->render('user/edit.html.twig', [

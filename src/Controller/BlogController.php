@@ -5,20 +5,21 @@ namespace App\Controller;
 use App\Entity\Blog;
 use App\Entity\Likes;
 use App\Entity\Comments;
+use App\Entity\AdminNotification;
 use App\Form\CommentType;
 use App\Form\BlogType;
 use App\Repository\CommentsRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
+use App\Repository\BlogRepository;
+use App\Repository\AdminNotificationRepository;
 use App\Service\ForbiddenWordService;
-use App\Entity\AdminNotification;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use function Symfony\Component\Clock\now;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Repository\BlogRepository;
-use function Symfony\Component\Clock\now;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/blog')]
 class BlogController extends AbstractController
@@ -67,11 +68,6 @@ class BlogController extends AbstractController
                     return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                 }
             }
-
-            $entityManager->persist($blog);
-            $entityManager->flush();
-            
-            return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
         }
         
         return $this->render('blog/new.html.twig', [
@@ -145,21 +141,59 @@ class BlogController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Blog $blog, EntityManagerInterface $entityManager, AdminNotificationRepository $adminNotificationRepo, ForbiddenWordService $forbiddenWordService): Response
     {
         $user = $this->getUser();
         if ($user !== $blog->getCreatedBy() && !$this->isGranted('ROLE_admin')) {
             throw new AccessDeniedException();
         }
-        
+
         $form = $this->createForm(BlogType::class, $blog);
         $oldData = clone $blog;
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
             if ($blog->isModified($oldData)) {
-                $entityManager->flush();
-                return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
+                $underInvestigation = $adminNotificationRepo->findOneBy(['blog' => ($blog)]);
+                if ($underInvestigation) {
+                    $entityManager->remove($underInvestigation);
+                }
+                $title = $form->get('title')->getData();
+                $text = $form->get('text')->getData();
+                if ($forbiddenWordService->isForbidden($title) || $forbiddenWordService->isForbidden($text)) {
+                    $this->addFlash('error', 'Blog contains forbidden words.');
+                } else {
+                    if ($forbiddenWordService->containsForbiddenWord($title) || $forbiddenWordService->containsForbiddenWord($text)) {
+                        $adminNotification = new AdminNotification();
+                        $adminNotification->setCreatedAt(now());
+                        $message = "";
+                        if ($forbiddenWordService->containsForbiddenWord($title) && $forbiddenWordService->containsForbiddenWord($text)) {
+                            $message = "A blog's title and text may contain forbidden words. Please verity";
+                        } elseif ($forbiddenWordService->containsForbiddenWord($text)) {
+                            $message = "A blog's text may contain a forbidden word. Please verify.";
+                        } else {
+                            $message = "A blog title may contain a forbidden word. Please verify.";
+                        }
+                        $adminNotification->setText($message);
+                        $adminNotification->setUser(null);
+                        $adminNotification->setComment(null);
+                    
+                        $entityManager->persist($blog);
+                        $entityManager->flush();
+                    
+                        $adminNotification->setBlog($blog);
+                        $entityManager->persist($adminNotification);
+                        $entityManager->flush();
+                    
+                        $this->addFlash('success', 'Blog updated.');
+                        return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
+                    } else {
+                        $entityManager->persist($blog);
+                        $entityManager->flush();
+                        $this->addFlash('success', 'Blog updated.');
+                        return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
+                    }
+                }
             } else {
                 $this->addFlash('warning', 'No changes detected.');
                 return $this->redirectToRoute('app_blog_edit', ['id' => $blog->getId()]);
