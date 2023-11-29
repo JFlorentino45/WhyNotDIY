@@ -30,9 +30,21 @@
             {{ flash_message }}
         </div>
         {% endfor %}
-        {% block body %}{% endblock %}
+        {% block body %}
+        {% endblock %}
     </body>
     <footer>
         {% include 'footer.html.twig' %}
     </footer>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{{ asset('js/pagination.js') }}"></script>
+    {% if is_granted('ROLE_admin') %}
+    <script>
+        var userRole = 'admin';
+    </script>
+    {% else %}
+    <script>
+        var userRole = 'user';
+    </script>
+{% endif %}
 </html>

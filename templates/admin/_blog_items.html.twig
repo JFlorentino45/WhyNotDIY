@@ -1,0 +1,12 @@
+{% for blog in blogs %}
+    <h2>{{ blog.title }}</h2>
+    <p>{{ blog.createdAt|date('Y-M-d') }} Created By: {{ blog.createdBy }}
+    {% if (blog.edited)%}
+        (Edited: {{ blog.editedAt|date('d-M-Y') }})
+    {% endif %}
+    <p><iframe width="450" height="253" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
+    <p>{{ blog.text}}</p>
+    <button><a href="{{ path('app_blog_show', {'id': blog.id}) }}">View Blog</a></button>
+    <button><a href="{{ path('app_blog_edit', {'id': blog.id}) }}">Edit</a></button>
+    {{ include('admin/blog_delete_form.html.twig') }}
+{% endfor %}

@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/admin')]
@@ -33,6 +34,17 @@ class AdminController extends AbstractController
         return $this->render('admin/blogs.html.twig', [
             'blogs' => $blogRepository->findAllOrderedByLatest(),
         ]);
+    }
+
+    #[Route('/load-more-blogs', name: 'admin_more_blogs', methods: ['GET'])]
+    public function loadMoreBlogs(Request $request, BlogRepository $blogRepository): JsonResponse
+    {
+        $offset = $request->query->get('offset', 0);
+        $blogs = $blogRepository->findMoreBlogs($offset);
+
+        $html = $this->renderView('admin/_blog_items.html.twig', ['blogs' => $blogs]);
+
+        return new JsonResponse(['html' => $html]);
     }
 
     #[Route('/blogs/{id}/delete', name: 'app_admin_blog_delete', methods: ['POST'])]
