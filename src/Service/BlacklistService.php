@@ -22,15 +22,14 @@ class BlacklistService
         return array_map(fn($emailAddress) => $emailAddress->getEmailAddress(), $blacklist);
     }
 
-    public function isBanned(string $text): bool
+    public function isBanned(string $input): bool
     {
         $emails = $this->getBlacklistEmails();
-        $emails = explode(' ', $text);
-        $emails = array_map('strtolower', $emails);
 
         foreach ($emails as $email) {
-            $lowercaseEmail = strtolower($email);
-            if (in_array($lowercaseEmail, $emails)) {
+            $emailLower = strtolower(strip_tags($email));
+            $inputLower = strtolower(strip_tags($input));
+            if ($inputLower == $emailLower) {
                 return true;
             }
         }
