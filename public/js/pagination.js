@@ -25,10 +25,7 @@ $(document).ready(function () {
     }
     $.get(url, { offset: offset }, function (response) {
       if (response.html.trim() != "") {
-        var sanitizedHtml = DOMPurify.sanitize(response.html, {
-          ALLOWED_TAGS: ["iframe", "p", "a"],
-        });
-        $("#blog-container").append(sanitizedHtml);
+        $("#blog-container").append(response.html);
         offset += 5;
         loading = false;
       } else {

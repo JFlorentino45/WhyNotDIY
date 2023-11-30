@@ -1,4 +1,4 @@
-Style
+Style (footer, coment, like on show blog)
 
 paganation (fix youtube sizing and options for admin)
 

@@ -3,18 +3,20 @@
 {% block title %}Blog{% endblock %}
 
 {% block body %}
-    <p><h1>{{blog.title}}</h1></p>
+<div class="grid grid-cols-2 mx-4 mt-4">
+    <div class="col-start-1 row-start-1 text-3xl font-medium">{{blog.title}}</div>
 
-    <p>{{ blog.createdAt|date('d-M-Y H:i') }} By: {{ blog.createdBy }}
+    <div class="col-start-2 row-start-1 text-xl text-right">{{ blog.createdAt|date('d-M-Y H:i') }} By: {{ blog.createdBy }}
     {% if (blog.edited) %}
         (Edited : {{ blog.editedAt|date('d-M-Y H:i') }})
-    {% endif %}</p>
-    <p><iframe width="560" height="315" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
-    <p>{{ blog.text|nl2br|raw }}</p>
+    {% endif %}</div>
+    <div class="col-start-1 row-start-2 mt-8"><iframe class="border-gray-800 border-4 rounded-md" width="900" height="506" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    <div class="col-start-2 row-start-2 row-span-2 mt-8">{{ blog.text|nl2br|raw }}</div>
+    <div class="col-start-1 row-auto"
     {% if app.user %}
         {% include './comments/like.html.twig' %}
         {% include './comments/show.html.twig' %}
     {% endif %}
         <p><button><a href="{{ path('app_blog_index') }}">Back to Home</a></button></p>
-
+</div>
 {% endblock %}
