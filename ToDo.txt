@@ -1,9 +1,9 @@
+Style
+
+paganation (fix youtube sizing and options for admin)
+
 Search
 
-paganation
-
 category
-
-Style
 
 Create admin nav bar with options under basic nav bar

@@ -18,7 +18,10 @@ $(document).ready(function () {
 
         $.get(url, { offset: offset }, function (response) {
             if (response.html.trim() != '') {
-                $('#blog-container').append(response.html);
+                var sanitizedHtml = DOMPurify.sanitize(response.html, {
+                    ALLOWED_TAGS: ['iframe', 'p', 'a'],
+                });
+                $('#blog-container').append(sanitizedHtml);
                 offset += 5;
                 loading = false;
             } else {
