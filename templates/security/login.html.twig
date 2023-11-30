@@ -3,7 +3,7 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-
+<div>
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
@@ -13,19 +13,19 @@
             You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
         </div>
     {% endif %}
-    <h1>Login</h1>
+    <div class="flex justify-center items-center container mx-auto max-w-fit my-6 mh-auto p-8 bg-white">
 
-    <form action="{{ path('app_login') }}" method="post">
-        <label for="inputEmailAddress">Email:</label>
-        <input type="email" id="inputEmailAddress" name="emailAddress" value="{{ last_username }}" autocomplete="email" required autofocus>
+    <form class="flex flex-col" action="{{ path('app_login') }}" method="post">
+        <h1 class="text-xl font-semibold">Login</h1>
 
-        <label for="inputPassword">Password:</label>
-        <input type="password" id="inputPassword" name="password" required>
+        <input class="border rounded my-2 px-1" type="email" id="inputEmailAddress" placeholder="Email" name="emailAddress" value="{{ last_username }}" autocomplete="email" required autofocus>
 
-        <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-        >
+        <input class="border rounded mt-2 mb-6 px-1" type="password" id="inputPassword" placeholder="Password" name="password" required>
 
-        <button type="submit">login</button>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button class="inline-block rounded bg-yellow-400 px-4 pb-1.5 pt-2 text-white" type="submit">login</button>
     </form>
+    </div>
+</div>
 {% endblock %}

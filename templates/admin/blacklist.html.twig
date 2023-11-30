@@ -5,20 +5,21 @@
 {% block body %}
     <h1>Blacklist index</h1>
 
-    <table class="table">
+    <table class="table-auto border-separate border border-slate-400 rounded-lg">
+    <div class="flex flex-row">
         <thead>
             <tr>
-                <th>EmailAddress</th>
-                <th>CreatedAt</th>
-                <th>actions</th>
+                <th class="border border-slate-300 basis-full">EmailAddress</th>
+                <th class="border border-slate-300 basis-1/4">CreatedAt</th>
+                <th class="border border-slate-300 basis-1/4">actions</th>
             </tr>
         </thead>
         <tbody>
         {% for blacklist in blacklists %}
             <tr>
-                <td>{{ blacklist.emailAddress }}</td>
-                <td>{{ blacklist.createdAt ? blacklist.createdAt|date('Y-m-d H:i') : '' }}</td>
-                <td>
+                <td class="border border-slate-300 basis-1/2">{{ blacklist.emailAddress }}</td>
+                <td class="border border-slate-300 basis-1/4">{{ blacklist.createdAt ? blacklist.createdAt|date('Y-m-d H:i') : '' }}</td>
+                <td class="border border-slate-300 basis-1/4">
                 {{ include('admin/blacklist_delete_form.html.twig') }}
                 </td>
             </tr>
@@ -28,6 +29,7 @@
             </tr>
         {% endfor %}
         </tbody>
+    </div>
     </table>
 
     <a href="{{ path('app_admin_blacklist_new') }}">Create new</a>
