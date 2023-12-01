@@ -1,15 +1,19 @@
-{# templates/auth/signup.html.twig #}
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Sign Up{% endblock %}
 
 {% block body %}
-<div class="example-wrapper">
-    <h1>Welcome, Sign Up!</h1>
+    <p class="text-xl font-semibold text-center mt-4">Welcome to Why not DIY!</p>
     
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_start(form, {'attr': {'class': 'flex flex-col justify-center items-center container mx-auto max-w-fit my-6 mh-auto p-8 bg-gray-200 rounded-md'}}) }}
+    <p class="text-lg">Please Sign Up</p>
+    {{ form_row(form.userName, {'attr': {'class': 'border rounded mt-2 mb-5 px-1', 'placeholder': 'User name*'}}) }}
+    {{ form_row(form.emailAddress, {'attr': {'class': 'border rounded mt-2 mb-5 px-1', 'placeholder': 'Email Address*'}}) }}
+    {{ form_row(form.plainPassword, {'attr': {'class': 'border rounded mt-2 mb-5 px-1', 'placeholder': 'Password*'}}) }}
+    {{ form_row(form.confirmPassword, {'attr': {'class': 'border rounded mt-2 mb-6 px-1', 'placeholder': 'Confirm Password*'}}) }}
+    {{ form_row(form.submit, {'attr': {'class': 'inline-block rounded bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white px-4 pb-1.5 pt-2 font-sans'}}) }}
+    <p class="text-gray-500 mt-2">Already have an account? -><a class="text-blue-800" href="{{ path('app_login') }}">Login</a>
+
     {{ form_end(form) }}
-</div>
+    
 {% endblock %}

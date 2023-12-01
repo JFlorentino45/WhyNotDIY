@@ -38,7 +38,7 @@ class CommentsController extends AbstractController
                 }
                 $text = $form->get('text')->getData();
             if ($forbiddenWordService->isForbidden($text)) {
-                $this->addFlash('error', 'Comment contains forbidden words.');
+                $this->addFlash('error', '*Comment contains forbidden words.');
             } else {
                 if ($forbiddenWordService->containsForbiddenWord($text)) {
                     $adminNotification = new AdminNotification();
@@ -54,19 +54,19 @@ class CommentsController extends AbstractController
                     $entityManager->persist($adminNotification);
                     $entityManager->flush();
                     
-                    $this->addFlash('success', 'Comment updated.');
+                    $this->addFlash('success', '*Comment updated.');
                     return $this->redirectToRoute('app_blog_show', ['id' => $comment->getBlog()->getId()]);
                 } else {
         
                     $entityManager->persist($comment);
                     $entityManager->flush();
 
-                    $this->addFlash('success', 'Comment updated.');
+                    $this->addFlash('success', '*Comment updated.');
                     return $this->redirectToRoute('app_blog_show', ['id' => $comment->getBlog()->getId()]);
                 }
             }
             } else {
-                $this->addFlash('warning', 'No changes detected.');
+                $this->addFlash('warning', '*No changes detected.');
                 return $this->redirectToRoute('app_comments_edit', ['id' => $comment->getId()]);
             }
         }

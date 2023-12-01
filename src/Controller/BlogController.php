@@ -35,7 +35,7 @@ class BlogController extends AbstractController
             $title = $form->get('title')->getData();
             $text = $form->get('text')->getData();
             if ($forbiddenWordService->isForbidden($title) || $forbiddenWordService->isForbidden($text)) {
-                $this->addFlash('error', 'Blog contains forbidden words.');
+                $this->addFlash('error', '*Blog contains forbidden words.');
             } else {
                 if ($forbiddenWordService->containsForbiddenWord($title) || $forbiddenWordService->containsForbiddenWord($text)) {
                     $adminNotification = new AdminNotification();
@@ -59,12 +59,12 @@ class BlogController extends AbstractController
                     $entityManager->persist($adminNotification);
                     $entityManager->flush();
                     
-                    $this->addFlash('success', 'Blog created.');
+                    $this->addFlash('success', '*Blog created.');
                     return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                 } else {
                     $entityManager->persist($blog);
                     $entityManager->flush();
-                    $this->addFlash('success', 'Blog created.');
+                    $this->addFlash('success', '*Blog created.');
                     return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                 }
             }
@@ -91,7 +91,7 @@ class BlogController extends AbstractController
     {
         $user = $this->getUser();
         if ($user === null) {
-            $this->addFlash('warning', 'You must be loggin in.');
+            $this->addFlash('warning', '*You must be logged in.');
             return $this->redirectToRoute('app_login');
         } 
         
@@ -102,7 +102,7 @@ class BlogController extends AbstractController
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $text = $commentForm->get('text')->getData();
             if ($forbiddenWordService->isForbidden($text)) {
-                $this->addFlash('error', 'Comment contains forbidden words.');
+                $this->addFlash('error', '*Comment contains forbidden words.');
             } else {
                 if ($forbiddenWordService->containsForbiddenWord($text)) {
                     $adminNotification = new AdminNotification();
@@ -119,7 +119,7 @@ class BlogController extends AbstractController
                     $entityManager->persist($adminNotification);
                     $entityManager->flush();
                     
-                    $this->addFlash('success', 'Comment added.');
+                    $this->addFlash('success', '*Comment added.');
                     return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                 } else {
                     $comment->setBlog($blog);
@@ -161,7 +161,7 @@ class BlogController extends AbstractController
                 $title = $form->get('title')->getData();
                 $text = $form->get('text')->getData();
                 if ($forbiddenWordService->isForbidden($title) || $forbiddenWordService->isForbidden($text)) {
-                    $this->addFlash('error', 'Blog contains forbidden words.');
+                    $this->addFlash('error', '*Blog contains forbidden words.');
                 } else {
                     if ($forbiddenWordService->containsForbiddenWord($title) || $forbiddenWordService->containsForbiddenWord($text)) {
                         $adminNotification = new AdminNotification();
@@ -185,17 +185,17 @@ class BlogController extends AbstractController
                         $entityManager->persist($adminNotification);
                         $entityManager->flush();
                     
-                        $this->addFlash('success', 'Blog updated.');
+                        $this->addFlash('success', '*Blog updated.');
                         return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                     } else {
                         $entityManager->persist($blog);
                         $entityManager->flush();
-                        $this->addFlash('success', 'Blog updated.');
+                        $this->addFlash('success', '*Blog updated.');
                         return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                     }
                 }
             } else {
-                $this->addFlash('warning', 'No changes detected.');
+                $this->addFlash('warning', '*No changes detected.');
                 return $this->redirectToRoute('app_blog_edit', ['id' => $blog->getId()]);
             }
         }

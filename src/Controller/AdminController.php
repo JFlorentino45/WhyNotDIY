@@ -89,14 +89,14 @@ class AdminController extends AbstractController
             $newPassword = $form->get('plainPassword')->getData();
             $validation = $form->get('confirmPassword')->getData();
             if ($newPassword !== $validation) {
-                $this->addFlash('error', 'Passwords do not match');
+                $this->addFlash('error', '*Passwords do not match');
             } else {
             $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
             $user->setPasswordHash($hashedPassword);
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Password updated successfully');
+            $this->addFlash('success', '*Password updated successfully');
 
             return $this->redirectToRoute('app_blog_index');
         }}

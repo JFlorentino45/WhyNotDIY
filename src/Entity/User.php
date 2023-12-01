@@ -12,10 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(
     fields:'emailAddress',
-    message:'This Email already exists')]
+    message:'*This Email already exists')]
 #[UniqueEntity(
     fields:'userName',
-    message:'This username already exists')]
+    message:'*This username already exists')]
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]

@@ -18,10 +18,14 @@ class SignupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('userName')
-            ->add('emailAddress', EmailType::class)
+            ->add('userName', null, [
+                'label' => false
+            ])
+            ->add('emailAddress', EmailType::class, [
+                'label' => false
+            ])
             ->add('plainPassword', PasswordType::class, [
-                'label' => 'Password',
+                'label' => false,
                 'mapped' => false,
                 'constraints' => [
                     new NotBlank([
@@ -35,11 +39,10 @@ class SignupType extends AbstractType
                 ],
             ])
             ->add('confirmPassword', PasswordType::class, [
-                'label' => 'Confirm Password',
+                'label' => false,
                 'mapped' => false,
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Sign Up',
             ])
         ;
     }

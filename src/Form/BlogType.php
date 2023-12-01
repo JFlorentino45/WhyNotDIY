@@ -39,9 +39,15 @@ class BlogType extends AbstractType
         });
         
         $builder
-            ->add('title')
-            ->add('videoUrl')
-            ->add('text')
+            ->add('title', null, [
+                'label' => false
+            ])
+            ->add('videoUrl', null, [
+                'label' => false
+            ])
+            ->add('text', null, [
+                'label' => false
+            ])
         ;
     }
 

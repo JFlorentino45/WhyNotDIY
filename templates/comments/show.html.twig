@@ -7,7 +7,7 @@
         {% for comment in comments %}
         <div class="my-8">
             <div>{% if comment.getCreatedBy() == blog.getCreatedBy() %}
-            <p class="text-xl">OP - 
+            <p class="text-lg">OP - 
             {% endif %}
             {{ comment.getCreatedBy() }} on {{ comment.getCreatedAt()|date('d-M-Y H:i') }}
             {% if comment.edited() and comment.getCreatedAt()|date('d-M-Y H:i') != comment.getEditedAt()|date('d-M-Y H:i') %}

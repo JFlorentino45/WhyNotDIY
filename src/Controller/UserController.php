@@ -42,7 +42,7 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $email = $form->get('emailAddress')->getData();
             if ($blacklist->isBanned($email)) {
-                $this->addFlash('error', 'This E-mail is banned.');
+                $this->addFlash('error', '*This E-mail is banned.');
             } else {
             $underInvestigation = $adminNotificationRepo->findOneBy(['user' => ($user)]);
             if ($underInvestigation) {
@@ -50,7 +50,7 @@ class UserController extends AbstractController
             }
             $username = $form->get('userName')->getData();
             if ($forbiddenWordService->isForbidden($username)) {
-                $this->addFlash('error', 'Username contains forbidden words.');
+                $this->addFlash('error', '*Username contains forbidden words.');
             } else {
                 if ($forbiddenWordService->containsForbiddenWord($username)) {
                     $adminNotification = new AdminNotification();
@@ -64,13 +64,13 @@ class UserController extends AbstractController
                     $entityManager->persist($adminNotification);
                     $entityManager->flush();
                         
-                    $this->addFlash('success', 'Profile Updated.');
+                    $this->addFlash('success', '*Profile Updated.');
 
                     return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
                 } else {
                     $entityManager->persist($user);
                     $entityManager->flush();
-                    $this->addFlash('success', 'Profile Updated.');
+                    $this->addFlash('success', '*Profile Updated.');
                     return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
                 }
             }
@@ -94,7 +94,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('app_admin_users', [], Response::HTTP_SEE_OTHER);
         } else {
             $tokenStorage->setToken(null);
-            $this->addFlash('error', 'Sorry to see you go, hope you return soon');
+            $this->addFlash('error', '*Sorry to see you go, hope you return soon');
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
     }

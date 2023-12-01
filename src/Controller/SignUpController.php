@@ -28,11 +28,11 @@ class SignUpController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $email = $form->get('emailAddress')->getData();
             if ($blacklist->isBanned($email)) {
-                $this->addFlash('error', 'This E-mail is banned.');
+                $this->addFlash('error', '*This E-mail is banned.');
             } else {
             $username = $form->get('userName')->getData();
             if ($forbiddenWordService->isForbidden($username)) {
-                $this->addFlash('error', 'Username contains forbidden words.');
+                $this->addFlash('error', '*Username contains forbidden words.');
             } else {
                 if ($forbiddenWordService->containsForbiddenWord($username)) {
                     $adminNotification = new AdminNotification();
@@ -44,7 +44,7 @@ class SignUpController extends AbstractController
                     $password = $form->get('plainPassword')->getData();
                     $validation = $form->get('confirmPassword')->getData();
                     if ($password !== $validation) {
-                        $this->addFlash('error', 'Passwords do not match');
+                        $this->addFlash('error', '*Passwords do not match');
                     } else {
                         $hashedPassword = $passwordHasher->hashPassword($user, $password);
                         $user->setPasswordHash($hashedPassword);
@@ -55,14 +55,14 @@ class SignUpController extends AbstractController
                         $entityManager->persist($adminNotification);
                         $entityManager->flush();
 
-                        $this->addFlash('success', 'Account created, Please login.');
+                        $this->addFlash('success', '*Account created, Please login.');
                         return $this->redirectToRoute('app_login');
                     }
                 } else {
                     $password = $form->get('plainPassword')->getData();
                     $validation = $form->get('confirmPassword')->getData();
                     if ($password !== $validation) {
-                        $this->addFlash('error', 'Passwords do not match');
+                        $this->addFlash('error', '*Passwords do not match');
                     } else {
                         $hashedPassword = $passwordHasher->hashPassword($user, $password);
                         $user->setPasswordHash($hashedPassword);
@@ -70,7 +70,7 @@ class SignUpController extends AbstractController
                         $entityManager->persist($user);
                         $entityManager->flush();
                         
-                        $this->addFlash('success', 'Account created, Please login.');
+                        $this->addFlash('success', '*Account created, Please login.');
                         return $this->redirectToRoute('app_login');
                     }
                 }

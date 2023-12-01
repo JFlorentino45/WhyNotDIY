@@ -31,16 +31,16 @@ class ChangePasswordController extends AbstractController
             $newPassword = $form->get('plainPassword')->getData();
             $validation = $form->get('confirmPassword')->getData();
             if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
-                $this->addFlash('error', 'Invalid current password');
+                $this->addFlash('error', '*Invalid current password');
             } elseif ($newPassword !== $validation) {
-                $this->addFlash('error', 'Passwords do not match');
+                $this->addFlash('error', '*Passwords do not match');
             } else {
                 $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
                 $user->setPasswordHash($hashedPassword);
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                $this->addFlash('success', 'Password updated successfully');
+                $this->addFlash('success', '*Password updated successfully');
 
 
                 return $this->redirectToRoute('app_blog_index');

@@ -6,4 +6,6 @@ Search
 
 category
 
+forgotten pw
+
 Create admin nav bar with options under basic nav bar
