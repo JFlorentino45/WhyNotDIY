@@ -1,23 +1,26 @@
 {% block body %}
-    <h3>Add a comment</h3>
-        {{ include('comments/_form.html.twig', {'button_label': 'Add Comment'}) }}
+    <p class="text-xl">Add a comment</p>
+        {{ include('comments/_form.html.twig', {'button_label': 'Submit'}) }}
     {% if blog.comments is empty %}
-        <h2>No Comments</h2>
+        <p class="text-xl">No Comments</p>
     {% else %}
-        <h2>Comments</h2>
         {% for comment in comments %}
+        <div class="my-8">
             <div>{% if comment.getCreatedBy() == blog.getCreatedBy() %}
-            <p>OP - 
+            <p class="text-xl">OP - 
             {% endif %}
             {{ comment.getCreatedBy() }} on {{ comment.getCreatedAt()|date('d-M-Y H:i') }}
             {% if comment.edited() and comment.getCreatedAt()|date('d-M-Y H:i') != comment.getEditedAt()|date('d-M-Y H:i') %}
                 (Edited : {{ comment.getEditedAt|date('d-M-Y H:i') }})
             {% endif %}:</p>
-            <p>{{ comment.getText()|nl2br|raw }}</p>
+            <p class="w-3/4 text-ellipsis overflow-hidden">{{ comment.getText()|nl2br|raw }}</p>
             {% if app.user == comment.getCreatedBy() %}
-            <button><a href="{{ path('app_comments_edit', {'id': comment.id}) }}">Edit Comment</a></button>
+            <div class="flex flex-row">
+            <button><a class="font-sans block w-fit h-full bg-gray-600 text-gray-300 hover:bg-gray-500 hover:text-white rounded-md px-2.5 py-1 mt-1 text-sm font-medium" href="{{ path('app_comments_edit', {'id': comment.id}) }}">Edit Comment</a></button>
             {{ include('comments/_delete_form.html.twig') }}
+            </div>
             {% endif %}</div>
+        </div>
         {% endfor %}
     {% endif %}
 {% endblock %}

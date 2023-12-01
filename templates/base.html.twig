@@ -14,19 +14,12 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <body class="bg-gradient-to-r from-white to-gray-500 h-screen flex flex-col font-mono">
-    <header>
+    <body class="bg-gradient-to-r from-white to-gray-500 mt-20 mb-10 flex flex-col font-sans">
         {% include 'nav.html.twig' %}
-    </header>
         {% include './security/flash.html.twig' %}
         {% block body %}
         {% endblock %}
-    <footer>
         {% include 'footer.html.twig' %}
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="{{ asset('js/pagination.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+        {% include 'script.html.twig' %}
     </body>
 </html>

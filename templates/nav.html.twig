@@ -1,4 +1,5 @@
-<nav class="bg-gray-800 text-white px-64 font-sans">
+<header>
+<nav class="bg-gray-800 text-white px-64 font-sans fixed inset-x-0 top-0 z-50">
   <div class="grid grid-cols-12 place-items-center align-middle h-16">
     <div class="col-start-1"><a href="{{ path('home') }}" class="bg-gray-900 text-white rounded-md px-3 py-2 text-m font-medium" aria-current="page">Home</a></div>
     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
@@ -21,3 +22,4 @@
     {% endif %}
   </div>
 </nav>
+</header>
