@@ -1,4 +1,4 @@
 {{ form_start(commentForm) }}
     {{ form_widget(commentForm.text, {'attr': {'class': 'w-3/4 border-gray-800 h-20 rounded-md border-2', 'placeholder': 'Type your comment'}}) }}
-    <button class="btn font-sans block w-fit h-full bg-gray-600 text-gray-300 hover:bg-gray-500 hover:text-white rounded-md px-2.5 py-1 mt-1 text-m font-medium">{{ button_label|default('Save') }}</button>
+    <button class="btn font-sans block w-fit h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-2.5 py-1 mt-1 text-m font-medium">{{ button_label|default('Save') }}</button>
 {{ form_end(commentForm) }}

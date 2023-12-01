@@ -11,6 +11,7 @@ use App\Form\BlogType;
 use App\Repository\CommentsRepository;
 use App\Repository\BlogRepository;
 use App\Repository\AdminNotificationRepository;
+use App\Repository\UserRepository;
 use App\Service\ForbiddenWordService;
 use function Symfony\Component\Clock\now;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,6 +95,32 @@ class BlogController extends AbstractController
         $blogs = $blogRepository->findMoreMyBlogs($user, $offset);
 
         $html = $this->renderView('blog/_blog_items.html.twig', ['blogs' => $blogs]);
+
+        return new JsonResponse(['html' => $html]);
+    }
+
+    #[Route('/user-blogs/{id}', name: 'app_blog_user')]
+    public function userBlogs(UserRepository $repo, BlogRepository $blogRepository, int $id): Response
+    {
+        $user = $repo->find($id);
+        $userName = $user->getUserName();
+    
+        return $this->render('blog/userBlogs.html.twig', [
+            'blogs' => $blogRepository->findMyBlogsOrderedByLatest($user),
+            'username' => $userName,
+            'user' => $id]);
+    }
+
+    #[Route('/load-user-blogs/{id}', name: 'app_user_blogs_more', methods: ['GET'])]
+    public function loadUserBlogs(UserRepository $repo, Request $request, BlogRepository $blogRepository, $id): JsonResponse
+    {
+        dump('Controller is called');
+        $user = $repo->find($id);
+        $offset = $request->query->get('offset', 0);
+        $blogs = $blogRepository->findMoreMyBlogs($user, $offset);
+
+        $html = $this->renderView('blog/_userblog_items.html.twig', ['blogs' => $blogs]);
+        dump($html);
 
         return new JsonResponse(['html' => $html]);
     }

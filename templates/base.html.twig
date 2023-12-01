@@ -12,6 +12,7 @@
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
+        {% include 'script.html.twig' %}
         {% endblock %}
     </head>
     <body class="bg-gradient-to-r from-white to-gray-500 mt-20 mb-10 flex flex-col font-sans">
@@ -20,6 +21,5 @@
         {% block body %}
         {% endblock %}
         {% include 'footer.html.twig' %}
-        {% include 'script.html.twig' %}
     </body>
 </html>

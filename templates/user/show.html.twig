@@ -3,25 +3,15 @@
 {% block title %}User{% endblock %}
 
 {% block body %}
-    <h1>User</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>UserName</th>
-                <td>{{ user.userName }}</td>
-            </tr>
-            <tr>
-                <th>EmailAddress</th>
-                <td>{{ user.emailAddress }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <button><a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a></button>
-    <button><a href="{{ path('app_change_password') }}">Change Password</a></button>
-
-    {{ include('user/_delete_form.html.twig') }}
-
-    <button><a href="{{ path('app_blog_index') }}">back to list</a></button>
+    <div class="flex justify-center items-center container mx-auto h-fit w-fit my-6 mh-auto p-8 bg-gray-200 rounded-md">
+        <div class"flex flex-col">
+            <p class="text-xl font-semibold text-center mt-4 mb-8">Account Details</p>
+            <p class="text-lg mb-4">Username: {{ user.userName }}</p>
+            <p class="text-lg mb-20">Email: {{ user.emailAddress}}</p>
+            <button><a class="inline-block rounded bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white px-4 pb-1.5 pt-2 font-sans" href="{{ path('app_user_edit', {'id': user.id}) }}">Edit Profile</a></button>
+            <button><a class="inline-block rounded bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white px-4 pb-1.5 pt-2 font-sans" href="{{ path('app_change_password') }}">Change Password</a></button>
+            {{ include('user/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

@@ -38,42 +38,48 @@ class UserController extends AbstractController
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
+        $oldData = clone $user;
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $email = $form->get('emailAddress')->getData();
-            if ($blacklist->isBanned($email)) {
+            if ($user->isModified($oldData)) {
+                $email = $form->get('emailAddress')->getData();
+                if ($blacklist->isBanned($email)) {
                 $this->addFlash('error', '*This E-mail is banned.');
-            } else {
-            $underInvestigation = $adminNotificationRepo->findOneBy(['user' => ($user)]);
-            if ($underInvestigation) {
-                $entityManager->remove($underInvestigation);
-            }
-            $username = $form->get('userName')->getData();
-            if ($forbiddenWordService->isForbidden($username)) {
-                $this->addFlash('error', '*Username contains forbidden words.');
-            } else {
-                if ($forbiddenWordService->containsForbiddenWord($username)) {
-                    $adminNotification = new AdminNotification();
-                    $adminNotification->setCreatedAt(now());
-                    $adminNotification->setText("$username may have a forbidden word in their username. Please verify.");
-                    $adminNotification->setBlog(null);
-                    $adminNotification->setComment(null);
-                    $entityManager->persist($user);
-                    $entityManager->flush();
-                    $adminNotification->setUser($user);
-                    $entityManager->persist($adminNotification);
-                    $entityManager->flush();
-                        
-                    $this->addFlash('success', '*Profile Updated.');
-
-                    return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
                 } else {
-                    $entityManager->persist($user);
-                    $entityManager->flush();
-                    $this->addFlash('success', '*Profile Updated.');
-                    return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
+                $underInvestigation = $adminNotificationRepo->findOneBy(['user' => ($user)]);
+                if ($underInvestigation) {
+                    $entityManager->remove($underInvestigation);
                 }
-            }
+                $username = $form->get('userName')->getData();
+                if ($forbiddenWordService->isForbidden($username)) {
+                    $this->addFlash('error', '*Username contains forbidden words.');
+                } else {
+                    if ($forbiddenWordService->containsForbiddenWord($username)) {
+                        $adminNotification = new AdminNotification();
+                        $adminNotification->setCreatedAt(now());
+                        $adminNotification->setText("$username may have a forbidden word in their username. Please verify.");
+                        $adminNotification->setBlog(null);
+                        $adminNotification->setComment(null);
+                        $entityManager->persist($user);
+                        $entityManager->flush();
+                        $adminNotification->setUser($user);
+                        $entityManager->persist($adminNotification);
+                        $entityManager->flush();
+                        
+                        $this->addFlash('success', '*Profile Updated.');
+
+                        return $this->redirectToRoute('app_user_show', ['id' =>     $user->getId()], Response::HTTP_SEE_OTHER);
+                    } else {
+                        $entityManager->persist($user);
+                        $entityManager->flush();
+                        $this->addFlash('success', '*Profile Updated.');
+                        return $this->redirectToRoute('app_user_show', ['id' =>     $user->getId()], Response::HTTP_SEE_OTHER);
+                    }
+                }
+                }
+            } else {
+                $this->addFlash('warning', '*No changes detected.');
+                return $this->redirectToRoute('app_user_edit', ['id' => $user->getId()]);
         }}
 
         return $this->render('user/edit.html.twig', [

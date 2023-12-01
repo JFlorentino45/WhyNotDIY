@@ -16,7 +16,7 @@
             <p class="w-3/4 text-ellipsis overflow-hidden">{{ comment.getText()|nl2br|raw }}</p>
             {% if app.user == comment.getCreatedBy() %}
             <div class="flex flex-row">
-            <button><a class="font-sans block w-fit h-full bg-gray-600 text-gray-300 hover:bg-gray-500 hover:text-white rounded-md px-2.5 py-1 mt-1 text-sm font-medium" href="{{ path('app_comments_edit', {'id': comment.id}) }}">Edit</a></button>
+            <button><a class="font-sans block w-fit h-full bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white rounded-md px-2.5 py-1 mt-1 text-sm font-medium" href="{{ path('app_comments_edit', {'id': comment.id}) }}">Edit</a></button>
             {{ include('comments/_delete_form.html.twig') }}
             </div>
             {% endif %}</div>

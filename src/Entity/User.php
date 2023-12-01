@@ -121,4 +121,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     {
         return $this->userName;
     }
+
+    public function isModified(User $original): bool
+    {
+        return $original->getUsername() !== $this->getUsername()
+            || $original->getEmailAddress() !== $this->getEmailAddress();
+    }
 }

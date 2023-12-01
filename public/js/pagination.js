@@ -25,6 +25,9 @@ $(document).ready(function () {
       case "myBlogs":
         var url = "/blog/load-more-blogs";
         break;
+      case "userBlogs":
+        var url = "/blog/load-user-blogs/" + userid;
+        break;
     }
     $.get(url, { offset: offset }, function (response) {
       if (response.html.trim() != "") {

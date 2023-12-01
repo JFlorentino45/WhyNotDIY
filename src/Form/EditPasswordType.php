@@ -18,11 +18,11 @@ class EditPasswordType extends AbstractType
 
         $builder
             ->add('currentPassword', PasswordType::class, [
-                'label' => 'Current Password',
+                'label' => false,
                 'mapped' => false,
             ])
             ->add('plainPassword', PasswordType::class, [
-                'label' => 'Password',
+                'label' => false,
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter a password',
@@ -34,7 +34,7 @@ class EditPasswordType extends AbstractType
                     ]),
                 ],])
             ->add('confirmPassword', PasswordType::class, [
-                'label' => 'Confirm New Password',
+                'label' => false,
                 'mapped' => false,
             ])
         ;
