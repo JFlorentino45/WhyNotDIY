@@ -1,7 +1,13 @@
 {{ form_start(form) }}
     {{ form_row(form.title, {'attr': {'class': 'w-1/3 border rounded mt-2 mb-5 px-1 h-10', 'placeholder': 'Blog Title*'}}) }}
-    {{ form_row(form.videoUrl, {'attr': {'class': 'w-1/3 border rounded mt-2 mb-5 px-1 h-10', 'placeholder': 'Video URL*'}}) }}
-    {{ form_row(form.text, {'attr': {'class': 'h-80 w-full border rounded mt-2 mb-5 px-1', 'placeholder': 'Text*'}}) }}
+    {{ form_row(form.videoUrl, {'attr': {'class': 'w-1/3 border rounded mt-2 mb-5 px-1 h-10', 'placeholder': 'Video URL* Please copy just the embed code /embed/...'}}) }}
+    {{ form_row(form.text, {'attr': {'class': 'h-80 w-full border rounded mt-2 mb-5 px-1', 'placeholder': 'Text*
+Please follow this layout:
+Intro
+    
+Tools/Items needed
+    
+Step by step instuctions.'}}) }}
     <button class="btn font-sans block w-fit h-full bg-gray-600 text-gray-300 hover:bg-gray-500 hover:text-white rounded-md px-2.5 py-1 mt-1 mb-2 text-m font-medium">{{ button_label|default('Create Blog') }}</button>
     <button><a class="font-sans block w-full h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" href="{{ path('app_blog_index') }}">Back to Home</a></button>
 {{ form_end(form) }}

@@ -22,6 +22,9 @@ $(document).ready(function () {
       case "Ablogs":
         var url = "/admin/load-more-blogs";
         break;
+      case "myBlogs":
+        var url = "/blog/load-more-blogs";
+        break;
     }
     $.get(url, { offset: offset }, function (response) {
       if (response.html.trim() != "") {

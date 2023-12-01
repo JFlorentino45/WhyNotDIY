@@ -10,6 +10,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use function Symfony\Component\Clock\now;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class BlogType extends AbstractType
 {
@@ -43,7 +44,13 @@ class BlogType extends AbstractType
                 'label' => false
             ])
             ->add('videoUrl', null, [
-                'label' => false
+                'label' => false,
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^.{11}\?si=.{16}$/',
+                        'message' => 'The Video URL should match the format "***********?si=****************".',
+                    ]),
+                ],
             ])
             ->add('text', null, [
                 'label' => false

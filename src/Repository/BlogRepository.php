@@ -38,5 +38,28 @@ class BlogRepository extends ServiceEntityRepository
             ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
-    }    
+    }
+
+    public function findMyBlogsOrderedByLatest($user): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.createdBy = :user')
+            ->setParameter('user', $user)
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults(7)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findMoreMyBlogs($user, $offset): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.createdBy = :user')
+            ->setParameter('user', $user)
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults(5)
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult();
+    }
 }

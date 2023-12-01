@@ -15,6 +15,7 @@ use App\Service\ForbiddenWordService;
 use function Symfony\Component\Clock\now;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -82,8 +83,19 @@ class BlogController extends AbstractController
         $user = $security->getUser();
     
         return $this->render('blog/myBlogs.html.twig', [
-            'blogs' => $blogRepository->findBy(['createdBy' => ($user)]),
-        ]);
+            'blogs' => $blogRepository->findMyBlogsOrderedByLatest($user)]);
+    }
+
+    #[Route('/load-more-blogs', name: 'app_blog_more', methods: ['GET'])]
+    public function loadMoreMyBlogs(Request $request, BlogRepository $blogRepository, Security $security): JsonResponse
+    {
+        $user = $security->getUser();
+        $offset = $request->query->get('offset', 0);
+        $blogs = $blogRepository->findMoreMyBlogs($user, $offset);
+
+        $html = $this->renderView('blog/_blog_items.html.twig', ['blogs' => $blogs]);
+
+        return new JsonResponse(['html' => $html]);
     }
     
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET', 'POST'])]
