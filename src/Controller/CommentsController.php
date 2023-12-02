@@ -22,8 +22,10 @@ class CommentsController extends AbstractController
     public function edit(Request $request, Comments $comment, EntityManagerInterface $entityManager, ForbiddenWordService $forbiddenWordService, AdminNotificationRepository $adminNotificationRepo): Response
     {
         $user = $this->getUser();
-        if ($user !== $comment->getCreatedBy() && !$this->isGranted('ROLE_admin')) {
-            throw new AccessDeniedException();
+        if (!$this->isGranted('ROLE_admin')) {
+            if ($user !== $comment->getCreatedBy()) {
+                throw new AccessDeniedException();
+            }
         }
 
         $form = $this->createForm(CommentType::class, $comment);
@@ -80,6 +82,13 @@ class CommentsController extends AbstractController
     #[Route('/{id}', name: 'app_comments_delete', methods: ['POST'])]
     public function delete(Request $request, Comments $comment, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_admin')) {
+            if ($user !== $comment->getCreatedBy()) {
+                throw new AccessDeniedException();
+            }
+        }
+        
         if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
             $entityManager->remove($comment);
             $entityManager->flush();

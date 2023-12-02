@@ -25,9 +25,12 @@ class UserController extends AbstractController
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
-        if ($user !== $this->getUser()) {
-            throw new AccessDeniedException();
+        if (!$this->isGranted('ROLE_admin')) {
+            if ($user !== $this->getUser()) {
+                throw new AccessDeniedException();
+            }
         }
+        
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
@@ -36,6 +39,12 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, ForbiddenWordService $forbiddenWordService, AdminNotificationRepository $adminNotificationRepo, BlacklistService $blacklist): Response
     {
+        if (!$this->isGranted('ROLE_admin')) {
+            if ($user !== $this->getUser()) {
+                throw new AccessDeniedException();
+            }
+        }
+
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
         $oldData = clone $user;
@@ -68,12 +77,12 @@ class UserController extends AbstractController
                         
                         $this->addFlash('success', '*Profile Updated.');
 
-                        return $this->redirectToRoute('app_user_show', ['id' =>     $user->getId()], Response::HTTP_SEE_OTHER);
+                        return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
                     } else {
                         $entityManager->persist($user);
                         $entityManager->flush();
                         $this->addFlash('success', '*Profile Updated.');
-                        return $this->redirectToRoute('app_user_show', ['id' =>     $user->getId()], Response::HTTP_SEE_OTHER);
+                        return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
                     }
                 }
                 }
@@ -91,6 +100,12 @@ class UserController extends AbstractController
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $auth): Response
     {
+        if (!$this->isGranted('ROLE_admin')) {
+            if ($user !== $this->getUser()) {
+                throw new AccessDeniedException();
+            }
+        }
+
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();

@@ -82,7 +82,6 @@ class BlogController extends AbstractController
     public function myBlogs(Security $security, BlogRepository $blogRepository): Response
     {
         $user = $security->getUser();
-    
         return $this->render('blog/myBlogs.html.twig', [
             'blogs' => $blogRepository->findMyBlogsOrderedByLatest($user)]);
     }
@@ -112,15 +111,13 @@ class BlogController extends AbstractController
     }
 
     #[Route('/load-user-blogs/{id}', name: 'app_user_blogs_more', methods: ['GET'])]
-    public function loadUserBlogs(UserRepository $repo, Request $request, BlogRepository $blogRepository, $id): JsonResponse
+    public function loadUserBlogs(UserRepository $repo, Request $request, BlogRepository $blogRepository,int $id): JsonResponse
     {
-        dump('Controller is called');
         $user = $repo->find($id);
         $offset = $request->query->get('offset', 0);
         $blogs = $blogRepository->findMoreMyBlogs($user, $offset);
 
         $html = $this->renderView('blog/_userblog_items.html.twig', ['blogs' => $blogs]);
-        dump($html);
 
         return new JsonResponse(['html' => $html]);
     }
@@ -128,11 +125,6 @@ class BlogController extends AbstractController
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET', 'POST'])]
     public function show(Blog $blog, Request $request, EntityManagerInterface $entityManager, CommentsRepository $commentsRepository, ForbiddenWordService $forbiddenWordService): Response
     {
-        $user = $this->getUser();
-        if ($user === null) {
-            $this->addFlash('warning', '*You must be logged in.');
-            return $this->redirectToRoute('app_login');
-        } 
         
         $comment = new Comments();
         $commentForm = $this->createForm(CommentType::class, $comment);
@@ -183,8 +175,10 @@ class BlogController extends AbstractController
     public function edit(Request $request, Blog $blog, EntityManagerInterface $entityManager, AdminNotificationRepository $adminNotificationRepo, ForbiddenWordService $forbiddenWordService): Response
     {
         $user = $this->getUser();
-        if ($user !== $blog->getCreatedBy() && !$this->isGranted('ROLE_admin')) {
-            throw new AccessDeniedException();
+        if (!$this->isGranted('ROLE_admin')) {
+            if ($user !== $blog->getCreatedBy()) {
+                throw new AccessDeniedException();
+            }
         }
 
         $form = $this->createForm(BlogType::class, $blog);
@@ -250,37 +244,44 @@ class BlogController extends AbstractController
     public function like(Blog $blog, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-
         if ($user === null) {
             throw new AccessDeniedException();
         }
 
         if ($blog->isLikedByUser($user)) {
-        $like = $blog->getLikes()->filter(function (Likes $like) use ($user) {
+            $like = $blog->getLikes()->filter(function (Likes $like) use ($user) {
             return $like->getUserId() === $user;
-        })->first();
+            })->first();
         
-        $entityManager->remove($like);
-    } else {
-        $like = new Likes();
-        $like->setUserId($user);
-        $like->setBlogId($blog);
+            $entityManager->remove($like);
+        } else {
+            $like = new Likes();
+            $like->setUserId($user);
+            $like->setBlogId($blog);
         
-        $entityManager->persist($like);
-    }
+            $entityManager->persist($like);
+        }
     
-    $entityManager->flush();
-    
-    return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
+
     }
     
     #[Route('/{id}/delete', name: 'app_blog_delete', methods: ['POST'])]
     public function delete(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
     {
-    if ($this->isCsrfTokenValid('delete'.$blog->getId(), $request->request->get('_token'))) {
-        $entityManager->remove($blog);
-        $entityManager->flush();
-    }
+
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_admin')) {
+            if ($user !== $blog->getCreatedBy()) {
+                throw new AccessDeniedException();
+            }
+        }
+
+        if ($this->isCsrfTokenValid('delete'.$blog->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($blog);
+            $entityManager->flush();
+        }
 
     return $this->redirectToRoute('app_blog_mine', [], Response::HTTP_SEE_OTHER);
     }
