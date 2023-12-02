@@ -39,19 +39,26 @@ class BlogController extends AbstractController
             if ($forbiddenWordService->isForbidden($title) || $forbiddenWordService->isForbidden($text)) {
                 $this->addFlash('error', '*Blog contains forbidden words.');
             } else {
-                if ($forbiddenWordService->containsForbiddenWord($title) || $forbiddenWordService->containsForbiddenWord($text)) {
+                $serviceText = $forbiddenWordService->containsForbiddenWord($text);
+                $serviceTitle = $forbiddenWordService->containsForbiddenWord($title);
+
+                if ($serviceTitle['found'] || $serviceText['found']) {
                     $adminNotification = new AdminNotification();
                     $adminNotification->setCreatedAt(now());
                     $message = "";
-                    if ($forbiddenWordService->containsForbiddenWord($title) && $forbiddenWordService->containsForbiddenWord($text)) {
+                    if ($serviceTitle['found'] && $serviceText['found']) {
                         $message = "A blog's title and text may contain forbidden words. Please verity";
-                    } elseif ($forbiddenWordService->containsForbiddenWord($text)) {
+                        $word = $serviceTitle['word'] . '&' . $serviceText['word'];
+                    } elseif ($serviceText['found']) {
                         $message = "A blog's text may contain a forbidden word. Please verify.";
+                        $word = $serviceText['found'];
                     } else {
                         $message = "A blog title may contain a forbidden word. Please verify.";
+                        $word = $serviceTitle['found'];
                     }
                     $adminNotification->setText($message);
                     $adminNotification->setUser(null);
+                    $adminNotification->setWords($word);
                     $adminNotification->setComment(null);
                     
                     $entityManager->persist($blog);
@@ -135,11 +142,13 @@ class BlogController extends AbstractController
             if ($forbiddenWordService->isForbidden($text)) {
                 $this->addFlash('error', '*Comment contains forbidden words.');
             } else {
-                if ($forbiddenWordService->containsForbiddenWord($text)) {
+                $service = $forbiddenWordService->containsForbiddenWord($text);
+                if ($service['found']) {
                     $adminNotification = new AdminNotification();
                     $adminNotification->setCreatedAt(now());
                     $adminNotification->setText("A comment way contain a forbidden word. Please verify.");
                     $adminNotification->setUser(null);
+                    $adminNotification->setWords($service['word']);
                     $adminNotification->setBlog(null);
                     
                     $comment->setBlog($blog);
@@ -196,19 +205,25 @@ class BlogController extends AbstractController
                 if ($forbiddenWordService->isForbidden($title) || $forbiddenWordService->isForbidden($text)) {
                     $this->addFlash('error', '*Blog contains forbidden words.');
                 } else {
-                    if ($forbiddenWordService->containsForbiddenWord($title) || $forbiddenWordService->containsForbiddenWord($text)) {
+                    $serviceText = $forbiddenWordService->containsForbiddenWord($text);
+                    $serviceTitle = $forbiddenWordService->containsForbiddenWord($title);
+                    if ($serviceTitle['found'] || $serviceText['found']) {
                         $adminNotification = new AdminNotification();
                         $adminNotification->setCreatedAt(now());
                         $message = "";
-                        if ($forbiddenWordService->containsForbiddenWord($title) && $forbiddenWordService->containsForbiddenWord($text)) {
+                        if ($serviceTitle['found'] && $serviceText['found']) {
                             $message = "A blog's title and text may contain forbidden words. Please verity";
-                        } elseif ($forbiddenWordService->containsForbiddenWord($text)) {
+                            $word = $serviceTitle['word'] . '&' . $serviceText['word'];
+                        } elseif ($serviceText['found']) {
                             $message = "A blog's text may contain a forbidden word. Please verify.";
+                            $word = $serviceText['found'];
                         } else {
                             $message = "A blog title may contain a forbidden word. Please verify.";
+                            $word = $serviceTitle['found'];
                         }
                         $adminNotification->setText($message);
                         $adminNotification->setUser(null);
+                        $adminNotification->setWords($word);
                         $adminNotification->setComment(null);
                     
                         $entityManager->persist($blog);

@@ -12,6 +12,7 @@
                 <th>CreatedAt</th>
                 <th>Text</th>
                 <th>actions</th>
+                <th>Words</th>
             </tr>
         </thead>
         <tbody>
@@ -28,6 +29,7 @@
                 {% endif %}
                 {{ include('admin/notification_delete_form.html.twig') }}
                 </td>
+                <td>{{ admin_notification.words|join(', ')|raw }}</td>
             </tr>
         </tbody>
     </table>

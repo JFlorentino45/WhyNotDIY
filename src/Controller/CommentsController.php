@@ -42,12 +42,14 @@ class CommentsController extends AbstractController
             if ($forbiddenWordService->isForbidden($text)) {
                 $this->addFlash('error', '*Comment contains forbidden words.');
             } else {
-                if ($forbiddenWordService->containsForbiddenWord($text)) {
+                $service = $forbiddenWordService->containsForbiddenWord($text);
+                if ($service['found']) {
                     $adminNotification = new AdminNotification();
                     $adminNotification->setCreatedAt(now());
                     $adminNotification->setText("A comment may contain a forbidden word. Please verify.");
                     $adminNotification->setUser(null);
                     $adminNotification->setBlog(null);
+                    $adminNotification->setWords($service['word']);
                     
                     $entityManager->persist($comment);
                     $entityManager->flush();

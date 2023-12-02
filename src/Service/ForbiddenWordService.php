@@ -37,17 +37,21 @@ class ForbiddenWordService
         return false;
     }
 
-    public function containsForbiddenWord(string $text): bool
+    public function containsForbiddenWord(string $text): array
     {
         $forbiddenWords = $this->getForbiddenWords();
         $lowercaseWord = strtolower($text);
+        $foundWords = [];
 
         foreach ($forbiddenWords as $word) {
             if (strpos($lowercaseWord, $word) !== false) {
-                return true;
+                $foundWords[] = $word;
             }
         }
 
-        return false;
+        if (!empty($foundWords)) {
+        return ['found' => true, 'word' => $foundWords];
+        }
+        return ['found' => false, 'word' => null];
     }
 }

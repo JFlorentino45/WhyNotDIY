@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\AdminNotificationRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AdminNotificationRepository::class)]
@@ -30,6 +31,9 @@ class AdminNotification
     #[ORM\OneToOne]
     #[ORM\JoinColumn(nullable: true, onDelete: "CASCADE")]
     private ?Blog $blog = null;
+
+    #[ORM\Column(type: Types::JSON)]
+    private array $words = [];
 
     public function getId(): ?int
     {
@@ -92,6 +96,18 @@ class AdminNotification
     public function setBlog(?Blog $blog): static
     {
         $this->blog = $blog;
+
+        return $this;
+    }
+
+    public function getWords(): array
+    {
+        return $this->words;
+    }
+
+    public function setWords(array $words): static
+    {
+        $this->words = $words;
 
         return $this;
     }

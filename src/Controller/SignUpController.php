@@ -34,11 +34,13 @@ class SignUpController extends AbstractController
             if ($forbiddenWordService->isForbidden($username)) {
                 $this->addFlash('error', '*Username contains forbidden words.');
             } else {
-                if ($forbiddenWordService->containsForbiddenWord($username)) {
+                $service = $forbiddenWordService->containsForbiddenWord($username);
+                if ($service['found']) {
                     $adminNotification = new AdminNotification();
                     $adminNotification->setCreatedAt(now());
                     $adminNotification->setText("$username may have a forbidden word in their username. Please verify.");
                     $adminNotification->setBlog(null);
+                    $adminNotification->setWords($service['word']);
                     $adminNotification->setComment(null);
 
                     $password = $form->get('plainPassword')->getData();
