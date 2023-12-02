@@ -31,4 +31,15 @@ class HomeController extends AbstractController
 
         return new JsonResponse(['html' => $html]);
     }
+
+    #[Route('/search-blogs', name: 'search_blogs', methods: ['GET'])]
+    public function searchBlogs(Request $request, BlogRepository $blogRepository): JsonResponse
+    {
+        $searchTerm = $request->query->get('term');
+        $blogs = $blogRepository->searchBlogs($searchTerm);
+
+        $html = $this->renderView('home/_blog_items.html.twig', ['blogs' => $blogs]);
+
+        return new JsonResponse(['html' => $html]);
+    }
 }

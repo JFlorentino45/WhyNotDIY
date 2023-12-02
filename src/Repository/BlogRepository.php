@@ -62,4 +62,16 @@ class BlogRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function searchBlogs(string $term): array
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.title LIKE :term OR b.text LIKE :term')
+            ->setParameter('term', '%' . $term . '%')
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults(7)
+            ->setFirstResult(0)
+            ->getQuery()
+            ->getResult();
+    }
 }

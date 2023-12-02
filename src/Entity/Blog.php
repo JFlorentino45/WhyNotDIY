@@ -9,6 +9,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
+#[ORM\Table(indexes: [new ORM\Index(columns: ['title', 'text'], flags: ['fulltext'])])]
+
 class Blog
 {
     #[ORM\Id]

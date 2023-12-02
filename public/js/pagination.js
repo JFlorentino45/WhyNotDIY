@@ -13,6 +13,31 @@ $(document).ready(function () {
     }
   });
 
+  var debounceTimer;
+  $("#searchInput").on("keyup", function () {
+    clearTimeout(debounceTimer);
+    var $input = $(this);
+    debounceTimer = setTimeout(function () {
+      var searchTerm = $input.val();
+      if (searchTerm.length >= 0) {
+        searchBlogs(searchTerm);
+      }
+    }, 400);
+  });
+
+  function searchBlogs(searchTerm) {
+    $("#blog-container").empty();
+    offset = 0;
+
+    $.get("/search-blogs", { term: searchTerm }, function (response) {
+      if (response.html.trim() != "") {
+        $("#blog-container").append(response.html);
+      } else {
+        $("#pagination-loader").html("No matching blogs found.");
+      }
+    });
+  }
+
   function loadMoreBlogs() {
     $("#pagination-loader").html("Loading...");
     switch (page) {
