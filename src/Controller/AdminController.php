@@ -28,22 +28,48 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/admin')]
 class AdminController extends AbstractController
 {
+    private $blogRepository;
+    private $userRepository;
+    private $commentsRepository;
+    private $adminNotificationRepository;
+    private $forbiddenWordsRepository;
+    private $blacklistRepository;
+    private $entityManager;
+
+    public function __construct(
+        BlogRepository $blogRepository,
+        UserRepository $userRepository,
+        CommentsRepository $commentsRepository,
+        AdminNotificationRepository $adminNotificationRepository,
+        ForbiddenWordsRepository $forbiddenWordsRepository,
+        BlacklistRepository $blacklistRepository,
+        EntityManagerInterface $entityManager
+    ) {
+        $this->blogRepository = $blogRepository;
+        $this->userRepository = $userRepository;
+        $this->commentsRepository = $commentsRepository;
+        $this->adminNotificationRepository = $adminNotificationRepository;
+        $this->forbiddenWordsRepository = $forbiddenWordsRepository;
+        $this->blacklistRepository = $blacklistRepository;
+        $this->entityManager = $entityManager;
+    }
+
     #[Route('/blogs', name: 'app_admin_blogs', methods: ['GET'])]
-    public function getABlogs(BlogRepository $blogRepository): Response
+    public function getBlogsAdmin(): Response
     {
         $url = 'Ablogs';
 
         return $this->render('admin/blogs.html.twig', [
-            'blogs' => $blogRepository->findAllOrderedByLatest(),
+            'blogs' => $this->blogRepository->findAllOrderedByLatest(),
             'url' => $url,
         ]);
     }
 
     #[Route('/load-more-blogs', name: 'admin_more_blogs', methods: ['GET'])]
-    public function loadMoreBlogs(Request $request, BlogRepository $blogRepository): JsonResponse
+    public function loadMoreBlogs(Request $request): JsonResponse
     {
         $offset = $request->query->get('offset', 0);
-        $blogs = $blogRepository->findMoreBlogs($offset);
+        $blogs = $this->blogRepository->findMoreBlogs($offset);
 
         $html = $this->renderView('admin/_blog_items.html.twig', ['blogs' => $blogs]);
 
@@ -51,38 +77,38 @@ class AdminController extends AbstractController
     }
 
     #[Route('/blogs/{id}/delete', name: 'app_admin_blog_delete', methods: ['POST'])]
-    public function blogDelete(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
+    public function blogDeleteAdmin(Request $request, Blog $blog): Response
     {
     if ($this->isCsrfTokenValid('delete'.$blog->getId(), $request->request->get('_token'))) {
-        $entityManager->remove($blog);
-        $entityManager->flush();
+        $this->entityManager->remove($blog);
+        $this->entityManager->flush();
     }
 
     return $this->redirectToRoute('app_admin_blogs', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/users', name: 'app_admin_users', methods: ['GET'])]
-    public function getAUsers(UserRepository $userRepository): Response
+    public function getUsersAdmin(): Response
     {
         return $this->render('admin/users.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $this->userRepository->findAll(),
         ]);
     }
 
-    #[Route('/user-blogs/{id}', name: 'app_admin_userblogs')]
-    public function getUserBlogs($id, UserRepository $userRepository, BlogRepository $blogRepository): Response
+    #[Route('/user-blogs/{id}', name: 'app_admin_userblogs', methods: ['GET'])]
+    public function getUserBlogsAdmin(int $id): Response
     {
-        $user = $userRepository->find($id);
+        $user = $this->userRepository->find($id);
         return $this->render('admin/user_blogs.html.twig', [
-            'blogs' => $blogRepository->findBy(['createdBy' => $id]),
+            'blogs' => $this->blogRepository->findBy(['createdBy' => $id]),
             'userName' => $user->getUsername(),
         ]);
     }
 
-    #[Route('/password/{id}', name: 'app_admin_password')]
-    public function changePassword($id, UserRepository $userRepository, Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
+    #[Route('/password/{id}', name: 'app_admin_password', methods: ['GET', 'POST'])]
+    public function changePasswordAdmin(int $id, Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $user = $userRepository->find($id);
+        $user = $this->userRepository->find($id);
 
         $form = $this->createForm(EditPasswordType::class);
         $form->remove('currentPassword');
@@ -96,8 +122,8 @@ class AdminController extends AbstractController
             } else {
             $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
             $user->setPasswordHash($hashedPassword);
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
 
             $this->addFlash('success', '*Password updated successfully');
 
@@ -110,15 +136,15 @@ class AdminController extends AbstractController
     }
 
     #[Route('/comments', name: 'app_admin_comments', methods: ['GET'])]
-    public function getComments(CommentsRepository $commentsRepository): Response
+    public function getCommentsAdmin(): Response
     {
         return $this->render('admin/comments.html.twig', [
-            'comments' => $commentsRepository->findAll(),
+            'comments' => $this->commentsRepository->findAll(),
         ]);
     }
 
     #[Route('/comments/{id}', name: 'app_admin_comment', methods: ['GET'])]
-    public function commentShow(Comments $comment): Response
+    public function commentShowAdmin(Comments $comment): Response
     {
         return $this->render('admin/comment.html.twig', [
             'comment' => $comment,
@@ -126,56 +152,56 @@ class AdminController extends AbstractController
     }
 
     #[Route('/comments/{id}/delete', name: 'app_admin_comments_delete', methods: ['POST'])]
-    public function commentDelete(Request $request, Comments $comment, EntityManagerInterface $entityManager): Response
+    public function commentDeleteAdmin(Request $request, Comments $comment): Response
     {
         if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($comment);
-            $entityManager->flush();
+            $this->entityManager->remove($comment);
+            $this->entityManager->flush();
         }
 
         return $this->redirectToRoute('app_admin_comments', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/notifications', name: 'app_admin_notifications', methods: ['GET'])]
-    public function notifications(AdminNotificationRepository $adminNotificationRepository): Response
+    public function notificationShowAdmin(): Response
     {
         return $this->render('admin/notifications.html.twig', [
-            'admin_notifications' => $adminNotificationRepository->findAll(),
+            'admin_notifications' => $this->adminNotificationRepository->findAll(),
         ]);
     }
 
     #[Route('/notification/{id}/delete', name: 'app_admin_notifications_delete', methods: ['POST'])]
-    public function notificationDelete(Request $request, AdminNotification $adminNotification, EntityManagerInterface $entityManager): Response
+    public function notificationDeleteAdmin(Request $request, AdminNotification $adminNotification): Response
     {
         if ($this->isCsrfTokenValid('delete'.$adminNotification->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($adminNotification);
-            $entityManager->flush();
+            $this->entityManager->remove($adminNotification);
+            $this->entityManager->flush();
         }
 
         return $this->redirectToRoute('app_admin_notifications', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/forbidden', name: 'app_admin_forbidden_words', methods: ['GET'])]
-    public function forbiddenWords(ForbiddenWordsRepository $forbiddenWordsRepository): Response
+    public function forbiddenWordsShowAdmin(): Response
     {
         return $this->render('admin/forbidden.html.twig', [
-            'forbidden_words' => $forbiddenWordsRepository->findAll(),
+            'forbidden_words' => $this->forbiddenWordsRepository->findAll(),
         ]);
     }
 
     #[Route('/forbidden/{id}/delete', name: 'app_admin_forbidden_delete', methods: ['POST'])]
-    public function forbiddenDelete(Request $request, ForbiddenWords $forbiddenWord, EntityManagerInterface $entityManager): Response
+    public function forbiddenWordsDeleteAdmin(Request $request, ForbiddenWords $forbiddenWord): Response
     {
         if ($this->isCsrfTokenValid('delete'.$forbiddenWord->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($forbiddenWord);
-            $entityManager->flush();
+            $this->entityManager->remove($forbiddenWord);
+            $this->entityManager->flush();
         }
 
         return $this->redirectToRoute('app_admin_forbidden_words', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/forbidden/new', name: 'app_admin_forbidden_new', methods: ['GET', 'POST'])]
-    public function forbiddenNew(Request $request, EntityManagerInterface $entityManager): Response
+    public function forbiddenWordsNewAdmin(Request $request): Response
     {
         $forbiddenWord = new ForbiddenWords();
         $form = $this->createForm(ForbiddenWordsType::class, $forbiddenWord);
@@ -187,16 +213,16 @@ class AdminController extends AbstractController
             foreach ($words as $word) {
                 $word = trim($word);
                 if ($word !== '') {
-                    $existingWord = $entityManager->getRepository(ForbiddenWords::class)->findOneBy(['words' => $word]);
+                    $existingWord = $this->entityManager->getRepository(ForbiddenWords::class)->findOneBy(['words' => $word]);
                     if (!$existingWord) {
                     $forbiddenWordClone = clone $forbiddenWord;
                     $forbiddenWordClone->setWords($word);
-                    $entityManager->persist($forbiddenWordClone);
+                    $this->entityManager->persist($forbiddenWordClone);
                     }
                 }
             }
 
-            $entityManager->flush();
+            $this->entityManager->flush();
 
             return $this->redirectToRoute('app_admin_forbidden_words', [], Response::HTTP_SEE_OTHER);
         }
@@ -208,15 +234,15 @@ class AdminController extends AbstractController
     }
 
     #[Route('/blacklist', name: 'app_admin_blacklist', methods: ['GET'])]
-    public function blacklist(BlacklistRepository $blacklistRepository): Response
+    public function blacklistShowAdmin(): Response
     {
         return $this->render('admin/blacklist.html.twig', [
-            'blacklists' => $blacklistRepository->findAll(),
+            'blacklists' => $this->blacklistRepository->findAll(),
         ]);
     }
 
     #[Route('/blacklist/new', name: 'app_admin_blacklist_new', methods: ['GET', 'POST'])]
-    public function blacklistNew(Request $request, EntityManagerInterface $entityManager): Response
+    public function blacklistNewAdmin(Request $request): Response
     {
         $blacklist = new Blacklist();
         $form = $this->createForm(BlacklistType::class, $blacklist);
@@ -228,15 +254,15 @@ class AdminController extends AbstractController
             foreach ($emails as $email) {
                 $email = trim($email);
                 if ($email !== '') {
-                    $existingWord = $entityManager->getRepository(Blacklist::class)->findOneBy(['emailAddress' => $email]);
+                    $existingWord = $this->entityManager->getRepository(Blacklist::class)->findOneBy(['emailAddress' => $email]);
                     if (!$existingWord) {
                     $emailClone = clone $blacklist;
                     $emailClone->setEmailAddress($email);
-                    $entityManager->persist($emailClone);
+                    $this->entityManager->persist($emailClone);
                     }
                 }
             }
-            $entityManager->flush();
+            $this->entityManager->flush();
 
             return $this->redirectToRoute('app_admin_blacklist', [], Response::HTTP_SEE_OTHER);
         }
@@ -248,11 +274,11 @@ class AdminController extends AbstractController
     }
 
     #[Route('/blacklist/{id}/delete', name: 'app_admin_blacklist_delete', methods: ['POST'])]
-    public function delete(Request $request, Blacklist $blacklist, EntityManagerInterface $entityManager): Response
+    public function blacklistDeleteAdmin(Request $request, Blacklist $blacklist): Response
     {
         if ($this->isCsrfTokenValid('delete'.$blacklist->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($blacklist);
-            $entityManager->flush();
+            $this->entityManager->remove($blacklist);
+            $this->entityManager->flush();
         }
 
         return $this->redirectToRoute('app_admin_blacklist', [], Response::HTTP_SEE_OTHER);

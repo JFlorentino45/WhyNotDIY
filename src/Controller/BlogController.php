@@ -26,8 +26,33 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/blog')]
 class BlogController extends AbstractController
 {
+
+    private $blogRepository;
+    private $userRepository;
+    private $commentsRepository;
+    private $adminNotificationRepository;
+    private $forbiddenWordService;
+    private $blacklistRepository;
+    private $entityManager;
+
+    public function __construct(
+        BlogRepository $blogRepository,
+        UserRepository $userRepository,
+        CommentsRepository $commentsRepository,
+        AdminNotificationRepository $adminNotificationRepository,
+        ForbiddenWordService $forbiddenWordService,
+        EntityManagerInterface $entityManager
+    ) {
+        $this->blogRepository = $blogRepository;
+        $this->userRepository = $userRepository;
+        $this->commentsRepository = $commentsRepository;
+        $this->adminNotificationRepository = $adminNotificationRepository;
+        $this->forbiddenWordService = $forbiddenWordService;
+        $this->entityManager = $entityManager;
+    }
+
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, ForbiddenWordService $forbiddenWordService): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $blog = new Blog();
         $form = $this->createForm(BlogType::class, $blog);
@@ -36,11 +61,11 @@ class BlogController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $title = $form->get('title')->getData();
             $text = $form->get('text')->getData();
-            if ($forbiddenWordService->isForbidden($title) || $forbiddenWordService->isForbidden($text)) {
+            if ($this->forbiddenWordService->isForbidden($title) || $this->forbiddenWordService->isForbidden($text)) {
                 $this->addFlash('error', '*Blog contains forbidden words.');
             } else {
-                $serviceText = $forbiddenWordService->containsForbiddenWord($text);
-                $serviceTitle = $forbiddenWordService->containsForbiddenWord($title);
+                $serviceText = $this->forbiddenWordService->containsForbiddenWord($text);
+                $serviceTitle = $this->forbiddenWordService->containsForbiddenWord($title);
 
                 if ($serviceTitle['found'] || $serviceText['found']) {
                     $adminNotification = new AdminNotification();
