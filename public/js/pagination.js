@@ -25,27 +25,6 @@ $(document).ready(function () {
     }, 400);
   });
 
-  $("#categoryFilter").change(function () {
-    var selectedCategory = $(this).val();
-    var searchTerm = $("#searchInput").val();
-
-    filterBlogs(selectedCategory, searchTerm);
-  });
-
-  function filterBlogs(category, searchTerm) {
-    $("#blog-container").empty();
-    offset = 0;
-
-    var url = "/filter-blogs";
-    $.get(url, { category: category, term: searchTerm }, function (response) {
-      if (response.html.trim() != "") {
-        $("#blog-container").append(response.html);
-      } else {
-        $("#pagination-loader").html("No matching blogs found.");
-      }
-    });
-  }
-
   function searchBlogs(searchTerm) {
     $("#blog-container").empty();
     offset = 0;
@@ -58,6 +37,42 @@ $(document).ready(function () {
       }
     });
   }
+
+  var debounceTimer;
+  $("#searchCatInput").on("keyup", function () {
+    clearTimeout(debounceTimer);
+    var $input = $(this);
+    debounceTimer = setTimeout(function () {
+      var searchTerm = $input.val();
+      if (searchTerm.length >= 0) {
+        searchCatBlogs(searchTerm);
+      }
+    }, 400);
+  });
+
+  function searchCatBlogs(searchTerm) {
+    $("#blog-container").empty();
+    offset = 0;
+
+    $.get(
+      "/categories/search-blogs/" + $("#id").data("id"),
+      { term: searchTerm },
+      function (response) {
+        if (response.html.trim() != "") {
+          $("#blog-container").append(response.html);
+        } else {
+          $("#pagination-loader").html("No matching blogs found.");
+        }
+      }
+    );
+  }
+
+  $("#categoryFilter").on("change", function () {
+    var selectedCategoryId = $(this).val();
+    if (selectedCategoryId) {
+      window.location.href = "/categories/blogs/" + selectedCategoryId;
+    }
+  });
 
   function loadMoreBlogs() {
     $("#pagination-loader").html("Loading...");
@@ -73,6 +88,9 @@ $(document).ready(function () {
         break;
       case "userBlogs":
         var loadUrl = "/blog/load-user-blogs/" + $("#user").data("user");
+        break;
+      case "catBlogs":
+        var loadUrl = "/categories/load-blogs/" + $("#id").data("id");
         break;
     }
     $.get(loadUrl, { offset: offset }, function (response) {

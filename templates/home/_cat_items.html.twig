@@ -1,21 +1,4 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}WhyNotDIY{% endblock %}
-
-{% block body %}
-<main>
-<section>
-<div class="flex flex-col bg-white bg-opacity-60 w-fit px-6 rounded-md mx-auto">
-    <p class="text-4xl mx-auto mt-2">Latest Blogs</p><select id="categoryFilter" class="border rounded ml-2 px-1 my-3">
-        <option value="" selected>View Categories...</option>
-        {% for category in categories %}
-            <option value={{ category.id }}>{{ category.getCategory() }}</option>
-        {% endfor %}
-    </select>
-    <input type="text" class="border rounded ml-2 px-1 my-3" id="searchInput" placeholder="Search blogs...">
-    
-    <div id="blog-container">
-        {% for blog in blogs %}
+{% for blog in blogs %}
             <div class="flex-col blog-item py-4 bg-gray-400 bg-opacity-40 rounded-md mb-6 px-2">
                 <p class="text-2xl ml-2">{{ blog.title }}</p>
                 <p class=" text-s ml-2">{{ blog.createdAt|date('d-M-Y H:i') }} By: <a href='{{ path('app_blog_user', {'id': blog.createdBy.id}) }}'>{{ blog.createdBy }}</a></p>
@@ -28,10 +11,3 @@
                 {% endif %}
             </div>
         {% endfor %}
-    </div>
-    <div id="pagination-loader" data-offset="7"></div>
-    <div id="url" data-url="{{ url }}" style="display: none;"></div>
-</div>
-</section>
-</main>
-{% endblock %}

@@ -48,16 +48,4 @@ class HomeController extends AbstractController
 
         return new JsonResponse(['html' => $html]);
     }
-
-    #[Route('/filter-blogs', name: 'filter_blogs', methods: ['GET'])]
-    public function filterBlogs(Request $request, BlogRepository $blogRepository): JsonResponse
-    {
-        $category = $request->query->get('category');
-        $searchTerm = $request->query->get('term');
-        $blogs = $blogRepository->filterBlogs($category, $searchTerm);
-
-        $html = $this->renderView('home/_blog_items.html.twig', ['blogs' => $blogs]);
-
-        return new JsonResponse(['html' => $html]);
-    }
 }

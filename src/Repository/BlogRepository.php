@@ -75,23 +75,40 @@ class BlogRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function filterBlogs($category, $term): array
+    public function searchCatBlogs(string $term, int $id): array
     {
-        $qb = $this->createQueryBuilder('b')
+        return $this->createQueryBuilder('b')
+            ->where('b.title LIKE :term OR b.text LIKE :term')
+            ->andWhere('b.category = :id')
+            ->setParameter('id', $id)
+            ->setParameter('term', '%' . $term . '%')
             ->orderBy('b.createdAt', 'DESC')
             ->setMaxResults(7)
-            ->setFirstResult(0);
+            ->setFirstResult(0)
+            ->getQuery()
+            ->getResult();
+    }
 
-        if (!empty($category)) {
-            $qb->andWhere('b.category = :category')
-                ->setParameter('category', $category);
-        }
+    public function findCategoryOrderedByLatest(int $id): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.category = :id')
+            ->setParameter('id', $id)
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults(7)
+            ->getQuery()
+            ->getResult();
+    }
 
-        if (!empty($term)) {
-            $qb->andWhere('b.title LIKE :term OR b.text LIKE :term')
-                ->setParameter('term', '%' . $term . '%');
-        }
-
-        return $qb->getQuery()->getResult();
+    public function findMoreCategoryBlogs(int $offset, int $id): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.category = :id')
+            ->setParameter('id', $id)
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults(5)
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult();
     }
 }
