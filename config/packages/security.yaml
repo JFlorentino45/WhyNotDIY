@@ -20,9 +20,6 @@ security:
       provider: app_user_provider
       login_throttling:
         max_attempts: 3
-      # form_login:
-      #     login_path: login
-      #     check_path: login
       logout:
         path: logout
         target: home
