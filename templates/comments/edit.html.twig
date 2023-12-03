@@ -8,9 +8,8 @@
     <div class="w-full">
     {{ include('comments/_form.html.twig', {'button_label': 'Save'}) }}
     </div>
-    <a href="{{ path('app_blog_show', {'id': comment.blog.id}) }}">Back to blog</a>
-
     {{ include('comments/_delete_form.html.twig') }}
+    <button><a class="font-sans block w-fit h-full bg-gray-600 text-gray-300 hover:bg-gray-500 hover:text-white rounded-md px-2.5 py-1 mt-1 mb-2 text-m font-medium"href="{{ path('app_blog_show', {'id': comment.blog.id}) }}">Back to blog</a></button>
 </div>
 
 {% endblock %}

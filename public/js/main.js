@@ -38,11 +38,11 @@ $(document).ready(function () {
     });
   }
 
-  var debounceTimer;
+  var catSearchdebounceTimer;
   $("#searchCatInput").on("keyup", function () {
-    clearTimeout(debounceTimer);
+    clearTimeout(catSearchdebounceTimer);
     var $input = $(this);
-    debounceTimer = setTimeout(function () {
+    catSearchdebounceTimer = setTimeout(function () {
       var searchTerm = $input.val();
       if (searchTerm.length >= 0) {
         searchCatBlogs(searchTerm);
@@ -76,31 +76,38 @@ $(document).ready(function () {
 
   function loadMoreBlogs() {
     $("#pagination-loader").html("Loading...");
+    var baseUrl;
     switch ($("#url").data("url")) {
       case "home":
-        var loadUrl = "/load-more-blogs";
+        var baseUrl = "/load-more-blogs";
         break;
       case "Ablogs":
-        var loadUrl = "/admin/load-more-blogs";
+        var baseUrl = "/admin/load-more-blogs";
         break;
       case "myBlogs":
-        var loadUrl = "/blog/load-more-blogs";
+        var baseUrl = "/blog/load-more-blogs";
         break;
       case "userBlogs":
-        var loadUrl = "/blog/load-user-blogs/" + $("#user").data("user");
+        var baseUrl = "/blog/load-user-blogs/" + $("#user").data("user");
         break;
       case "catBlogs":
-        var loadUrl = "/categories/load-blogs/" + $("#id").data("id");
+        var baseUrl = "/categories/load-blogs/" + $("#id").data("id");
         break;
     }
-    $.get(loadUrl, { offset: offset }, function (response) {
-      if (response.html.trim() != "") {
-        $("#blog-container").append(response.html);
-        offset += 5;
-        loading = false;
-      } else {
-        $("#pagination-loader").html("No more blogs to load.");
-      }
-    });
+    var loadUrl = baseUrl + "?offset=" + offset;
+    $.get(loadUrl)
+      .done(function (response) {
+        if (response.html.trim() !== "") {
+          $("#blog-container").append(response.html);
+          offset += 5;
+          loading = false;
+        } else {
+          $("#pagination-loader").html("No more blogs to load.");
+        }
+      })
+      .fail(function (error) {
+        console.error("Error loading blogs:", error);
+        $("#pagination-loader").html("An error occurred while loading blogs.");
+      });
   }
 });
