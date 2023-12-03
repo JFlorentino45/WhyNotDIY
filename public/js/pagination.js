@@ -25,6 +25,27 @@ $(document).ready(function () {
     }, 400);
   });
 
+  $("#categoryFilter").change(function () {
+    var selectedCategory = $(this).val();
+    var searchTerm = $("#searchInput").val();
+
+    filterBlogs(selectedCategory, searchTerm);
+  });
+
+  function filterBlogs(category, searchTerm) {
+    $("#blog-container").empty();
+    offset = 0;
+
+    var url = "/filter-blogs";
+    $.get(url, { category: category, term: searchTerm }, function (response) {
+      if (response.html.trim() != "") {
+        $("#blog-container").append(response.html);
+      } else {
+        $("#pagination-loader").html("No matching blogs found.");
+      }
+    });
+  }
+
   function searchBlogs(searchTerm) {
     $("#blog-container").empty();
     offset = 0;

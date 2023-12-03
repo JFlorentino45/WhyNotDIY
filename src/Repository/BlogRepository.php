@@ -74,4 +74,24 @@ class BlogRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function filterBlogs($category, $term): array
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults(7)
+            ->setFirstResult(0);
+
+        if (!empty($category)) {
+            $qb->andWhere('b.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        if (!empty($term)) {
+            $qb->andWhere('b.title LIKE :term OR b.text LIKE :term')
+                ->setParameter('term', '%' . $term . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

@@ -47,6 +47,10 @@ class Blog
     #[ORM\OneToMany(mappedBy: 'blog', targetEntity: Comments::class, cascade: ['persist', 'remove'])]
     private Collection $comments;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categories $category = null;
+
     public function __construct()
     {
         $this->likes = new ArrayCollection();
@@ -203,5 +207,17 @@ class Blog
     public function getComments(): Collection
     {
         return $this->comments;
+    }
+
+    public function getCategory(): ?Categories
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Categories $category): static
+    {
+        $this->category = $category;
+
+        return $this;
     }
 }
