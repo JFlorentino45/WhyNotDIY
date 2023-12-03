@@ -18,10 +18,8 @@
         {% endfor %}
     </div>
     <div id="pagination-loader" data-offset="7"></div>
+    <div id="url" data-url="{{ url }}" style="display: none;"></div>
+    <div id="user" data-user="{{ user }}" style="display: none;"></div>
 </section>
 </main>
-<script>
-    var page = 'userBlogs';
-    var userid = {{user}};
-</script>
 {% endblock %}

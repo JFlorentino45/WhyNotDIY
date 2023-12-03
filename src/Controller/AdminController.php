@@ -31,8 +31,11 @@ class AdminController extends AbstractController
     #[Route('/blogs', name: 'app_admin_blogs', methods: ['GET'])]
     public function getABlogs(BlogRepository $blogRepository): Response
     {
+        $url = 'Ablogs';
+
         return $this->render('admin/blogs.html.twig', [
             'blogs' => $blogRepository->findAllOrderedByLatest(),
+            'url' => $url,
         ]);
     }
 

@@ -1,9 +1,5 @@
 Style
 
-paganation (fix youtube sizing and options for admin)
-
-Search
-
 category
 
 forgotten pw

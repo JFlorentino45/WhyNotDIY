@@ -40,21 +40,21 @@ $(document).ready(function () {
 
   function loadMoreBlogs() {
     $("#pagination-loader").html("Loading...");
-    switch (page) {
+    switch ($("#url").data("url")) {
       case "home":
-        var url = "/load-more-blogs";
+        var loadUrl = "/load-more-blogs";
         break;
       case "Ablogs":
-        var url = "/admin/load-more-blogs";
+        var loadUrl = "/admin/load-more-blogs";
         break;
       case "myBlogs":
-        var url = "/blog/load-more-blogs";
+        var loadUrl = "/blog/load-more-blogs";
         break;
       case "userBlogs":
-        var url = "/blog/load-user-blogs/" + userid;
+        var loadUrl = "/blog/load-user-blogs/" + $("#user").data("user");
         break;
     }
-    $.get(url, { offset: offset }, function (response) {
+    $.get(loadUrl, { offset: offset }, function (response) {
       if (response.html.trim() != "") {
         $("#blog-container").append(response.html);
         offset += 5;

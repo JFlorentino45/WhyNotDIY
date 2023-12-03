@@ -16,8 +16,11 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_blog_index', methods: ['GET'])]
     public function index(BlogRepository $blogRepository): Response
     {
+        $url = 'home';
+
         return $this->render('home/index.html.twig', [
             'blogs' => $blogRepository->findAllOrderedByLatest(),
+            'url' => $url,
         ]);
     }
 

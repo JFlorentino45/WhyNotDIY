@@ -89,8 +89,12 @@ class BlogController extends AbstractController
     public function myBlogs(Security $security, BlogRepository $blogRepository): Response
     {
         $user = $security->getUser();
+        $url = 'myBlogs';
+
         return $this->render('blog/myBlogs.html.twig', [
-            'blogs' => $blogRepository->findMyBlogsOrderedByLatest($user)]);
+            'blogs' => $blogRepository->findMyBlogsOrderedByLatest($user),
+            'url' => $url,
+        ]);
     }
 
     #[Route('/load-more-blogs', name: 'app_blog_more', methods: ['GET'])]
@@ -110,11 +114,14 @@ class BlogController extends AbstractController
     {
         $user = $repo->find($id);
         $userName = $user->getUserName();
+        $url = 'userBlogs';
     
         return $this->render('blog/userBlogs.html.twig', [
             'blogs' => $blogRepository->findMyBlogsOrderedByLatest($user),
             'username' => $userName,
-            'user' => $id]);
+            'url' => $url,
+            'user' => $id,
+        ]);
     }
 
     #[Route('/load-user-blogs/{id}', name: 'app_user_blogs_more', methods: ['GET'])]
