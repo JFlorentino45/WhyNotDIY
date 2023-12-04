@@ -1,0 +1,6 @@
+{{ form_start(form) }}
+    {{ form_row(form.userName, {'attr': {'class': 'border rounded w-full my-2 px-1'}}) }}
+    {{ form_row(form.emailAddress, {'attr': {'class': 'border w-full rounded my-2 px-1'}}) }}
+    {{ form_row(form.role, {'attr': {'class': 'border w-full rounded my-2 px-1'}}) }}
+    <button class="btn inline-block rounded bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white mt-6 px-3 pb-1.5 pt-1.5 font-sans">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

@@ -22,7 +22,7 @@
                 <td>{{ user.role }}</td>
                 <td>
                     <a href="{{ path('app_admin_userblogs', {'id': user.id}) }}">Blogs</a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">Profile</a>
+                    <a href="{{ path('app_admin_user_edit', {'id': user.id}) }}">Profile</a>
                     <a href="{{ path('app_admin_password', {'id': user.id}) }}">Password</a>
                 </td>
             </tr>

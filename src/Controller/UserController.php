@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/user')]
@@ -26,7 +25,6 @@ class UserController extends AbstractController
     private $entityManager;
     private $adminNotificationRepository;
     private $tokenStorage;
-    private $auth;
 
     public function __construct(
         ForbiddenWordService $forbiddenWordService,
@@ -34,14 +32,12 @@ class UserController extends AbstractController
         BlacklistService $blacklistService,
         AdminNotificationRepository $adminNotificationRepository,
         TokenStorageInterface $tokenStorage,
-        AuthorizationCheckerInterface $auth,
     ) {
         $this->forbiddenWordService = $forbiddenWordService;
         $this->entityManager = $entityManager;
         $this->blacklistService = $blacklistService;
         $this->adminNotificationRepository = $adminNotificationRepository;
         $this->tokenStorage = $tokenStorage;
-        $this->auth = $auth;
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
@@ -68,6 +64,7 @@ class UserController extends AbstractController
         }
 
         $form = $this->createForm(UserType::class, $user);
+        $form->remove('role');
         $form->handleRequest($request);
         $oldData = clone $user;
 
@@ -135,7 +132,7 @@ class UserController extends AbstractController
             $this->entityManager->flush();
         }
 
-        if ($this->auth->isGranted('ROLE_admin')) {
+        if ($this->isGranted('ROLE_admin')) {
             return $this->redirectToRoute('app_admin_users', [], Response::HTTP_SEE_OTHER);
         } else {
             $this->tokenStorage->setToken(null);

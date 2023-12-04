@@ -151,12 +151,14 @@ class Blog
     {
         return $original->getTitle() !== $this->getTitle()
             || $original->getVideoUrl() !== $this->getVideoUrl()
-            || $original->getText() !== $this->getText();
+            || $original->getText() !== $this->getText()
+            || $original->getCategory() !== $this->getCategory();
     }
 
     /**
      * @return Collection<int, Likes>
      */
+
     public function getLikes(): Collection
     {
         return $this->likes;

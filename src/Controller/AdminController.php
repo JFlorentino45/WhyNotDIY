@@ -6,7 +6,9 @@ use App\Entity\Comments;
 use App\Entity\ForbiddenWords;
 use App\Entity\Blacklist;
 use App\Entity\Blog;
+use App\Entity\User;
 use App\Entity\AdminNotification;
+use App\Form\UserType;
 use App\Form\BlacklistType;
 use App\Form\EditPasswordType;
 use App\Repository\ForbiddenWordsRepository;
@@ -16,6 +18,8 @@ use App\Repository\BlacklistRepository;
 use App\Repository\UserRepository;
 use App\Repository\BlogRepository;
 use App\Form\ForbiddenWordsType;
+use App\Service\BlacklistService;
+
 use function Symfony\Component\Clock\now;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +34,7 @@ class AdminController extends AbstractController
 {
     private $blogRepository;
     private $userRepository;
+    private $blacklistService;
     private $commentsRepository;
     private $adminNotificationRepository;
     private $forbiddenWordsRepository;
@@ -39,6 +44,7 @@ class AdminController extends AbstractController
     public function __construct(
         BlogRepository $blogRepository,
         UserRepository $userRepository,
+        BlacklistService $blacklistService,
         CommentsRepository $commentsRepository,
         AdminNotificationRepository $adminNotificationRepository,
         ForbiddenWordsRepository $forbiddenWordsRepository,
@@ -47,6 +53,7 @@ class AdminController extends AbstractController
     ) {
         $this->blogRepository = $blogRepository;
         $this->userRepository = $userRepository;
+        $this->blacklistService = $blacklistService;
         $this->commentsRepository = $commentsRepository;
         $this->adminNotificationRepository = $adminNotificationRepository;
         $this->forbiddenWordsRepository = $forbiddenWordsRepository;
@@ -282,6 +289,32 @@ class AdminController extends AbstractController
         }
 
         return $this->redirectToRoute('app_admin_blacklist', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/user/{id}/edit', name: 'app_admin_user_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, User $user): Response
+    {
+
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $email = $form->get('emailAddress')->getData();
+            if ($this->blacklistService->isBanned($email)) {
+            $this->addFlash('error', '*This E-mail is banned.');
+            } else {
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
+                $this->addFlash('success', '*Profile Updated.');
+                return $this->redirectToRoute('app_admin_users', [], Response::HTTP_SEE_OTHER);
+            }
+
+        }
+
+        return $this->render('admin/user_edit.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
     }
 }
 

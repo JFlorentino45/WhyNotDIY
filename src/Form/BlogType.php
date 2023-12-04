@@ -43,6 +43,10 @@ class BlogType extends AbstractType
             ->add('title', null, [
                 'label' => false
             ])
+            ->add('category', null, [
+                'label' => false,
+                'placeholder' => 'Select a Category',
+            ])
             ->add('videoUrl', null, [
                 'label' => false,
                 'constraints' => [
