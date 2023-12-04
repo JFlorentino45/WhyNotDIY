@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ErrorController extends AbstractController
 {
-    #[Route('/access-denied', name: 'access_denied')]
+    #[Route('/access-denied', name: 'access_denied', methods:['POST'])]
     public function error403(): Response
     {
         return $this->render('error/access_denied.html.twig', [], new Response('', 403));

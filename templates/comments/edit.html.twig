@@ -4,11 +4,13 @@
 
 {% block body %}
 <div class="flex flex-col justify-center container mx-auto w-1/4 h-fit my-6 mh-auto p-8 bg-gray-200 rounded-md">
-    <p class="text-center text-2xl font-semibold mb-2">Edit Comments</p>
+    <p class="text-center text-2xl font-semibold mb-6">Edit Comments</p>
     <div class="w-full">
     {{ include('comments/_form.html.twig', {'button_label': 'Save'}) }}
     </div>
+    <div class="w-fit h-full bg-red-600 text-gray-200 hover:bg-red-500 hover:text-white rounded-md px-2.5 py-1 mt-1 text-sm font-medium">
     {{ include('comments/_delete_form.html.twig') }}
+    </div>
     <button><a class="font-sans block w-fit h-full bg-gray-600 text-gray-300 hover:bg-gray-500 hover:text-white rounded-md px-2.5 py-1 mt-1 mb-2 text-m font-medium"href="{{ path('app_blog_show', {'id': comment.blog.id}) }}">Back to blog</a></button>
 </div>
 

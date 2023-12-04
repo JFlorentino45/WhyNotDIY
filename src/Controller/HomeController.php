@@ -14,24 +14,36 @@ use App\Repository\CategoriesRepository;
 
 class HomeController extends AbstractController
 {
+    private $blogRepository;
+    private $categoryRepository;
+
+    public function __construct(
+        BlogRepository $blogRepository,
+        CategoriesRepository $categoryRepository
+    ) {
+        $this->blogRepository = $blogRepository;
+        $this->categoryRepository = $categoryRepository;
+    }
+
     #[Route('/', name: 'app_blog_index', methods: ['GET'])]
-    public function index(BlogRepository $blogRepository, CategoriesRepository $categoryRepository): Response
+    public function index(): Response
     {
         $url = 'home';
-        $categories = $categoryRepository->findAll();
+        $categories = $this->categoryRepository->findAll();
+        $blogs = $this->blogRepository->findAllOrderedByLatest();
 
         return $this->render('home/index.html.twig', [
-            'blogs' => $blogRepository->findAllOrderedByLatest(),
+            'blogs' => $blogs,
             'url' => $url,
             'categories' => $categories,
         ]);
     }
 
     #[Route('/load-more-blogs', name: 'load_more_blogs', methods: ['GET'])]
-    public function loadMoreBlogs(Request $request, BlogRepository $blogRepository): JsonResponse
+    public function loadMoreBlogs(Request $request): JsonResponse
     {
         $offset = $request->query->get('offset', 0);
-        $blogs = $blogRepository->findMoreBlogs($offset);
+        $blogs = $this->blogRepository->findMoreBlogs($offset);
 
         $html = $this->renderView('home/_blog_items.html.twig', ['blogs' => $blogs]);
 
@@ -39,10 +51,10 @@ class HomeController extends AbstractController
     }
 
     #[Route('/search-blogs', name: 'search_blogs', methods: ['GET'])]
-    public function searchBlogs(Request $request, BlogRepository $blogRepository): JsonResponse
+    public function searchBlogs(Request $request): JsonResponse
     {
         $searchTerm = $request->query->get('term');
-        $blogs = $blogRepository->searchBlogs($searchTerm);
+        $blogs = $this->blogRepository->searchBlogs($searchTerm);
 
         $html = $this->renderView('home/_blog_items.html.twig', ['blogs' => $blogs]);
 
