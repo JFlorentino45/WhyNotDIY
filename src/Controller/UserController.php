@@ -21,6 +21,28 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/user')]
 class UserController extends AbstractController
 {
+    private $forbiddenWordService;
+    private $blacklistService;
+    private $entityManager;
+    private $adminNotificationRepository;
+    private $tokenStorage;
+    private $auth;
+
+    public function __construct(
+        ForbiddenWordService $forbiddenWordService,
+        EntityManagerInterface $entityManager,
+        BlacklistService $blacklistService,
+        AdminNotificationRepository $adminNotificationRepository,
+        TokenStorageInterface $tokenStorage,
+        AuthorizationCheckerInterface $auth,
+    ) {
+        $this->forbiddenWordService = $forbiddenWordService;
+        $this->entityManager = $entityManager;
+        $this->blacklistService = $blacklistService;
+        $this->adminNotificationRepository = $adminNotificationRepository;
+        $this->tokenStorage = $tokenStorage;
+        $this->auth = $auth;
+    }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
@@ -37,7 +59,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, ForbiddenWordService $forbiddenWordService, AdminNotificationRepository $adminNotificationRepo, BlacklistService $blacklist): Response
+    public function edit(Request $request, User $user): Response
     {
         if (!$this->isGranted('ROLE_admin')) {
             if ($user !== $this->getUser()) {
@@ -52,18 +74,18 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($user->isModified($oldData)) {
                 $email = $form->get('emailAddress')->getData();
-                if ($blacklist->isBanned($email)) {
+                if ($this->blacklistService->isBanned($email)) {
                 $this->addFlash('error', '*This E-mail is banned.');
                 } else {
-                $underInvestigation = $adminNotificationRepo->findOneBy(['user' => ($user)]);
+                $underInvestigation = $this->adminNotificationRepository->findOneBy(['user' => ($user)]);
                 if ($underInvestigation) {
-                    $entityManager->remove($underInvestigation);
+                    $this->entityManager->remove($underInvestigation);
                 }
                 $username = $form->get('userName')->getData();
-                if ($forbiddenWordService->isForbidden($username)) {
+                if ($this->forbiddenWordService->isForbidden($username)) {
                     $this->addFlash('error', '*Username contains forbidden words.');
                 } else {
-                    $service = $forbiddenWordService->containsForbiddenWord($username);
+                    $service = $this->forbiddenWordService->containsForbiddenWord($username);
                     if ($service['found']) {
                         $adminNotification = new AdminNotification();
                         $adminNotification->setCreatedAt(now());
@@ -71,18 +93,18 @@ class UserController extends AbstractController
                         $adminNotification->setBlog(null);
                         $adminNotification->setWords($service['word']);
                         $adminNotification->setComment(null);
-                        $entityManager->persist($user);
-                        $entityManager->flush();
+                        $this->entityManager->persist($user);
+                        $this->entityManager->flush();
                         $adminNotification->setUser($user);
-                        $entityManager->persist($adminNotification);
-                        $entityManager->flush();
+                        $this->entityManager->persist($adminNotification);
+                        $this->entityManager->flush();
                         
                         $this->addFlash('success', '*Profile Updated.');
 
                         return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
                     } else {
-                        $entityManager->persist($user);
-                        $entityManager->flush();
+                        $this->entityManager->persist($user);
+                        $this->entityManager->flush();
                         $this->addFlash('success', '*Profile Updated.');
                         return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
                     }
@@ -100,7 +122,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $auth): Response
+    public function delete(Request $request, User $user): Response
     {
         if (!$this->isGranted('ROLE_admin')) {
             if ($user !== $this->getUser()) {
@@ -109,14 +131,14 @@ class UserController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($user);
-            $entityManager->flush();
+            $this->entityManager->remove($user);
+            $this->entityManager->flush();
         }
 
-        if ($auth->isGranted('ROLE_admin')) {
+        if ($this->auth->isGranted('ROLE_admin')) {
             return $this->redirectToRoute('app_admin_users', [], Response::HTTP_SEE_OTHER);
         } else {
-            $tokenStorage->setToken(null);
+            $this->tokenStorage->setToken(null);
             $this->addFlash('error', '*Sorry to see you go, hope you return soon');
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
