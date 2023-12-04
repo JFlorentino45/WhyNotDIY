@@ -17,8 +17,25 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class SignUpController extends AbstractController
 {
+    private $forbiddenWordService;
+    private $blacklistService;
+    private $entityManager;
+    private $passwordHasher;
+
+    public function __construct(
+        ForbiddenWordService $forbiddenWordService,
+        EntityManagerInterface $entityManager,
+        BlacklistService $blacklistService,
+        UserPasswordHasherInterface $passwordHasher
+    ) {
+        $this->passwordHasher = $passwordHasher;
+        $this->forbiddenWordService = $forbiddenWordService;
+        $this->entityManager = $entityManager;
+        $this->blacklistService = $blacklistService;
+    }
+
     #[Route('/signup', name: 'app_signup')]
-    public function index(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, ForbiddenWordService $forbiddenWordService, BlacklistService $blacklist): Response
+    public function index(Request $request): Response
     {
         $user = new User();
         $form = $this->createForm(SignupType::class, $user);
@@ -27,14 +44,14 @@ class SignUpController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $email = $form->get('emailAddress')->getData();
-            if ($blacklist->isBanned($email)) {
+            if ($this->blacklistService->isBanned($email)) {
                 $this->addFlash('error', '*This E-mail is banned.');
             } else {
             $username = $form->get('userName')->getData();
-            if ($forbiddenWordService->isForbidden($username)) {
+            if ($this->forbiddenWordService->isForbidden($username)) {
                 $this->addFlash('error', '*Username contains forbidden words.');
             } else {
-                $service = $forbiddenWordService->containsForbiddenWord($username);
+                $service = $this->forbiddenWordService->containsForbiddenWord($username);
                 if ($service['found']) {
                     $adminNotification = new AdminNotification();
                     $adminNotification->setCreatedAt(now());
@@ -48,14 +65,14 @@ class SignUpController extends AbstractController
                     if ($password !== $validation) {
                         $this->addFlash('error', '*Passwords do not match');
                     } else {
-                        $hashedPassword = $passwordHasher->hashPassword($user, $password);
+                        $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
                         $user->setPasswordHash($hashedPassword);
                         $user->setRole('ROLE_user');
-                        $entityManager->persist($user);
-                        $entityManager->flush();
+                        $this->entityManager->persist($user);
+                        $this->entityManager->flush();
                         $adminNotification->setUser($user);
-                        $entityManager->persist($adminNotification);
-                        $entityManager->flush();
+                        $this->entityManager->persist($adminNotification);
+                        $this->entityManager->flush();
 
                         $this->addFlash('success', '*Account created, Please login.');
                         return $this->redirectToRoute('app_login');
@@ -66,11 +83,11 @@ class SignUpController extends AbstractController
                     if ($password !== $validation) {
                         $this->addFlash('error', '*Passwords do not match');
                     } else {
-                        $hashedPassword = $passwordHasher->hashPassword($user, $password);
+                        $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
                         $user->setPasswordHash($hashedPassword);
                         $user->setRole('ROLE_user');
-                        $entityManager->persist($user);
-                        $entityManager->flush();
+                        $this->entityManager->persist($user);
+                        $this->entityManager->flush();
                         
                         $this->addFlash('success', '*Account created, Please login.');
                         return $this->redirectToRoute('app_login');
