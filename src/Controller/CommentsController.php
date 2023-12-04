@@ -18,8 +18,25 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/comments')]
 class CommentsController extends AbstractController
 {
+    private $blogRepository;
+    private $commentsRepository;
+    private $adminNotificationRepository;
+    private $forbiddenWordService;
+    private $entityManager;
+    private $security;
+
+    public function __construct(
+        AdminNotificationRepository $adminNotificationRepository,
+        ForbiddenWordService $forbiddenWordService,
+        EntityManagerInterface $entityManager,
+    ) {
+        $this->adminNotificationRepository = $adminNotificationRepository;
+        $this->forbiddenWordService = $forbiddenWordService;
+        $this->entityManager = $entityManager;
+    }
+
     #[Route('/{id}/edit', name: 'app_comments_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Comments $comment, EntityManagerInterface $entityManager, ForbiddenWordService $forbiddenWordService, AdminNotificationRepository $adminNotificationRepo): Response
+    public function edit(Request $request, Comments $comment): Response
     {
         $user = $this->getUser();
         if (!$this->isGranted('ROLE_admin')) {
@@ -34,15 +51,15 @@ class CommentsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($comment->isModified($oldData)) {
-                $underInvestigation = $adminNotificationRepo->findOneBy(['Comment' => ($comment)]);
+                $underInvestigation = $this->adminNotificationRepository->findOneBy(['Comment' => ($comment)]);
                 if ($underInvestigation) {
-                    $entityManager->remove($underInvestigation);
+                    $this->entityManager->remove($underInvestigation);
                 }
                 $text = $form->get('text')->getData();
-            if ($forbiddenWordService->isForbidden($text)) {
+            if ($this->forbiddenWordService->isForbidden($text)) {
                 $this->addFlash('error', '*Comment contains forbidden words.');
             } else {
-                $service = $forbiddenWordService->containsForbiddenWord($text);
+                $service = $this->forbiddenWordService->containsForbiddenWord($text);
                 if ($service['found']) {
                     $adminNotification = new AdminNotification();
                     $adminNotification->setCreatedAt(now());
@@ -51,19 +68,19 @@ class CommentsController extends AbstractController
                     $adminNotification->setBlog(null);
                     $adminNotification->setWords($service['word']);
                     
-                    $entityManager->persist($comment);
-                    $entityManager->flush();
+                    $this->entityManager->persist($comment);
+                    $this->entityManager->flush();
                     
                     $adminNotification->setComment($comment);
-                    $entityManager->persist($adminNotification);
-                    $entityManager->flush();
+                    $this->entityManager->persist($adminNotification);
+                    $this->entityManager->flush();
                     
                     $this->addFlash('success', '*Comment updated.');
                     return $this->redirectToRoute('app_blog_show', ['id' => $comment->getBlog()->getId()]);
                 } else {
         
-                    $entityManager->persist($comment);
-                    $entityManager->flush();
+                    $this->entityManager->persist($comment);
+                    $this->entityManager->flush();
 
                     $this->addFlash('success', '*Comment updated.');
                     return $this->redirectToRoute('app_blog_show', ['id' => $comment->getBlog()->getId()]);
@@ -82,7 +99,7 @@ class CommentsController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_comments_delete', methods: ['POST'])]
-    public function delete(Request $request, Comments $comment, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Comments $comment): Response
     {
         $user = $this->getUser();
         if (!$this->isGranted('ROLE_admin')) {
@@ -92,8 +109,8 @@ class CommentsController extends AbstractController
         }
         
         if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($comment);
-            $entityManager->flush();
+            $this->entityManager->remove($comment);
+            $this->entityManager->flush();
         }
 
         return $this->redirectToRoute('app_blog_show', ['id' => $comment->getBlog()->getId()], Response::HTTP_SEE_OTHER);
