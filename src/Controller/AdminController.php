@@ -134,10 +134,10 @@ class AdminController extends AbstractController
 
             $this->addFlash('success', '*Password updated successfully');
 
-            return $this->redirectToRoute('app_blog_index');
+            return $this->redirectToRoute('app_admin_users');
         }}
         
-        return $this->render('security/password.html.twig', [
+        return $this->render('admin/password.html.twig', [
             'form' => $form->createView(),
         ]);
     }
