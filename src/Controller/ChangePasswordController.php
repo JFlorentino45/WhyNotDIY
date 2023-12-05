@@ -14,7 +14,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ChangePasswordController extends AbstractController
 {
-    #[Route('/edit/password', name: 'app_change_password')]
+    #[Route('/edit/password', name: 'app_change_password', methods: ['POST', 'GET'])]
     public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();

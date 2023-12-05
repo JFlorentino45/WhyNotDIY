@@ -10,10 +10,10 @@
     {% endif %}
 
     {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        <div class="text-center mb-3">
+            You are logged in as {{ app.user.userName }}, <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2 mt-2" href="{{ path('logout') }}">Logout</a></button>
         </div>
-    {% endif %}
+    {% else %}
     <p class="text-xl font-semibold text-center mt-4">Sign in to Why not DIY!</p>
     <div class="flex justify-center items-center container mx-auto max-w-fit my-6 mh-auto p-8 bg-gray-200 rounded-md">
 
@@ -29,6 +29,7 @@
         <button class="inline-block rounded bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white px-4 pb-1.5 pt-2 font-sans" type="submit">Sign in</button>
     </form>
     </div>
+    {% endif %}
 </div>
 </main>
 {% endblock %}

@@ -3,21 +3,23 @@
 {% block title %}ForbiddenWords index{% endblock %}
 
 {% block body %}
-    <h1>Inappropriate Words</h1>
+    <p class="text-2xl font-semibold ml-2">Inappropriate Words</p>
 
-    <a href="{{ path('app_admin_forbidden_new') }}">Add more</a>
-    <table class="table">
+    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 pb-1.5 pt-2 ml-2 mt-2" href="{{ path('app_admin_forbidden_new') }}">Add more</a></button>
+
+    <table class="table-auto border-separate border border-slate-400 rounded-lg mx-2 mt-4 w-fit">
+    <div class="">
         <thead>
             <tr>
-                <th>Words</th>
-                <th>actions</th>
+                <th class="border border-slate-300 basis-full">Words</th>
+                <th class="border border-slate-300 basis-1/4"></th>
             </tr>
         </thead>
         <tbody>
         {% for forbidden_word in forbidden_words %}
             <tr>
-                <td>{{ forbidden_word.words }}</td>
-                <td>
+                <td class="border border-slate-300 basis-1/2 text-xl px-2">{{ forbidden_word.words }}</td>
+                <td class="px-2">
                     {{ include('admin/forbidden_delete_form.html.twig') }}
                 </td>
             </tr>
@@ -27,6 +29,6 @@
             </tr>
         {% endfor %}
         </tbody>
+    </div>
     </table>
-
 {% endblock %}

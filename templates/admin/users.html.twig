@@ -3,27 +3,28 @@
 {% block title %}User index{% endblock %}
 
 {% block body %}
-    <h1>User index</h1>
+   <p class="text-2xl font-semibold ml-2">Current Users</p>
 
-    <table class="table">
+    <table class="table-auto border-separate border border-slate-400 rounded-lg mx-2 mt-4 w-fit">
+    <div class="flex flex-row">
         <thead>
             <tr>
-                <th>UserName</th>
-                <th>EmailAddress</th>
-                <th>Role</th>
-                <th>actions</th>
+                <th class="border border-slate-300">UserName</th>
+                <th class="border border-slate-300">EmailAddress</th>
+                <th class="border border-slate-300">Role</th>
+                <th class="border border-slate-300">actions</th>
             </tr>
         </thead>
         <tbody>
         {% for user in users %}
             <tr>
-                <td>{{ user.userName }}</td>
-                <td>{{ user.emailAddress }}</td>
-                <td>{{ user.role }}</td>
-                <td>
-                    <a href="{{ path('app_admin_userblogs', {'id': user.id}) }}">Blogs</a>
-                    <a href="{{ path('app_admin_user_edit', {'id': user.id}) }}">Profile</a>
-                    <a href="{{ path('app_admin_password', {'id': user.id}) }}">Password</a>
+                <td class="border border-slate-300 text-xl px-2">{{ user.userName }}</td>
+                <td class="border border-slate-300 text-xl px-2">{{ user.emailAddress }}</td>
+                <td class="border border-slate-300 text-xl px-2">{{ user.role }}</td>
+                <td class="border border-slate-300 w-fit text-xl px-2">
+                    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2" href="{{ path('app_admin_userblogs', {'id': user.id}) }}">Blogs</a></button>
+                    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2" href="{{ path('app_admin_user_edit', {'id': user.id}) }}">Profile</a></button>
+                    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2" href="{{ path('app_admin_password', {'id': user.id}) }}">Password</a></button>
                 </td>
             </tr>
         {% else %}

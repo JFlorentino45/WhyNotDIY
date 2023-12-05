@@ -26,7 +26,7 @@ class CategoriesController extends AbstractController
         $this->categoryRepository = $categoryRepository;
     }
 
-    #[Route('/blogs/{id}', name: 'app_blog_category')]
+    #[Route('/blogs/{id}', name: 'app_blog_category', methods: ['GET'])]
     public function catBlogs(Categories $categories): Response
     {
         $url = 'catBlogs';
@@ -44,7 +44,7 @@ class CategoriesController extends AbstractController
         ]);
     }
 
-    #[Route('/load-blogs/{id}', name: 'app_blog_category_more')]
+    #[Route('/load-blogs/{id}', name: 'app_blog_category_more', methods: ['GET'])]
     public function loadCatBlogs(Categories $categories, Request $request): JsonResponse
     {
         $id = $categories->getId();

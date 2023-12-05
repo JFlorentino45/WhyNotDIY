@@ -18,12 +18,9 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/comments')]
 class CommentsController extends AbstractController
 {
-    private $blogRepository;
-    private $commentsRepository;
     private $adminNotificationRepository;
     private $forbiddenWordService;
     private $entityManager;
-    private $security;
 
     public function __construct(
         AdminNotificationRepository $adminNotificationRepository,

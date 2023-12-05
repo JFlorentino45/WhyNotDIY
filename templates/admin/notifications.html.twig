@@ -3,39 +3,40 @@
 {% block title %}Notifications{% endblock %}
 
 {% block body %}
-    <h1>Notifications</h1>
+   <p class="text-2xl font-semibold ml-2">Notifications</p>
 
-        {% for admin_notification in admin_notifications %}
-    <table class="table">
+    <table class="table border-separate border border-slate-400 rounded-lg mx-2 mt-4 w-3/4">
         <thead>
             <tr>
-                <th>CreatedAt</th>
-                <th>Text</th>
-                <th>actions</th>
-                <th>Words</th>
+                <th class="border border-slate-300">CreatedAt</th>
+                <th class="border border-slate-300">Text</th>
+                <th class="border border-slate-300">actions</th>
+                <th class="border border-slate-300">Words</th>
             </tr>
         </thead>
         <tbody>
+        {% for admin_notification in admin_notifications %}
             <tr>
-                <td>{{ admin_notification.createdAt ? admin_notification.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ admin_notification.text }}</td>
-                <td>
+                <td class="border border-slate-300 text-xl px-2">{{ admin_notification.createdAt ? admin_notification.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td class="border border-slate-300 text-xl px-2">{{ admin_notification.text }}</td>
+                <td class="border border-slate-300 text-xl px-2">
                 {% if (admin_notification.user) %}
                     <a href="{{ path('app_user_edit', {'id': admin_notification.user.id}) }}">show</a>
                 {% elseif (admin_notification.blog) %}
                     <a href="{{ path('app_blog_edit', {'id': admin_notification.blog.id}) }}">show</a>
                 {% elseif (admin_notification.comment) %}
-                    <a href="{{ path('app_admin_comment', {'id': admin_notification.comment.id}) }}">show</a>
+                    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2" href="{{ path('app_admin_comment', {'id': admin_notification.comment.id}) }}">show</a></button>
                 {% endif %}
                 {{ include('admin/notification_delete_form.html.twig') }}
                 </td>
-                <td>{{ admin_notification.words|join(', ')|raw }}</td>
+                <td class="border border-slate-300 text-xl px-2">{{ admin_notification.words|join(', ')|raw }}</td>
             </tr>
+        </div>
         </tbody>
     </table>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4" class="text-center text-xl">No notifications</td>
             </tr>
         {% endfor %}
 {% endblock %}

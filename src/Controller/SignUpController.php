@@ -34,7 +34,7 @@ class SignUpController extends AbstractController
         $this->blacklistService = $blacklistService;
     }
 
-    #[Route('/signup', name: 'app_signup')]
+    #[Route('/signup', name: 'app_signup', methods: ['GET', 'POST'])]
     public function index(Request $request): Response
     {
         $user = new User();

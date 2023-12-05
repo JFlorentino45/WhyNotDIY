@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Blacklist;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -12,7 +13,7 @@ class BlacklistType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('emailAddress')
+            ->add('emailAddress', EmailType::class)
         ;
     }
 

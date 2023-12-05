@@ -3,9 +3,11 @@
 {% block title %}New Blacklist{% endblock %}
 
 {% block body %}
-    <h1>Create new Blacklist</h1>
+<div class="flex flex-col mx-auto max-w-fit my-6 mh-auto p-8 bg-gray-200 rounded-md">
+    <p class="text-xl font-semibold text-center mt-4 items-center">Blacklist an Email</p>
 
     {{ include('admin/blacklist_form.html.twig') }}
 
-    <a href="{{ path('app_admin_blacklist') }}">back to list</a>
+    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 pb-1.5 pt-2 mt-2" href="{{ path('app_admin_blacklist') }}">Back to Blacklist</a></button>
+</div>
 {% endblock %}
