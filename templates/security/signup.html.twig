@@ -12,7 +12,7 @@
     {{ form_row(form.plainPassword, {'attr': {'class': 'border rounded mt-2 mb-5 px-1', 'placeholder': 'Password*'}}) }}
     {{ form_row(form.confirmPassword, {'attr': {'class': 'border rounded mt-2 mb-6 px-1', 'placeholder': 'Confirm Password*'}}) }}
     {{ form_row(form.submit, {'attr': {'class': 'inline-block rounded bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white px-4 pb-1.5 pt-2 font-sans'}}) }}
-    <p class="text-gray-500 mt-2">Already have an account? -><a class="text-blue-800" href="{{ path('app_login') }}">Login</a>
+    <p class="text-gray-500 mt-2">Already have an account? -><a class="text-blue-800" href="{{ path('app_login') }}">Login</a></p>
 
     {{ form_end(form) }}
     

@@ -242,15 +242,16 @@ class BlogController extends AbstractController
                         $adminNotification = new AdminNotification();
                         $adminNotification->setCreatedAt(now());
                         $message = "";
+                        $word = [];
                         if ($serviceTitle['found'] && $serviceText['found']) {
                             $message = "A blog's title and text may contain forbidden words. Please verity";
-                            $word = $serviceTitle['word'] . '&' . $serviceText['word'];
+                            $word = array_merge($serviceTitle['word'], $serviceText['word']);
                         } elseif ($serviceText['found']) {
                             $message = "A blog's text may contain a forbidden word. Please verify.";
-                            $word = $serviceText['found'];
+                            $word = $serviceText['word'];
                         } else {
                             $message = "A blog title may contain a forbidden word. Please verify.";
-                            $word = $serviceTitle['found'];
+                            $word = $serviceTitle['word'];
                         }
                         $adminNotification->setText($message);
                         $adminNotification->setUser(null);

@@ -65,8 +65,8 @@ class UserController extends AbstractController
 
         $form = $this->createForm(UserType::class, $user);
         $form->remove('role');
-        $form->handleRequest($request);
         $oldData = clone $user;
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($user->isModified($oldData)) {

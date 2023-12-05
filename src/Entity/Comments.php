@@ -31,7 +31,7 @@ class Comments
     private ?\DateTimeImmutable $editedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?Blog $blog = null;
 
     public function getId(): ?int

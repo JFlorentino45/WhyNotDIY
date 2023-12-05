@@ -19,6 +19,8 @@
                 {{ include('blog/_delete_form.html.twig') }}
             </div>
             </div>
+        {% else %}
+            <p class="text-center text-xl font-medium mt-4 mb-2"> You have no blogs-><a class="text-blue-800" href="{{ path('app_blog_new') }}">Create Some</a></p>
         {% endfor %}
         </div>
         <div id="pagination-loader" data-offset="7"></div>

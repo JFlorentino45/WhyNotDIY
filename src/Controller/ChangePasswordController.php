@@ -31,7 +31,7 @@ class ChangePasswordController extends AbstractController
             $newPassword = $form->get('plainPassword')->getData();
             $validation = $form->get('confirmPassword')->getData();
             if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
-                $this->addFlash('error', '*Invalid current password');
+                $this->addFlash('error', '*Incorrect current password');
             } elseif ($newPassword !== $validation) {
                 $this->addFlash('error', '*Passwords do not match');
             } else {
