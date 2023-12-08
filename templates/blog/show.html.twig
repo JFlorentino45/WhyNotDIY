@@ -12,7 +12,7 @@
     {% endif %}</div>
     <div class="col-start-1 mt-8 h-fit"><iframe class="border-gray-800 border-4 rounded-md" width="900" height="506" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     {% if app.user %}
-        {% include './comments/like.html.twig' %}
+        {% include './blog/like.html.twig' %}
         <button class="font-sans block w-fit h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-2.5 py-1 mt-2 text-m font-medium"><a href='{{ path('app_blog_user', {'id': blog.createdBy.id}) }}'>See more by {{ blog.createdBy }}</a></button>
         {% include './comments/show.html.twig' %}
         <button><a class="font-sans block w-full h-full bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white rounded-md px-3 py-2 text-sm font-medium" href="{{ path('app_blog_index') }}">Back to Home</a></button>

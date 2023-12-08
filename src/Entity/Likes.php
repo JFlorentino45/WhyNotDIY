@@ -21,9 +21,6 @@ class Likes
     #[ORM\JoinColumn(nullable: true, onDelete: "CASCADE")]
     private ?Blog $BlogId = null;
 
-    #[ORM\ManyToOne]
-    private ?Comments $commentId = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -49,18 +46,6 @@ class Likes
     public function setBlogId(?Blog $BlogId): static
     {
         $this->BlogId = $BlogId;
-
-        return $this;
-    }
-
-    public function getCommentId(): ?Comments
-    {
-        return $this->commentId;
-    }
-
-    public function setCommentId(?Comments $commentId): static
-    {
-        $this->commentId = $commentId;
 
         return $this;
     }
