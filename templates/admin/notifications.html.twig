@@ -21,9 +21,9 @@
                 <td class="border border-slate-300 text-xl px-2">{{ admin_notification.text }}</td>
                 <td class="border border-slate-300 text-xl px-2">
                 {% if (admin_notification.user) %}
-                    <a href="{{ path('app_user_edit', {'id': admin_notification.user.id}) }}">show</a>
+                    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2 mb-2" href="{{ path('app_user_edit', {'id': admin_notification.user.id}) }}">show</a></button>
                 {% elseif (admin_notification.blog) %}
-                    <a href="{{ path('app_blog_edit', {'id': admin_notification.blog.id}) }}">show</a>
+                    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2 mb-2" href="{{ path('app_blog_edit', {'id': admin_notification.blog.id}) }}">show</a></button>
                 {% elseif (admin_notification.comment) %}
                     <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2" href="{{ path('app_admin_comment', {'id': admin_notification.comment.id}) }}">show</a></button>
                 {% endif %}

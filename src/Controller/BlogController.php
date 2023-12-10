@@ -53,36 +53,41 @@ class BlogController extends AbstractController
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        //used for creating new blogs
         $blog = new Blog();
         $form = $this->createForm(BlogType::class, $blog);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
+            //get title and text data to pass into check
             $title = $form->get('title')->getData();
             $text = $form->get('text')->getData();
             if ($this->forbiddenWordService->isForbidden($title) || $this->forbiddenWordService->isForbidden($text)) {
+                //if the title or text contains 'direct' forbidden words, pop up message
                 $this->addFlash('error', '*Blog contains forbidden words.');
             } else {
                 $serviceText = $this->forbiddenWordService->containsForbiddenWord($text);
                 $serviceTitle = $this->forbiddenWordService->containsForbiddenWord($title);
 
                 if ($serviceTitle['found'] || $serviceText['found']) {
+                    //if the 'forbidden words' are part of another word, send notification to verfiy
                     $adminNotification = new AdminNotification();
                     $adminNotification->setCreatedAt(now());
                     $message = "";
                     if ($serviceTitle['found'] && $serviceText['found']) {
-                        $message = "A blog's title and text may contain forbidden words. Please verity";
-                        $word = $serviceTitle['word'] . '&' . $serviceText['word'];
+                        //first both title and text then just text then just title
+                        $message = "A blog's title and text may contain forbidden words. Please verify";
+                        $word = ['Title: ' . $serviceTitle['word'] . ' Text: ' . $serviceText['word']];
                     } elseif ($serviceText['found']) {
                         $message = "A blog's text may contain a forbidden word. Please verify.";
-                        $word = $serviceText['found'];
+                        $word = $serviceText['word'];
                     } else {
                         $message = "A blog title may contain a forbidden word. Please verify.";
-                        $word = $serviceTitle['found'];
+                        $word = $serviceTitle['word'];
                     }
                     $adminNotification->setText($message);
-                    $adminNotification->setUser(null);
                     $adminNotification->setWords($word);
+                    $adminNotification->setUser(null);
                     $adminNotification->setComment(null);
                     
                     $this->entityManager->persist($blog);
@@ -125,7 +130,7 @@ class BlogController extends AbstractController
     public function loadMoreMyBlogs(Request $request): JsonResponse
     {
         $user = $this->security->getUser();
-        $offset = $request->query->get('offset', 0);
+        $offset = $request->query->get('offset');
         $blogs = $this->blogRepository->findMoreMyBlogs($user, $offset);
 
         $html = $this->renderView('blog/_blog_items.html.twig', ['blogs' => $blogs]);
@@ -152,7 +157,7 @@ class BlogController extends AbstractController
     public function loadUserBlogs(Request $request, User $user): JsonResponse
     {
         $id = $user->getId();
-        $offset = $request->query->get('offset', 0);
+        $offset = $request->query->get('offset');
         $blogs = $this->blogRepository->findMoreMyBlogs($id, $offset);
 
         $html = $this->renderView('blog/_userblog_items.html.twig', ['blogs' => $blogs]);
@@ -244,8 +249,11 @@ class BlogController extends AbstractController
                         $message = "";
                         $word = [];
                         if ($serviceTitle['found'] && $serviceText['found']) {
-                            $message = "A blog's title and text may contain forbidden words. Please verity";
-                            $word = array_merge($serviceTitle['word'], $serviceText['word']);
+                            $titleWord = is_array($serviceTitle['word']) ? implode(', ', $serviceTitle['word']) : $serviceTitle['word'];
+                            $textWord = is_array($serviceText['word']) ? implode(', ', $serviceText['word']) : $serviceText['word'];
+        
+                            $message = "A blog's title and text may contain forbidden words. Please verify";
+                            $word = ['Title: ' . $titleWord . ' Text: ' . $textWord];
                         } elseif ($serviceText['found']) {
                             $message = "A blog's text may contain a forbidden word. Please verify.";
                             $word = $serviceText['word'];

@@ -75,7 +75,7 @@ class AdminController extends AbstractController
     #[Route('/load-more-blogs', name: 'admin_more_blogs', methods: ['GET'])]
     public function loadMoreBlogs(Request $request): JsonResponse
     {
-        $offset = $request->query->get('offset', 0);
+        $offset = $request->query->get('offset');
         $blogs = $this->blogRepository->findMoreBlogs($offset);
 
         $html = $this->renderView('admin/_blog_items.html.twig', ['blogs' => $blogs]);
@@ -89,9 +89,8 @@ class AdminController extends AbstractController
     if ($this->isCsrfTokenValid('delete'.$blog->getId(), $request->request->get('_token'))) {
         $this->entityManager->remove($blog);
         $this->entityManager->flush();
+        return $this->redirectToRoute('app_admin_blogs', [], Response::HTTP_SEE_OTHER);
     }
-
-    return $this->redirectToRoute('app_admin_blogs', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/users', name: 'app_admin_users', methods: ['GET'])]

@@ -48,7 +48,7 @@ class CategoriesController extends AbstractController
     public function loadCatBlogs(Categories $categories, Request $request): JsonResponse
     {
         $id = $categories->getId();
-        $offset = $request->query->get('offset', 0);
+        $offset = $request->query->get('offset');
         $blogs = $this->blogRepository->findMoreCategoryBlogs($offset, $id);
 
         $html = $this->renderView('home/_cat_items.html.twig', ['blogs' => $blogs]);

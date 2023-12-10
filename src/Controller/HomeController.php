@@ -42,7 +42,7 @@ class HomeController extends AbstractController
     #[Route('/load-more-blogs', name: 'load_more_blogs', methods: ['GET'])]
     public function loadMoreBlogs(Request $request): JsonResponse
     {
-        $offset = $request->query->get('offset', 0);
+        $offset = $request->query->get('offset');
         $blogs = $this->blogRepository->findMoreBlogs($offset);
 
         $html = $this->renderView('home/_blog_items.html.twig', ['blogs' => $blogs]);

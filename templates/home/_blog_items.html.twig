@@ -5,7 +5,7 @@
         <iframe width="750" height="422" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <p class="py-0.5 ml-2">Likes: {{ blog.getLikesCount() }} Comments: {{ blog.getCommentsCount() }}</p>
         {% if (is_granted('IS_AUTHENTICATED_FULLY')) %}
-            <button class="ml-2"><a class="font-sans block w-full h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" href="{{ path('app_blog_show', {'id': blog.id}) }}">Show more</a></button>
+            <button class="ml-2"><a class="font-sans block w-fit h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" href="{{ path('app_blog_show', {'id': blog.id}) }}">Show more</a></button>
         {% else %}
             <button class="ml-2"><a class="font-sans block w-fit h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" href="{{ path('app_login') }}">Login</a></button>
         {% endif %}
