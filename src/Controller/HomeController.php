@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\BlogRepository;
 use App\Repository\CategoriesRepository;
 
@@ -40,24 +39,24 @@ class HomeController extends AbstractController
     }
 
     #[Route('/load-more-blogs', name: 'load_more_blogs', methods: ['GET'])]
-    public function loadMoreBlogs(Request $request): JsonResponse
+    public function loadMoreBlogs(Request $request): Response
     {
         $offset = $request->query->get('offset');
         $blogs = $this->blogRepository->findMoreBlogs($offset);
 
         $html = $this->renderView('home/_blog_items.html.twig', ['blogs' => $blogs]);
 
-        return new JsonResponse(['html' => $html]);
+        return new Response($html);
     }
 
     #[Route('/search-blogs', name: 'search_blogs', methods: ['GET'])]
-    public function searchBlogs(Request $request): JsonResponse
+    public function searchBlogs(Request $request): Response
     {
         $searchTerm = $request->query->get('term');
         $blogs = $this->blogRepository->searchBlogs($searchTerm);
 
         $html = $this->renderView('home/_blog_items.html.twig', ['blogs' => $blogs]);
 
-        return new JsonResponse(['html' => $html]);
+        return new Response($html);
     }
 }

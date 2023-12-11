@@ -65,6 +65,7 @@ class SignUpController extends AbstractController
                     if ($password !== $validation) {
                         $this->addFlash('error', '*Passwords do not match');
                     } else {
+                        
                         $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
                         $user->setPasswordHash($hashedPassword);
                         $user->setRole('ROLE_user');

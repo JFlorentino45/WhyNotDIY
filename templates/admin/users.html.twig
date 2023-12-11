@@ -1,37 +1,61 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User index{% endblock %}
+{% block title %}All Users{% endblock %}
 
 {% block body %}
-   <p class="text-2xl font-semibold ml-2">Current Users</p>
-
+<main>
+    <p class="text-2xl font-semibold ml-2">
+        Current Users
+    </p>
     <table class="table-auto border-separate border border-slate-400 rounded-lg mx-2 mt-4 w-fit">
-    <div class="flex flex-row">
-        <thead>
-            <tr>
-                <th class="border border-slate-300">UserName</th>
-                <th class="border border-slate-300">EmailAddress</th>
-                <th class="border border-slate-300">Role</th>
-                <th class="border border-slate-300">actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td class="border border-slate-300 text-xl px-2">{{ user.userName }}</td>
-                <td class="border border-slate-300 text-xl px-2">{{ user.emailAddress }}</td>
-                <td class="border border-slate-300 text-xl px-2">{{ user.role }}</td>
-                <td class="border border-slate-300 w-fit text-xl px-2">
-                    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2" href="{{ path('app_admin_userblogs', {'id': user.id}) }}">Blogs</a></button>
-                    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2" href="{{ path('app_admin_user_edit', {'id': user.id}) }}">Profile</a></button>
-                    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2" href="{{ path('app_admin_password', {'id': user.id}) }}">Password</a></button>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no Users found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
+        <div class="flex flex-row">
+            <thead>
+                <tr>
+                    <th class="border border-slate-300">
+                        Username
+                    </th>
+                    <th class="border border-slate-300">
+                        Email Address
+                    </th>
+                    <th class="border border-slate-300">
+                        Role
+                    </th>
+                    <th class="border border-slate-300">
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td class="border border-slate-300 text-xl px-2">
+                        {{ user.userName }}
+                    </td>
+                    <td class="border border-slate-300 text-xl px-2">
+                        {{ user.emailAddress }}
+                    </td>
+                    <td class="border border-slate-300 text-xl px-2">
+                        {{ user.role }}
+                    </td>
+                    <td class="border border-slate-300 w-fit text-xl px-2">
+                        <button>
+                            <a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2" href="{{ path('app_admin_userblogs', {'id': user.id}) }}">Blogs</a>
+                        </button>
+                        <button>
+                            <a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2" href="{{ path('app_admin_user_edit', {'id': user.id}) }}">Profile</a>
+                        </button>
+                        <button>
+                            <a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2" href="{{ path('app_admin_password', {'id': user.id}) }}">Password</a>
+                        </button>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">no Users found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </div>
     </table>
+</main>
 {% endblock %}

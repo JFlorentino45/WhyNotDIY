@@ -1,25 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}WhyNotDIY{% endblock %}
+{% block title %}Blogs{% endblock %}
+
+{% block javascripts %}
+    {{ parent()}}
+    <script src="{{ asset('js/scroll.js') }}"></script>
+{% endblock %}
 
 {% block body %}
 <main>
-<section class="flex flex-col bg-white bg-opacity-60 w-fit px-6 rounded-md mx-auto">
-    <p class="text-4xl mx-auto mt-2">Latest Blogs by {{ username }}</p>
-    <div id="blog-container">
-        {% for blog in blogs %}
-            <div class="flex-col blog-item py-4 bg-gray-400 bg-opacity-40 rounded-md mb-6 px-2">
-                <p class="text-2xl ml-2">{{ blog.title }}</p>
-                <p class=" text-s ml-2">{{ blog.createdAt|date('d-M-Y H:i') }} By: {{ blog.createdBy }}</p>
-                <iframe width="750" height="422" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                <p class="py-0.5 ml-2">Likes: {{ blog.getLikesCount() }} Comments: {{ blog.getCommentsCount() }}</p>
-                <button class="ml-2"><a class="font-sans block w-full h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" href="{{ path('app_blog_show', {'id': blog.id}) }}">Show more</a></button>
-            </div>
-        {% endfor %}
-    </div>
-    <div id="pagination-loader" data-offset="7"></div>
-    <div id="url" data-url="{{ url }}" style="display: none;"></div>
-    <div id="user" data-user="{{ user }}" style="display: none;"></div>
-</section>
+    <section class="flex flex-col bg-white bg-opacity-60 w-fit px-6 rounded-md mx-auto">
+        <p class="text-4xl mx-auto mt-2">
+            Latest Blogs by {{ username }}
+        </p>
+        <div id="blog-container">
+            {% for blog in blogs %}
+                <div class="flex-col blog-item py-4 bg-gray-400 bg-opacity-40 rounded-md mb-6 px-2">
+                    <p class="text-2xl ml-2">
+                        {{ blog.title }}
+                    </p>
+                    <p class=" text-s ml-2">
+                        {{ blog.createdAt|date('d-M-Y H:i') }} By: {{ blog.createdBy }}
+                    </p>
+                    <iframe width="750" height="422" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <p class="py-0.5 ml-2">
+                        Likes: {{ blog.getLikesCount() }} Comments: {{ blog.getCommentsCount() }}
+                    </p>
+                    <button class="ml-2">
+                        <a class="font-sans block w-full h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" href="{{ path('app_blog_show', {'id': blog.id}) }}">Show more</a>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+        <div id="pagination-loader" data-offset="7"></div>
+        <div id="url" data-url="{{ url }}" style="display: none;"></div>
+        <div id="user" data-user="{{ user }}" style="display: none;"></div>
+    </section>
 </main>
 {% endblock %}

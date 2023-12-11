@@ -1,36 +1,52 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Blacklist index{% endblock %}
+{% block title %}Blacklist{% endblock %}
 
 {% block body %}
-    <p class="text-2xl font-semibold">Blacklist index</p>
-
-    <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 pb-1.5 pt-2 ml-2 mt-2" href="{{ path('app_admin_blacklist_new') }}">Add more</a></button>
+<main>
+    <p class="text-2xl font-semibold ml-4">
+        Blacklist
+    </p>
+    <button>
+        <a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 pb-1.5 pt-2 ml-2 mt-2" href="{{ path('app_admin_blacklist_new') }}">Add more</a>
+    </button>
     <table class="table-auto border-separate border border-slate-400 rounded-lg mx-2 mt-4">
     <div class="flex flex-row">
         <thead>
             <tr>
-                <th class="border border-slate-300 basis-full">EmailAddress</th>
-                <th class="border border-slate-300 basis-1/4">CreatedAt</th>
-                <th class="border border-slate-300 basis-1/4">actions</th>
+                <th class="border border-slate-300 ">
+                    Email Address
+                </th>
+                <th class="border border-slate-300">
+                    Created At
+                </th>
+                <th class="border border-slate-300">
+                    Actions
+                </th>
             </tr>
         </thead>
         <tbody>
         {% for blacklist in blacklists %}
             <tr>
-                <td class="border border-slate-300 basis-1/2 text-xl">{{ blacklist.emailAddress }}</td>
-                <td class="border border-slate-300 basis-1/4 text-xl">{{ blacklist.createdAt ? blacklist.createdAt|date('Y-m-d H:i') : '' }}</td>
-                <td class="border border-slate-300 basis-1/4 text-xl">
-                {{ include('admin/blacklist_delete_form.html.twig') }}
+                <td class="border border-slate-300 text-xl px-2 w-80">
+                    {{ blacklist.emailAddress }}
+                </td>
+                <td class="border border-slate-300 text-xl px-2 w-44">
+                    {{ blacklist.createdAt ? blacklist.createdAt|date('Y-m-d H:i') : '' }}
+                </td>
+                <td class="border border-slate-300 text-xl px-2">
+                    {{ include('admin/blacklist_delete_form.html.twig') }}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4">
+                    No records found.
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </div>
     </table>
-
+</main>
 {% endblock %}

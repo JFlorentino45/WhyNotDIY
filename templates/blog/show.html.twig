@@ -4,20 +4,32 @@
 
 {% block body %}
 <div class="grid grid-cols-2 mx-4 mt-4">
-    <div class="col-start-1 text-3xl font-medium">{{blog.title}}</div>
-
-    <div class="col-start-2 text-xl text-right">{{ blog.createdAt|date('d-M-Y H:i') }} By: <a href='{{ path('app_blog_user', {'id': blog.createdBy.id}) }}'>{{ blog.createdBy }}</a>
-    {% if (blog.edited) %}
-        (Edited : {{ blog.editedAt|date('d-M-Y H:i') }})
-    {% endif %}</div>
-    <div class="col-start-1 mt-8 h-fit"><iframe class="border-gray-800 border-4 rounded-md" width="900" height="506" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    {% if app.user %}
-        {% include './blog/like.html.twig' %}
-        <button class="font-sans block w-fit h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-2.5 py-1 mt-2 text-m font-medium"><a href='{{ path('app_blog_user', {'id': blog.createdBy.id}) }}'>See more by {{ blog.createdBy }}</a></button>
-        {% include './comments/show.html.twig' %}
-        <button><a class="font-sans block w-full h-full bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white rounded-md px-3 py-2 text-sm font-medium" href="{{ path('app_blog_index') }}">Back to Home</a></button>
-    {% endif %}
+    <div class="col-start-1 text-3xl font-medium">
+        {{blog.title}}
     </div>
-    <div class="col-start-2 mt-8">{{ blog.text|nl2br|raw }}</div>
+    <div class="col-start-2 text-xl text-right">
+        <p>
+            {{ blog.createdAt|date('d-M-Y H:i') }} By: <a href='{{ path('app_blog_user', {'id': blog.createdBy.id}) }}'>{{ blog.createdBy }}</a>
+        </p>
+        {% if (blog.edited) %}
+            (Edited : {{ blog.editedAt|date('d-M-Y H:i') }})
+        {% endif %}
+    </div>
+    <div class="col-start-1 mt-8 h-fit">
+        <iframe class="border-gray-800 border-4 rounded-md" width="900" height="506" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        {% if app.user %}
+            {% include './blog/like.html.twig' %}
+            <button class="font-sans block w-fit h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-2.5 py-1 mt-2 text-m font-medium">
+                <a href='{{ path('app_blog_user', {'id': blog.createdBy.id}) }}'>See more by {{ blog.createdBy }}</a>
+            </button>
+            <div class="mt-4 mb-2">
+            {% include './comments/show.html.twig' %}
+            </div>
+            <button>
+                <a class="font-sans block w-full h-full bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white rounded-md px-3 py-2 text-sm font-medium" href="{{ path('app_blog_index') }}">Back to Home</a>
+            </button>
+        {% endif %}
+    </div>
+    <div class="col-start-2 mt-8">{{ blog.text|nl2br }}</div>
 </div>
 {% endblock %}

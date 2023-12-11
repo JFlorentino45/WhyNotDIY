@@ -12,7 +12,9 @@ class ForbiddenWordsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('words')
+            ->add('words', null, [
+                'label' => false,
+            ])
         ;
     }
 

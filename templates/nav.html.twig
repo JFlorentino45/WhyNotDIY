@@ -1,24 +1,50 @@
 <header>
 <nav class="bg-gray-800 text-white px-64 font-sans fixed inset-x-0 top-0 z-50">
   <div class="grid grid-cols-12 place-items-center align-middle h-16">
-    <div class="col-start-1"><a href="{{ path('home') }}" class="bg-gray-900 text-white rounded-md px-3 py-2 text-m font-medium" aria-current="page">Home</a></div>
+    <div class="col-start-1">
+      <a href="{{ path('home') }}" class="bg-gray-900 text-white rounded-md px-3 py-2 text-m font-medium" aria-current="page">Home</a>
+    </div>
     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-    {% if is_granted('ROLE_admin') %}
-    <div class="col-start-2"><a href="{{ path('app_admin_blogs') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">All Blogs</a></div>
-    <div class="col-start-3"><a href="{{ path('app_admin_comments') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Comments</a></div>
-    <div class="col-start-4"><a href="{{ path('app_admin_users') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Users</a></div>
-    <div class="col-start-5"><a href="{{ path('app_admin_forbidden_words') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Words</a></div>
-    <div class="col-start-6"><a href="{{ path('app_admin_blacklist') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Blacklist</a></div>
-    <div class="col-start-7"><a href="{{ path('app_admin_notifications') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Notifications</a></div>
+      {% if is_granted('ROLE_admin') %}
+        <div class="col-start-2">
+          <a href="{{ path('app_admin_blogs') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">All Blogs</a>
+        </div>
+        <div class="col-start-3">
+          <a href="{{ path('app_admin_comments') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Comments</a>
+        </div>
+        <div class="col-start-4">
+          <a href="{{ path('app_admin_users') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Users</a>
+        </div>
+        <div class="col-start-5">
+          <a href="{{ path('app_admin_forbidden_words') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Words</a>
+        </div>
+        <div class="col-start-6">
+          <a href="{{ path('app_admin_blacklist') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Blacklist</a>
+        </div>
+        <div class="col-start-7">
+          <a href="{{ path('app_admin_notifications') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Notifications</a>
+        </div>
+      {% else %}
+        <div class="col-start-2">
+          <a href="{{ path('app_blog_new') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-2 py-2 text-m font-medium">Create blog</a>
+        </div>
+        <div class="col-start-3">
+          <a href="{{ path('app_blog_mine') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">My blogs</a>
+        </div>
+        <div class="col-start-11">
+          <a href="{{ path('app_user_show', {'id': app.user.id}) }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Profile</a>
+        </div>
+      {% endif %}
+      <div class="col-start-12">
+        <a href="{{ path('logout') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Logout</a>
+      </div>
     {% else %}
-    <div class="col-start-2"><a href="{{ path('app_blog_new') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Create blog</a></div>
-    <div class="col-start-3"><a href="{{ path('app_blog_mine') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">My blogs</a></div>
-    <div class="col-start-11"><a href="{{ path('app_user_show', {'id': app.user.id}) }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Profile</a></div>
-    {% endif %}
-    <div class="col-start-12"><a href="{{ path('logout') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Logout</a></div>
-    {% else %}
-    <div class="col-start-10"><a href="{{ path('app_signup') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Sign Up</a></div>
-    <div class="col-start-11"><a href="{{ path('app_login') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Sign In</a></div>
+      <div class="col-start-10">
+        <a href="{{ path('app_signup') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Sign Up</a>
+      </div>
+      <div class="col-start-11">
+        <a href="{{ path('app_login') }}" class="bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-m font-medium">Sign In</a>
+      </div>
     {% endif %}
   </div>
 </nav>

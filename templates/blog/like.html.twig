@@ -1,12 +1,12 @@
 {% block body %}
 
 {% if blog.isLikedByUser(app.user) %}
-        <form action="{{ path('app_blog_like', {'id': blog.id}) }}" method="post">
-            <button class="font-sans block w-fit h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-2.5 py-1 mt-2 text-m font-medium" type="submit">Unlike</button>
-        </form>
-        {% else %}
-        <form action="{{ path('app_blog_like', {'id': blog.id}) }}" method="post">
-            <button class="font-sans block w-fit h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-2.5 py-1 mt-2 text-m font-medium" type="submit">Like</button>
-        </form>
-        {% endif %}
+    <form action="{{ path('app_blog_like', {'id': blog.id}) }}" method="post">
+        <button class="font-sans block w-fit h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-2.5 py-1 mt-2 text-m font-medium" type="submit">Unlike</button>
+    </form>
+{% else %}
+    <form action="{{ path('app_blog_like', {'id': blog.id}) }}" method="post">
+        <button class="font-sans block w-fit h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-2.5 py-1 mt-2 text-m font-medium" type="submit">Like</button>
+    </form>
+{% endif %}
 {% endblock %}

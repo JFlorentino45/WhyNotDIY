@@ -7,7 +7,6 @@ use App\Repository\BlogRepository;
 use App\Repository\CategoriesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -45,7 +44,7 @@ class CategoriesController extends AbstractController
     }
 
     #[Route('/load-blogs/{id}', name: 'app_blog_category_more', methods: ['GET'])]
-    public function loadCatBlogs(Categories $categories, Request $request): JsonResponse
+    public function loadCatBlogs(Categories $categories, Request $request): Response
     {
         $id = $categories->getId();
         $offset = $request->query->get('offset');
@@ -53,11 +52,11 @@ class CategoriesController extends AbstractController
 
         $html = $this->renderView('home/_cat_items.html.twig', ['blogs' => $blogs]);
 
-        return new JsonResponse(['html' => $html]);
+        return new Response($html);
     }
 
     #[Route('/search-blogs/{id}', name: 'search_cat_blogs', methods: ['GET'])]
-    public function searchBlogs(Request $request, Categories $categories): JsonResponse
+    public function searchBlogs(Request $request, Categories $categories): Response
     {
         $id = $categories->getId();
         $searchTerm = $request->query->get('term');
@@ -65,6 +64,6 @@ class CategoriesController extends AbstractController
 
         $html = $this->renderView('home/_blog_items.html.twig', ['blogs' => $blogs]);
 
-        return new JsonResponse(['html' => $html]);
+        return new Response($html);
     }
 }

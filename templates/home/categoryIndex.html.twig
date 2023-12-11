@@ -2,6 +2,12 @@
 
 {% block title %}WhyNotDIY{% endblock %}
 
+{% block javascripts %}
+    {{ parent()}}
+    <script src="{{ asset('js/search.js') }}"></script>
+    <script src="{{ asset('js/scroll.js') }}"></script>
+{% endblock %}
+
 {% block body %}
 <main>
 <section>

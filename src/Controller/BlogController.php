@@ -16,7 +16,6 @@ use App\Service\ForbiddenWordService;
 use function Symfony\Component\Clock\now;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -127,7 +126,7 @@ class BlogController extends AbstractController
     }
 
     #[Route('/load-more-blogs', name: 'app_blog_more', methods: ['GET'])]
-    public function loadMoreMyBlogs(Request $request): JsonResponse
+    public function loadMoreMyBlogs(Request $request): Response
     {
         $user = $this->security->getUser();
         $offset = $request->query->get('offset');
@@ -135,7 +134,7 @@ class BlogController extends AbstractController
 
         $html = $this->renderView('blog/_blog_items.html.twig', ['blogs' => $blogs]);
 
-        return new JsonResponse(['html' => $html]);
+        return new Response($html);
     }
 
     #[Route('/user-blogs/{id}', name: 'app_blog_user', methods: ['GET'])]
@@ -154,7 +153,7 @@ class BlogController extends AbstractController
     }
 
     #[Route('/load-user-blogs/{id}', name: 'app_user_blogs_more', methods: ['GET'])]
-    public function loadUserBlogs(Request $request, User $user): JsonResponse
+    public function loadUserBlogs(Request $request, User $user): Response
     {
         $id = $user->getId();
         $offset = $request->query->get('offset');
@@ -162,7 +161,7 @@ class BlogController extends AbstractController
 
         $html = $this->renderView('blog/_userblog_items.html.twig', ['blogs' => $blogs]);
 
-        return new JsonResponse(['html' => $html]);
+        return new Response($html);
     }
     
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET', 'POST'])]

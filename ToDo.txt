@@ -1,5 +1,13 @@
-pagination user blogs(admin)
+indentation
+
+Fix scroll offset on all pages
+
+Add pagination where ever blogs are being loaded
 
 forgotten pw
 
-Routes
+captcha (anti-robot)
+
+remove links from comments
+
+report blogs, users and comments
