@@ -51,11 +51,21 @@ class Blog
     #[ORM\JoinColumn(nullable: false)]
     private ?Categories $category = null;
 
+    #[ORM\OneToMany(mappedBy: 'blog_id', targetEntity: ReportsB::class)]
+    private Collection $reports;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $hidden = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $verified = null;
+
 
     public function __construct()
     {
         $this->likes = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->reports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -220,6 +230,60 @@ class Blog
     public function setCategory(?Categories $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ReportsB>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(ReportsB $report): static
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setBlogId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(ReportsB $report): static
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getBlogId() === $this) {
+                $report->setBlogId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isHidden(): ?bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(?bool $hidden): static
+    {
+        $this->hidden = $hidden;
+
+        return $this;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->verified;
+    }
+
+    public function setVerified(?bool $verified): static
+    {
+        $this->verified = $verified;
 
         return $this;
     }

@@ -36,6 +36,20 @@ class Comments
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?Blog $blog = null;
 
+    #[ORM\OneToMany(mappedBy: 'comment_id', targetEntity: ReportsC::class)]
+    private Collection $reports;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $hidden = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $verified = null;
+
+    public function __construct()
+    {
+        $this->reports = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -114,6 +128,60 @@ class Comments
     public function setBlog(?Blog $blog): static
     {
         $this->blog = $blog;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ReportsC>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(ReportsC $report): static
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setCommentId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(ReportsC $report): static
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getCommentId() === $this) {
+                $report->setCommentId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isHidden(): ?bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(?bool $hidden): static
+    {
+        $this->hidden = $hidden;
+
+        return $this;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->verified;
+    }
+
+    public function setVerified(?bool $verified): static
+    {
+        $this->verified = $verified;
 
         return $this;
     }

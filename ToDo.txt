@@ -7,3 +7,7 @@ forgotten pw
 captcha (anti-robot)
 
 remove links from comments
+
+
+
+(report entities -> entity hidden, verified -> button -> adding logic -> trigger -> admin notification -> verified logic -> edit logic)
