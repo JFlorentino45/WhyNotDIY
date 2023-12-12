@@ -2,6 +2,8 @@
 
 
 namespace App\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -37,6 +39,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column(length: 255)]
     private ?string $passwordHash = null;
+
+    #[ORM\OneToMany(mappedBy: 'person_id', targetEntity: Reports::class)]
+    private Collection $getReports;
+
+    public function __construct()
+    {
+        $this->getReports = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -126,5 +136,35 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     {
         return $original->getUsername() !== $this->getUsername()
             || $original->getEmailAddress() !== $this->getEmailAddress();
+    }
+
+    /**
+     * @return Collection<int, Reports>
+     */
+    public function getGetReports(): Collection
+    {
+        return $this->getReports;
+    }
+
+    public function addGetReport(Reports $getReport): static
+    {
+        if (!$this->getReports->contains($getReport)) {
+            $this->getReports->add($getReport);
+            $getReport->setPersonId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGetReport(Reports $getReport): static
+    {
+        if ($this->getReports->removeElement($getReport)) {
+            // set the owning side to null (unless already changed)
+            if ($getReport->getPersonId() === $this) {
+                $getReport->setPersonId(null);
+            }
+        }
+
+        return $this;
     }
 }
