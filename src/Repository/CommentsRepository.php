@@ -13,11 +13,19 @@ class CommentsRepository extends ServiceEntityRepository
         parent::__construct($registry, Comments::class);
     }
 
-    public function findAllOrderedByLatest($blogId): array
+    public function findBlogOrderedByLatest($blogId): array
     {
         return $this->createQueryBuilder('c')
             ->where('c.blog = :blogId')
             ->setParameter('blogId', $blogId)
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllOrderedByLatest(): array
+    {
+        return $this->createQueryBuilder('c')
             ->orderBy('c.createdAt', 'DESC')
             ->getQuery()
             ->getResult();

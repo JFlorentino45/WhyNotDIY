@@ -1,6 +1,4 @@
-indentation
-
-Fix scroll offset on all pages
+report blogs, users and comments
 
 Add pagination where ever blogs are being loaded
 
@@ -9,5 +7,3 @@ forgotten pw
 captcha (anti-robot)
 
 remove links from comments
-
-report blogs, users and comments

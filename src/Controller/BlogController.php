@@ -210,7 +210,7 @@ class BlogController extends AbstractController
         return $this->render('blog/show.html.twig', [
             'blog' => $blog,
             'commentForm' => $commentForm->createView(),
-            'comments' => $this->commentsRepository->findAllOrderedByLatest($blog->getId()),
+            'comments' => $this->commentsRepository->findBlogOrderedByLatest($blog->getId()),
         ]);
         
     }

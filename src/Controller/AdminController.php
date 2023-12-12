@@ -143,8 +143,9 @@ class AdminController extends AbstractController
     #[Route('/comments', name: 'app_admin_comments', methods: ['GET'])]
     public function getCommentsAdmin(): Response
     {
+
         return $this->render('admin/comments.html.twig', [
-            'comments' => $this->commentsRepository->findAll(),
+            'comments' => $this->commentsRepository->findAllOrderedByLatest(),
         ]);
     }
 
