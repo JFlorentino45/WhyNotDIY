@@ -51,14 +51,11 @@ class Blog
     #[ORM\JoinColumn(nullable: false)]
     private ?Categories $category = null;
 
-    #[ORM\OneToMany(mappedBy: 'blog_id', targetEntity: Reports::class)]
-    private Collection $getReports;
 
     public function __construct()
     {
         $this->likes = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->getReports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -223,36 +220,6 @@ class Blog
     public function setCategory(?Categories $category): static
     {
         $this->category = $category;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Reports>
-     */
-    public function getGetReports(): Collection
-    {
-        return $this->getReports;
-    }
-
-    public function addGetReport(Reports $getReport): static
-    {
-        if (!$this->getReports->contains($getReport)) {
-            $this->getReports->add($getReport);
-            $getReport->setBlogId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGetReport(Reports $getReport): static
-    {
-        if ($this->getReports->removeElement($getReport)) {
-            // set the owning side to null (unless already changed)
-            if ($getReport->getBlogId() === $this) {
-                $getReport->setBlogId(null);
-            }
-        }
 
         return $this;
     }

@@ -36,14 +36,6 @@ class Comments
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?Blog $blog = null;
 
-    #[ORM\OneToMany(mappedBy: 'comment_id', targetEntity: Reports::class)]
-    private Collection $getReports;
-
-    public function __construct()
-    {
-        $this->getReports = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -122,36 +114,6 @@ class Comments
     public function setBlog(?Blog $blog): static
     {
         $this->blog = $blog;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Reports>
-     */
-    public function getGetReports(): Collection
-    {
-        return $this->getReports;
-    }
-
-    public function addGetReport(Reports $getReport): static
-    {
-        if (!$this->getReports->contains($getReport)) {
-            $this->getReports->add($getReport);
-            $getReport->setCommentId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGetReport(Reports $getReport): static
-    {
-        if ($this->getReports->removeElement($getReport)) {
-            // set the owning side to null (unless already changed)
-            if ($getReport->getCommentId() === $this) {
-                $getReport->setCommentId(null);
-            }
-        }
 
         return $this;
     }
