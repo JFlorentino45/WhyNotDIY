@@ -66,7 +66,7 @@ class AdminController extends AbstractController
         $url = 'Ablogs';
 
         return $this->render('admin/blogs.html.twig', [
-            'blogs' => $this->blogRepository->findAllOrderedByLatest(),
+            'blogs' => $this->blogRepository->findAllOrderedByLatestAdmin(),
             'url' => $url,
         ]);
     }
@@ -75,7 +75,7 @@ class AdminController extends AbstractController
     public function loadMoreBlogs(Request $request): Response
     {
         $offset = $request->query->get('offset');
-        $blogs = $this->blogRepository->findMoreBlogs($offset);
+        $blogs = $this->blogRepository->findMoreBlogsAdmin($offset);
 
         $html = $this->renderView('admin/_blog_items.html.twig', ['blogs' => $blogs]);
 

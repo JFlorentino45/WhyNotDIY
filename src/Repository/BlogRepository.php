@@ -34,7 +34,26 @@ class BlogRepository extends ServiceEntityRepository
     public function findMoreBlogs(int $offset): array
     {
         return $this->createQueryBuilder('b')
-            ->Where('b.hidden = 0')
+        ->Where('b.hidden = 0')
+        ->orderBy('b.createdAt', 'DESC')
+        ->setMaxResults(5)
+        ->setFirstResult($offset)
+        ->getQuery()
+        ->getResult();
+    }
+    
+    public function findAllOrderedByLatestAdmin(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults(7)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findMoreBlogsAdmin(int $offset): array
+    {
+        return $this->createQueryBuilder('b')
             ->orderBy('b.createdAt', 'DESC')
             ->setMaxResults(5)
             ->setFirstResult($offset)
