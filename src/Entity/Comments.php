@@ -135,7 +135,7 @@ class Comments
     /**
      * @return Collection<int, ReportsC>
      */
-    public function getReports(): Collection
+    public function getCReports(): Collection
     {
         return $this->reports;
     }
@@ -160,6 +160,17 @@ class Comments
         }
 
         return $this;
+    }
+
+    public function isReportedByUser(User $user): bool
+    {
+        foreach ($this->reports as $report) {
+        if ($report->getReporterId() === $user) {
+            return true;
+        }
+    }
+
+        return false;
     }
 
     public function isHidden(): ?bool

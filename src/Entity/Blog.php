@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\PseudoTypes\False_;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
 #[ORM\Table(indexes: [new ORM\Index(columns: ['title', 'text'], flags: ['fulltext'])])]
@@ -54,10 +55,10 @@ class Blog
     #[ORM\OneToMany(mappedBy: 'blog_id', targetEntity: ReportsB::class)]
     private Collection $reports;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
     private ?bool $hidden = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
     private ?bool $verified = null;
 
 
@@ -262,6 +263,17 @@ class Blog
         }
 
         return $this;
+    }
+
+    public function isReportedByUser(User $user): bool
+    {
+        foreach ($this->reports as $report) {
+        if ($report->getReporterId() === $user) {
+            return true;
+        }
+    }
+
+        return false;
     }
 
     public function isHidden(): ?bool

@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\Likes;
 use App\Entity\Comments;
 use App\Entity\AdminNotification;
+use App\Entity\ReportsB;
 use App\Form\CommentType;
 use App\Form\BlogType;
 use App\Repository\CommentsRepository;
@@ -318,6 +319,31 @@ class BlogController extends AbstractController
     
         $this->entityManager->flush();
         return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
+
+    }
+
+    #[Route('/{id}/report', name: 'app_blog_report', methods: ['POST'])]
+    public function reportBlog(Blog $blog): Response
+    {
+        $user = $this->getUser();
+        if ($user === null) {
+            throw new AccessDeniedException();
+        }
+
+        if ($blog->isReportedByUser($user)) {
+            $this->addFlash('warning', '*Blog already reported.');
+            return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()], Response::HTTP_SEE_OTHER);
+        } else {
+            $report = new ReportsB();
+            $report->setReporterId($user);
+            $report->setBlogId($blog);
+        
+            $this->entityManager->persist($report);
+        }
+    
+        $this->entityManager->flush();
+        $this->addFlash('warning', '*Blog Reported.');
+        return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()], Response::HTTP_SEE_OTHER);
 
     }
     

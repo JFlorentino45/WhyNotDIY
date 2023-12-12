@@ -36,7 +36,8 @@ class BlogType extends AbstractType
                 $blog->setEdited(true);
                 $blog->setEditedAt(now());
             }
-            
+            $blog->setHidden(false);
+            $blog->setVerified(false);
         });
         
         $builder

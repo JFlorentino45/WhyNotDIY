@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ReportsB{% endblock %}
+
+{% block body %}
+    <h1>ReportsB</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ reports_b.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_reports_b_index') }}">back to list</a>
+
+    <a href="{{ path('app_reports_b_edit', {'id': reports_b.id}) }}">edit</a>
+
+    {{ include('reports_b/_delete_form.html.twig') }}
+{% endblock %}

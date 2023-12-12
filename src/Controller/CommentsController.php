@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\AdminNotification;
 use App\Entity\Comments;
+use App\Entity\ReportsC;
 use App\Repository\AdminNotificationRepository;
 use App\Form\CommentType;
 use App\Service\ForbiddenWordService;
@@ -111,5 +112,30 @@ class CommentsController extends AbstractController
         }
 
         return $this->redirectToRoute('app_blog_show', ['id' => $comment->getBlog()->getId()], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/report', name: 'app_comments_report', methods: ['POST'])]
+    public function reportComment(Comments $comment): Response
+    {
+        $user = $this->getUser();
+        if ($user === null) {
+            throw new AccessDeniedException();
+        }
+
+        if ($comment->isReportedByUser($user)) {
+            $this->addFlash('warning', '*Comment already reported.');
+            return $this->redirectToRoute('app_blog_show', ['id' => $comment->getBlog()->getId()], Response::HTTP_SEE_OTHER);
+        } else {
+            $report = new ReportsC();
+            $report->setReporterId($user);
+            $report->setCommentId($comment);
+        
+            $this->entityManager->persist($report);
+        }
+    
+        $this->entityManager->flush();
+        $this->addFlash('warning', '*Comment Reported.');
+        return $this->redirectToRoute('app_blog_show', ['id' => $comment->getBlog()->getId()], Response::HTTP_SEE_OTHER);
+
     }
 }

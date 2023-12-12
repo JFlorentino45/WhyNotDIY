@@ -24,6 +24,7 @@ class BlogRepository extends ServiceEntityRepository
     public function findAllOrderedByLatest(): array
     {
         return $this->createQueryBuilder('b')
+            ->Where('b.hidden = 0')
             ->orderBy('b.createdAt', 'DESC')
             ->setMaxResults(7)
             ->getQuery()
@@ -33,6 +34,7 @@ class BlogRepository extends ServiceEntityRepository
     public function findMoreBlogs(int $offset): array
     {
         return $this->createQueryBuilder('b')
+            ->Where('b.hidden = 0')
             ->orderBy('b.createdAt', 'DESC')
             ->setMaxResults(5)
             ->setFirstResult($offset)
@@ -43,6 +45,7 @@ class BlogRepository extends ServiceEntityRepository
     public function findMyBlogsOrderedByLatest($user): array
     {
         return $this->createQueryBuilder('b')
+            ->Where('b.hidden = 0')
             ->andWhere('b.createdBy = :user')
             ->setParameter('user', $user)
             ->orderBy('b.createdAt', 'DESC')
@@ -54,6 +57,7 @@ class BlogRepository extends ServiceEntityRepository
     public function findMoreMyBlogs($user, $offset): array
     {
         return $this->createQueryBuilder('b')
+            ->Where('b.hidden = 0')
             ->andWhere('b.createdBy = :user')
             ->setParameter('user', $user)
             ->orderBy('b.createdAt', 'DESC')
@@ -66,7 +70,8 @@ class BlogRepository extends ServiceEntityRepository
     public function searchBlogs(string $term): array
     {
         return $this->createQueryBuilder('b')
-            ->where('b.title LIKE :term OR b.text LIKE :term')
+            ->Where('b.hidden = 0')
+            ->andWhere('b.title LIKE :term OR b.text LIKE :term')
             ->setParameter('term', '%' . $term . '%')
             ->orderBy('b.createdAt', 'DESC')
             ->setMaxResults(7)
