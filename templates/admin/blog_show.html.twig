@@ -21,9 +21,12 @@
             <a class="font-sans block w-full h-full bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white rounded-md mt-2 px-3 py-2 text-sm font-medium" href="{{ path('app_blog_index') }}">Back to Home</a>
         </button>
         {% if not blog.verified %}
-        {{ include('admin/blog_verify_form.html.twig') }}
+            {{ include('admin/blog_verify_form.html.twig') }}
         {% endif %}
         {{ include('admin/blog_delete_form.html.twig') }}
+        <div class="mt-4 mb-2">
+            {% include './admin/comments_show.html.twig' %}
+        </div>
     </div>
     <div class="col-start-2 mt-8">{{ blog.text|nl2br }}</div>
 </div>

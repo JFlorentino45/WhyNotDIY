@@ -31,6 +31,9 @@
     <button>
         <a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2 my-2" href="{{ path('app_admin_notifications') }}">back to notifications</a>
     </button>
+    {% if not comment.verified %}
+        {{ include('admin/comment_verify_form.html.twig') }}
+    {% endif %}
     {{ include('admin/comment_delete_form.html.twig') }}
 </div>
 {% endblock %}

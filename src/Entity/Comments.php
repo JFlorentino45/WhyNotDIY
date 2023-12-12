@@ -39,15 +39,19 @@ class Comments
     #[ORM\OneToMany(mappedBy: 'comment_id', targetEntity: ReportsC::class)]
     private Collection $reports;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
     private ?bool $hidden = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
     private ?bool $verified = null;
 
     public function __construct()
     {
         $this->reports = new ArrayCollection();
+    }
+
+    public function getType(): string {
+        return 'comment';
     }
 
     public function getId(): ?int
@@ -171,6 +175,11 @@ class Comments
     }
 
         return false;
+    }
+
+    public function getReportsCount(): int
+    {
+        return $this->reports->count();
     }
 
     public function isHidden(): ?bool

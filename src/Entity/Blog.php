@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\PseudoTypes\False_;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
 #[ORM\Table(indexes: [new ORM\Index(columns: ['title', 'text'], flags: ['fulltext'])])]
@@ -67,6 +66,10 @@ class Blog
         $this->likes = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->reports = new ArrayCollection();
+    }
+
+    public function getType(): string {
+        return 'blog';
     }
 
     public function getId(): ?int

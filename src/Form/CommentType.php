@@ -36,6 +36,8 @@ class CommentType extends AbstractType
                 $comment->setEdited(true);
                 $comment->setEditedAt(now());
             }
+            $comment->setHidden(false);
+            $comment->setVerified(false);
         });
 
         $builder

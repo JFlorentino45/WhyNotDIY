@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_admin_comments_verify', {'id': comment.id}) }}" onsubmit="return confirm('Are you sure you want to verify this comment?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('verify' ~ comment.id) }}">
+    <button class="btn block w-fit rounded bg-green-700 text-gray-300 hover:bg-green-600 hover:text-white px-4 py-1 mb-2 mx-2">Verify</button>
+</form>

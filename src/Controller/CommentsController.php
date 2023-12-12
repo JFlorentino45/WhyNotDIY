@@ -65,7 +65,8 @@ class CommentsController extends AbstractController
                     $adminNotification->setUser(null);
                     $adminNotification->setBlog(null);
                     $adminNotification->setWords($service['word']);
-                    
+
+                    $comment->setVerified(false);
                     $this->entityManager->persist($comment);
                     $this->entityManager->flush();
                     
@@ -76,7 +77,7 @@ class CommentsController extends AbstractController
                     $this->addFlash('success', '*Comment updated.');
                     return $this->redirectToRoute('app_blog_show', ['id' => $comment->getBlog()->getId()]);
                 } else {
-        
+                    $comment->setVerified(false);
                     $this->entityManager->persist($comment);
                     $this->entityManager->flush();
 

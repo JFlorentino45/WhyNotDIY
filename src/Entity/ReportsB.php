@@ -14,11 +14,11 @@ class ReportsB
     private ?int $id = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?User $reporter_id = null;
 
     #[ORM\ManyToOne(inversedBy: 'reports')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?Blog $blog_id = null;
 
     public function getId(): ?int

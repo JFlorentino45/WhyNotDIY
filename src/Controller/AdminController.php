@@ -168,6 +168,19 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_admin_comments', [], Response::HTTP_SEE_OTHER);
     }
 
+    #[Route('/comments/{id}/verify', name: 'app_admin_comments_verify', methods: ['POST'])]
+    public function commentVerifyAdmin(Request $request, Comments $comment): Response
+    {
+        if ($this->isCsrfTokenValid('verify'.$comment->getId(), $request->request->get('_token'))) {
+            $comment->setVerified(true);
+            $comment->setHidden(false);
+            $this->entityManager->persist($comment);
+            $this->entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_admin_blog', ['id' => $comment->getBlog()->getId()], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/notifications', name: 'app_admin_notifications', methods: ['GET'])]
     public function notificationShowAdmin(): Response
     {
@@ -319,8 +332,12 @@ class AdminController extends AbstractController
     #[Route('/reports', name: 'app_admin_reports', methods: ['GET'])]
     public function getReports(): Response
     {
+        $reports = array_merge(
+            $this->blogRepository->findReported(),
+            $this->commentsRepository->findReported()
+        );
         return $this->render('admin/reports.html.twig', [
-            'reports' => $this->blogRepository->findReported(),
+            'reports' => $reports,
         ]);
     }
 
@@ -329,6 +346,7 @@ class AdminController extends AbstractController
     {
         return $this->render('admin/blog_show.html.twig', [
             'blog' => $blog,
+            'comments' => $this->commentsRepository->findBlogOrderedByLatest($blog->getId()),
         ]);
     }
 
