@@ -315,5 +315,34 @@ class AdminController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/reports', name: 'app_admin_reports', methods: ['GET'])]
+    public function getReports(): Response
+    {
+        return $this->render('admin/reports.html.twig', [
+            'reports' => $this->blogRepository->findReported(),
+        ]);
+    }
+
+    #[Route('/blog/{id}', name: 'app_admin_blog', methods: ['GET'])]
+    public function getBlogShow(Blog $blog): Response
+    {
+        return $this->render('admin/blog_show.html.twig', [
+            'blog' => $blog,
+        ]);
+    }
+
+    #[Route('/blog/{id}/verify', name: 'app_admin_blog_verify', methods: ['POST'])]
+    public function verifyBlog(Request $request, Blog $blog): Response
+    {
+        if ($this->isCsrfTokenValid('verify'.$blog->getId(), $request->request->get('_token'))) {
+            $blog->setVerified(true);
+            $blog->setHidden(false);
+            $this->entityManager->persist($blog);
+            $this->entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_admin_blog', ['id' => $blog->getId()], Response::HTTP_SEE_OTHER);
+    }
 }
 

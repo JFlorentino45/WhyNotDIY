@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block body %}
+   <p class="text-2xl font-semibold ml-2">Reports</p>
+
+    <table class="table border-separate border border-slate-400 rounded-lg mx-2 mt-4 w-3/4">
+        <thead>
+            <tr>
+                <th class="border border-slate-300">Text</th>
+                <th class="border border-slate-300">actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for report in reports %}
+            <tr>
+                <td class="border border-slate-300 text-xl px-2">This blog has recieved {{report.getReportsCount()}} reports</td>
+                <td class="border border-slate-300 text-xl px-2">
+
+                <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2 mb-2" href="{{ path('app_admin_blog', {'id': report.id}) }}">show</a></button>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4" class="text-center text-xl">No Reports</td>
+            </tr>
+        {% endfor %}
+        </div>
+        </tbody>
+    </table>
+{% endblock %}

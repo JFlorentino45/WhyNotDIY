@@ -116,4 +116,14 @@ class BlogRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findReported(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->Where('b.hidden = 1')
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults(7)
+            ->getQuery()
+            ->getResult();
+    }
 }

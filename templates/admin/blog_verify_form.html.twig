@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_admin_blog_verify', {'id': blog.id}) }}" onsubmit="return confirm('Are you sure you want to verify this blog');">
+    <input type="hidden" name="_token" value="{{ csrf_token('verify' ~ blog.id) }}">
+    <button class="btn font-sans block w-fit h-full bg-green-600 text-gray-200 hover:bg-green-500 hover:text-white rounded-md px-2.5 py-1 mt-1 text-sm font-medium">Verify</button>
+</form>

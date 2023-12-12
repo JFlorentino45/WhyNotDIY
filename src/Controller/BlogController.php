@@ -265,7 +265,8 @@ class BlogController extends AbstractController
                         $adminNotification->setUser(null);
                         $adminNotification->setWords($word);
                         $adminNotification->setComment(null);
-                    
+                        
+                        $blog->setVerified(false);
                         $this->entityManager->persist($blog);
                         $this->entityManager->flush();
                     
@@ -276,6 +277,7 @@ class BlogController extends AbstractController
                         $this->addFlash('success', '*Blog updated.');
                         return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                     } else {
+                        $blog->setVerified(false);
                         $this->entityManager->persist($blog);
                         $this->entityManager->flush();
                         $this->addFlash('success', '*Blog updated.');
@@ -332,7 +334,7 @@ class BlogController extends AbstractController
 
         if ($blog->isReportedByUser($user)) {
             $this->addFlash('warning', '*Blog already reported.');
-            return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
         } else {
             $report = new ReportsB();
             $report->setReporterId($user);
@@ -343,7 +345,7 @@ class BlogController extends AbstractController
     
         $this->entityManager->flush();
         $this->addFlash('warning', '*Blog Reported.');
-        return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
 
     }
     

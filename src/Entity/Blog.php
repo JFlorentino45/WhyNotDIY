@@ -276,6 +276,11 @@ class Blog
         return false;
     }
 
+    public function getReportsCount(): int
+    {
+        return $this->reports->count();
+    }
+
     public function isHidden(): ?bool
     {
         return $this->hidden;

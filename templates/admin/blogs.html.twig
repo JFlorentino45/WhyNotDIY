@@ -32,7 +32,7 @@
                         Likes: {{ blog.getLikesCount() }} Comments: {{ blog.getCommentsCount() }}
                     </p>
                     <button class="ml-2">
-                        <a class="font-sans block w-full h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-1 text-sm font-medium" href="{{ path('app_blog_show', {'id': blog.id}) }}">View</a>
+                        <a class="font-sans block w-full h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-1 text-sm font-medium" href="{{ path('app_admin_blog', {'id': blog.id}) }}">View</a>
                     </button>
                     <button>
                         <a class="font-sans block w-full h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-1 text-sm font-medium" href="{{ path('app_blog_edit', {'id': blog.id}) }}">Edit</a>
