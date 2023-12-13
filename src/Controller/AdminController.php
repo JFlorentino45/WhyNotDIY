@@ -346,7 +346,7 @@ class AdminController extends AbstractController
     {
         return $this->render('admin/blog_show.html.twig', [
             'blog' => $blog,
-            'comments' => $this->commentsRepository->findBlogOrderedByLatest($blog->getId()),
+            'comments' => $this->commentsRepository->findBlogOrderedByLatestAdmin($blog->getId()),
         ]);
     }
 

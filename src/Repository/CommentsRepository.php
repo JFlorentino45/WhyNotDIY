@@ -24,6 +24,16 @@ class CommentsRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findBlogOrderedByLatestAdmin($blogId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.blog = :blogId')
+            ->setParameter('blogId', $blogId)
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllOrderedByLatest(): array
     {
         return $this->createQueryBuilder('c')
