@@ -1,14 +1,3 @@
-report blogs, users and comments
-
-Add pagination where ever blogs are being loaded
-
 forgotten pw
 
 captcha (anti-robot)
-
-remove links from comments
-
-
-
-(report entities -> entity hidden, verified -> button -> adding logic -> trigger -> admin notification -> verified logic -> edit logic)
-
