@@ -156,9 +156,8 @@ class BlogController extends AbstractController
     #[Route('/load-user-blogs/{id}', name: 'app_user_blogs_more', methods: ['GET'])]
     public function loadUserBlogs(Request $request, User $user): Response
     {
-        $id = $user->getId();
         $offset = $request->query->get('offset');
-        $blogs = $this->blogRepository->findMoreMyBlogs($id, $offset);
+        $blogs = $this->blogRepository->findMoreMyBlogs($user, $offset);
 
         $html = $this->renderView('blog/_userblog_items.html.twig', ['blogs' => $blogs]);
 

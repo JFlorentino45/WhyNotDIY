@@ -33,8 +33,6 @@ security:
     - { path: ^/blog/, roles: ROLE_user }
     - { path: ^/user/, roles: ROLE_user }
 
-  access_denied_url: "access_denied"
-
 when@test:
   security:
     password_hashers:

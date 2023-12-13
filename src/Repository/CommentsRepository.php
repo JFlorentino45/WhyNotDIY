@@ -13,7 +13,7 @@ class CommentsRepository extends ServiceEntityRepository
         parent::__construct($registry, Comments::class);
     }
 
-    public function findBlogOrderedByLatest($blogId): array
+    public function findBlogOrderedByLatest(int $blogId): array
     {
         return $this->createQueryBuilder('c')
             ->Where('c.hidden = 0')
@@ -24,7 +24,7 @@ class CommentsRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findBlogOrderedByLatestAdmin($blogId): array
+    public function findBlogOrderedByLatestAdmin(int $blogId): array
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.blog = :blogId')

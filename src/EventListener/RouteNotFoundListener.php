@@ -4,7 +4,6 @@ namespace App\EventListener;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
 class RouteNotFoundListener
@@ -18,12 +17,8 @@ class RouteNotFoundListener
 
     public function onKernelException(ExceptionEvent $event)
     {
-        $exception = $event->getThrowable();
-
-        if ($exception instanceof NotFoundHttpException) {
-            $url = $this->router->generate('app_blog_index');
-            $response = new RedirectResponse($url);
-            $event->setResponse($response);
-        }
+        $url = $this->router->generate('app_blog_index');
+        $response = new RedirectResponse($url);
+        $event->setResponse($response);
     }
 }

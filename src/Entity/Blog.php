@@ -259,7 +259,6 @@ class Blog
     public function removeReport(ReportsB $report): static
     {
         if ($this->reports->removeElement($report)) {
-            // set the owning side to null (unless already changed)
             if ($report->getBlogId() === $this) {
                 $report->setBlogId(null);
             }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Blog;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -61,7 +62,7 @@ class BlogRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findMyBlogsOrderedByLatest($user): array
+    public function findMyBlogsOrderedByLatest(User $user): array
     {
         return $this->createQueryBuilder('b')
             ->Where('b.hidden = 0')
@@ -73,7 +74,7 @@ class BlogRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findMoreMyBlogs($user, $offset): array
+    public function findMoreMyBlogs(User $user, int $offset): array
     {
         return $this->createQueryBuilder('b')
             ->Where('b.hidden = 0')
