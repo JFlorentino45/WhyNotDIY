@@ -4,7 +4,7 @@ $(document).ready(function () {
     $("#searchInput").on("keyup", function () {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
-        const searchTerm = $(this).val();
+        var searchTerm = $(this).val();
         if (searchTerm.length >= 0) {
           searchBlogs(searchTerm);
         }
@@ -16,8 +16,8 @@ $(document).ready(function () {
       offset = 0;
   
       $.get("/search-blogs", { term: searchTerm }, function (response) {
-        if (response.html.trim() != "") {
-          $("#blog-container").append(response.html);
+        if (response.trim() != "") {
+          $("#blog-container").append(response);
         } else {
           $("#pagination-loader").html("No matching blogs found.");
         }
@@ -44,8 +44,8 @@ $(document).ready(function () {
         "/categories/search-blogs/" + $("#id").data("id"),
         { term: searchTerm },
         function (response) {
-          if (response.html.trim() != "") {
-            $("#blog-container").append(response.html);
+          if (response.trim() != "") {
+            $("#blog-container").append(response);
           } else {
             $("#pagination-loader").html("No matching blogs found.");
           }

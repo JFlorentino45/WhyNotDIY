@@ -87,7 +87,7 @@ class BlogRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function searchBlogs(string $term): array
+    public function searchBlogs($term): array
     {
         return $this->createQueryBuilder('b')
             ->Where('b.hidden = 0')

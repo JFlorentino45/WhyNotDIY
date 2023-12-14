@@ -5,23 +5,24 @@ namespace App\Controller;
 use App\Entity\Blog;
 use App\Entity\User;
 use App\Entity\Likes;
+use App\Form\BlogType;
 use App\Entity\Comments;
-use App\Entity\AdminNotification;
 use App\Entity\ReportsB;
 use App\Form\CommentType;
-use App\Form\BlogType;
-use App\Repository\CommentsRepository;
+use App\Entity\AdminNotification;
 use App\Repository\BlogRepository;
-use App\Repository\AdminNotificationRepository;
 use App\Service\ForbiddenWordService;
+use App\Repository\CommentsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use function Symfony\Component\Clock\now;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Repository\AdminNotificationRepository;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3Validator;
 
 #[Route('/blog')]
 class BlogController extends AbstractController
@@ -51,7 +52,7 @@ class BlogController extends AbstractController
     }
 
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, Recaptcha3Validator $recaptcha3Validator): Response
     {
         //used for creating new blogs
         $blog = new Blog();
@@ -59,6 +60,11 @@ class BlogController extends AbstractController
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
+            //check if bot
+            $score = $recaptcha3Validator->getLastResponse()->getScore();
+            if ($score <= 0.5) {
+                return $this->redirectToRoute('logout');
+            }
             //get title and text data to pass into check
             $title = $form->get('title')->getData();
             $text = $form->get('text')->getData();
@@ -165,7 +171,7 @@ class BlogController extends AbstractController
     }
     
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET', 'POST'])]
-    public function show(Blog $blog, Request $request): Response
+    public function show(Blog $blog, Request $request, Recaptcha3Validator $recaptcha3Validator): Response
     {
         
         $comment = new Comments();
@@ -173,6 +179,10 @@ class BlogController extends AbstractController
         $commentForm->handleRequest($request);
         
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $score = $recaptcha3Validator->getLastResponse()->getScore();
+            if ($score <= 0.5) {
+                return $this->redirectToRoute('logout');
+            }
             $text = $commentForm->get('text')->getData();
             if ($this->forbiddenWordService->isForbidden($text)) {
                 $this->addFlash('error', '*Comment contains forbidden words.');
@@ -201,7 +211,7 @@ class BlogController extends AbstractController
         
                     $this->entityManager->persist($comment);
                     $this->entityManager->flush();
-                    
+                    $this->addFlash('success', '*Comment added.');
                     return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                 }
             }

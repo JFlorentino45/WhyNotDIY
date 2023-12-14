@@ -14,6 +14,7 @@ use function Symfony\Component\Clock\now;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3Validator;
 
 class SignUpController extends AbstractController
 {
@@ -35,7 +36,7 @@ class SignUpController extends AbstractController
     }
 
     #[Route('/signup', name: 'app_signup', methods: ['GET', 'POST'])]
-    public function index(Request $request): Response
+    public function index(Request $request, Recaptcha3Validator $recaptcha3Validator): Response
     {
         $user = new User();
         $form = $this->createForm(SignupType::class, $user);
@@ -43,6 +44,11 @@ class SignUpController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $score = $recaptcha3Validator->getLastResponse()->getScore();
+            $time = $recaptcha3Validator->getLastResponse()->getChallengeTs();
+            if ($score <= 0.5) {
+                return $this->redirectToRoute('app_blog_index');
+            }
             $email = $form->get('emailAddress')->getData();
             if ($this->blacklistService->isBanned($email)) {
                 $this->addFlash('error', '*This E-mail is banned.');
@@ -75,7 +81,7 @@ class SignUpController extends AbstractController
                         $this->entityManager->persist($adminNotification);
                         $this->entityManager->flush();
 
-                        $this->addFlash('success', '*Account created, Please login.');
+                        $this->addFlash('success', '*Account created, Please login. Your reCaptcha score:' . $score . $time);
                         return $this->redirectToRoute('app_login');
                     }
                 } else {
@@ -90,7 +96,7 @@ class SignUpController extends AbstractController
                         $this->entityManager->persist($user);
                         $this->entityManager->flush();
                         
-                        $this->addFlash('success', '*Account created, Please login.');
+                        $this->addFlash('success', '*Account created, Please login. Your reCaptcha score:' . $score . $time);
                         return $this->redirectToRoute('app_login');
                     }
                 }
