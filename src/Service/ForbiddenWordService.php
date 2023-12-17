@@ -25,6 +25,7 @@ class ForbiddenWordService
     public function isForbidden(string $text): bool
     {
         $forbiddenWords = $this->getForbiddenWords();
+        $text = preg_replace('/\s+/', ' ', str_replace(["\r", "\n"], ' ', $text));
         $words = explode(' ', $text);
         $forbiddenWords = array_map('strtolower', $forbiddenWords);
 

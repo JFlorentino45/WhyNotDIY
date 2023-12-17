@@ -3,19 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserType;
 use App\Entity\AdminNotification;
 use App\Service\BlacklistService;
 use App\Service\ForbiddenWordService;
-use App\Repository\AdminNotificationRepository;
-use App\Form\UserType;
+use Doctrine\ORM\EntityManagerInterface;
 use function Symfony\Component\Clock\now;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Repository\AdminNotificationRepository;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3Validator;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -55,7 +56,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user): Response
+    public function edit(Request $request, User $user, Recaptcha3Validator $recaptcha3Validator): Response
     {
         if (!$this->isGranted('ROLE_admin')) {
             if ($user !== $this->getUser()) {
@@ -69,6 +70,10 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $score = $recaptcha3Validator->getLastResponse()->getScore();
+            if ($score <= 0.5) {
+                return $this->redirectToRoute('logout');
+            }
             if ($user->isModified($oldData)) {
                 $email = $form->get('emailAddress')->getData();
                 if ($this->blacklistService->isBanned($email)) {

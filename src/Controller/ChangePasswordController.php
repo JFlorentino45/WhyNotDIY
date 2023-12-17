@@ -2,20 +2,21 @@
 
 namespace App\Controller;
 
-use App\Form\EditPasswordType;
 use App\Entity\User;
+use App\Form\EditPasswordType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3Validator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ChangePasswordController extends AbstractController
 {
     #[Route('/edit/password', name: 'app_change_password', methods: ['POST', 'GET'])]
-    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
+    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, Recaptcha3Validator $recaptcha3Validator): Response
     {
         $user = $this->getUser();
 
@@ -27,6 +28,10 @@ class ChangePasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $score = $recaptcha3Validator->getLastResponse()->getScore();
+            if ($score <= 0.5) {
+                return $this->redirectToRoute('logout');
+            }
             $currentPassword = $form->get('currentPassword')->getData();
             $newPassword = $form->get('plainPassword')->getData();
             $validation = $form->get('confirmPassword')->getData();

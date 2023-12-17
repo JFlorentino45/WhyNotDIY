@@ -45,7 +45,6 @@ class SignUpController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $score = $recaptcha3Validator->getLastResponse()->getScore();
-            $time = $recaptcha3Validator->getLastResponse()->getChallengeTs();
             if ($score <= 0.5) {
                 return $this->redirectToRoute('app_blog_index');
             }
@@ -81,7 +80,7 @@ class SignUpController extends AbstractController
                         $this->entityManager->persist($adminNotification);
                         $this->entityManager->flush();
 
-                        $this->addFlash('success', '*Account created, Please login. Your reCaptcha score:' . $score . $time);
+                        $this->addFlash('success', '*Account created, Please login.');
                         return $this->redirectToRoute('app_login');
                     }
                 } else {
@@ -96,7 +95,7 @@ class SignUpController extends AbstractController
                         $this->entityManager->persist($user);
                         $this->entityManager->flush();
                         
-                        $this->addFlash('success', '*Account created, Please login. Your reCaptcha score:' . $score . $time);
+                        $this->addFlash('success', '*Account created, Please login.');
                         return $this->redirectToRoute('app_login');
                     }
                 }

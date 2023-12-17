@@ -111,7 +111,7 @@ class CommentsController extends AbstractController
             $this->entityManager->remove($comment);
             $this->entityManager->flush();
         }
-
+        $this->addFlash('success', '*Comment deleted.');
         return $this->redirectToRoute('app_blog_show', ['id' => $comment->getBlog()->getId()], Response::HTTP_SEE_OTHER);
     }
 

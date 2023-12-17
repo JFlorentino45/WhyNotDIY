@@ -3,6 +3,7 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block body %}
+<div class=" py-8 2xl:py-0">
     <p class="text-xl font-semibold text-center mt-4">Welcome to Why not DIY!</p>
     
     {{ form_start(form, {'attr': {'class': 'flex flex-col justify-center items-center container mx-auto max-w-fit my-6 mh-auto p-8 bg-gray-200 rounded-md'}}) }}
@@ -15,5 +16,5 @@
     <p class="text-gray-500 mt-2">Already have an account? -><a class="text-blue-800" href="{{ path('app_login') }}">Login</a></p>
 
     {{ form_end(form) }}
-    
+</div>
 {% endblock %}

@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
+use Symfony\Component\Validator\Constraints\Length;
 
 class BlogType extends AbstractType
 {
@@ -60,7 +61,13 @@ class BlogType extends AbstractType
                 ],
             ])
             ->add('text', null, [
-                'label' => false
+                'label' => false,
+                'constraints' => [
+                    new Length([
+                        'min' => 50,
+                        'minMessage' => 'The text should be at least {{ limit }} characters',
+                    ]),
+                ],
             ])
             ->add('captcha', Recaptcha3Type::class, [
                 'constraints' => new Recaptcha3(),

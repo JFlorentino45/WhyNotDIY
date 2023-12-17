@@ -71,6 +71,7 @@ class BlogController extends AbstractController
             if ($this->forbiddenWordService->isForbidden($title) || $this->forbiddenWordService->isForbidden($text)) {
                 //if the title or text contains 'direct' forbidden words, pop up message
                 $this->addFlash('error', '*Blog contains forbidden words.');
+
             } else {
                 $serviceText = $this->forbiddenWordService->containsForbiddenWord($text);
                 $serviceTitle = $this->forbiddenWordService->containsForbiddenWord($title);
@@ -81,9 +82,11 @@ class BlogController extends AbstractController
                     $adminNotification->setCreatedAt(now());
                     $message = "";
                     if ($serviceTitle['found'] && $serviceText['found']) {
-                        //first both title and text then just text then just title
+                        $titleWord = is_array($serviceTitle['word']) ? implode(', ', $serviceTitle['word']) : $serviceTitle['word'];
+                        $textWord = is_array($serviceText['word']) ? implode(', ', $serviceText['word']) : $serviceText['word'];
+    
                         $message = "A blog's title and text may contain forbidden words. Please verify";
-                        $word = ['Title: ' . $serviceTitle['word'] . ' Text: ' . $serviceText['word']];
+                        $word = ['Title: ' . $titleWord . ' Text: ' . $textWord];
                     } elseif ($serviceText['found']) {
                         $message = "A blog's text may contain a forbidden word. Please verify.";
                         $word = $serviceText['word'];
@@ -373,7 +376,7 @@ class BlogController extends AbstractController
             $this->entityManager->remove($blog);
             $this->entityManager->flush();
         }
-
+    $this->addFlash('success', '*Blog deleted.');
     return $this->redirectToRoute('app_blog_mine', [], Response::HTTP_SEE_OTHER);
     }
 }

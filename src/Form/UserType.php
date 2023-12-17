@@ -3,11 +3,12 @@
 namespace App\Form;
 
 use App\Entity\User;
-use Doctrine\DBAL\Types\StringType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 
 class UserType extends AbstractType
 {
@@ -25,6 +26,10 @@ class UserType extends AbstractType
                     'User' => 'ROLE_user',
                     'Admin' => 'ROLE_admin',
                 ]
+            ])
+            ->add('captcha', Recaptcha3Type::class, [
+                'constraints' => new Recaptcha3(),
+                'action_name' => 'app_user_edit',
             ])
         ;
     }
