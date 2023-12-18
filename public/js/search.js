@@ -15,7 +15,8 @@ $(document).ready(function () {
       $("#blog-container").empty();
       offset = 0;
   
-      $.get("/search-blogs", { term: searchTerm }, function (response) {
+      $.get(
+          "/search-blogs", { term: searchTerm }, function (response) {
         if (response.trim() != "") {
           $("#blog-container").append(response);
         } else {

@@ -103,7 +103,8 @@ class BlogRepository extends ServiceEntityRepository
     public function searchCatBlogs(string $term, int $id): array
     {
         return $this->createQueryBuilder('b')
-            ->where('b.title LIKE :term OR b.text LIKE :term')
+            ->Where('b.hidden = 0')
+            ->andwhere('b.title LIKE :term OR b.text LIKE :term')
             ->andWhere('b.category = :id')
             ->setParameter('id', $id)
             ->setParameter('term', '%' . $term . '%')
@@ -117,6 +118,7 @@ class BlogRepository extends ServiceEntityRepository
     public function findCategoryOrderedByLatest(int $id): array
     {
         return $this->createQueryBuilder('b')
+            ->Where('b.hidden = 0')
             ->andWhere('b.category = :id')
             ->setParameter('id', $id)
             ->orderBy('b.createdAt', 'DESC')
@@ -128,6 +130,7 @@ class BlogRepository extends ServiceEntityRepository
     public function findMoreCategoryBlogs(int $offset, int $id): array
     {
         return $this->createQueryBuilder('b')
+            ->Where('b.hidden = 0')
             ->andWhere('b.category = :id')
             ->setParameter('id', $id)
             ->orderBy('b.createdAt', 'DESC')

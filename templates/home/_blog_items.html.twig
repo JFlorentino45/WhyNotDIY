@@ -1,13 +1,14 @@
 {% for blog in blogs %}
-    <div class="2xl:flex 2xl:flex-col 2xl:blog-item 2xl:py-4 2xl:bg-gray-400 2xl:bg-opacity-40 2xl:rounded-md 2xl:mb-6 2xl:px-2">
-        <p class="2xl:text-2xl 2xl:ml-2">{{ blog.title }}</p>
+    <div class="flex flex-col blog-item px-1 mb-3 py-1 rounded-md bg-gray-400 bg-opacity-40 2xl:py-4 2xl:mb-6 2xl:px-2">
+        <p class="text-xl mx-auto 2xl:text-2xl 2xl:ml-2">{{ blog.title }}</p>
         <p class="2xl:text-s 2xl:ml-2">{{ blog.createdAt|date('d-M-Y H:i') }} By: <a href='{{ path('app_blog_user', {'id': blog.createdBy.id}) }}'>{{ blog.createdBy }}</a></p>
-        <iframe width="750" height="422" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe class="hidden 2xl:block" width="100%" height="500" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe class="block 2xl:hidden" width="100%" height="300" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <p class="2xl:py-0.5 2xl:ml-2">Likes: {{ blog.getLikesCount() }} Comments: {{ blog.getCommentsCount() }}</p>
         {% if (is_granted('IS_AUTHENTICATED_FULLY')) %}
-            <button class="2xl:ml-2"><a class="2xl:font-sans 2xl:block 2xl:w-fit 2xl:h-full 2xl:bg-gray-800 2xl:text-gray-300 2xl:hover:bg-gray-700 2xl:hover:text-white 2xl:rounded-md 2xl:px-3 2xl:py-2 2xl:text-sm 2xl:font-medium" href="{{ path('app_blog_show', {'id': blog.id}) }}">Show more</a></button>
+            <button class="2xl:ml-2"><a class="block w-full h-full 2xl:w-fit 2xl:h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-1 2xl:py-2 2xl:text-sm 2xl:font-medium" href="{{ path('app_blog_show', {'id': blog.id}) }}">Show more</a></button>
         {% else %}
-            <button class="2xl:ml-2"><a class="2xl:font-sans 2xl:block 2xl:w-fit 2xl:h-full 2xl:bg-gray-800 2xl:text-gray-300 2xl:hover:bg-gray-700 2xl:hover:text-white 2xl:rounded-md 2xl:px-3 2xl:py-2 2xl:text-sm 2xl:font-medium" href="{{ path('app_login') }}">Login</a></button>
+            <button class="2xl:ml-2"><a class="block w-full h-full 2xl:w-fit 2xl:h-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-1 2xl:py-2 2xl:text-sm 2xl:font-medium" href="{{ path('app_login') }}">Login</a></button>
         {% endif %}
     </div>
 {% endfor %}

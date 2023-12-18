@@ -6,9 +6,9 @@
         <p class=" text-s ml-2">
             {{ blog.createdAt|date('Y-M-d H:i') }}
         </p>
-        <p>
-            <iframe width="750" height="422" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </p>
+
+        <iframe class="hidden 2xl:block" width="100%" height="500" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe class="block 2xl:hidden" width="100%" height="300" src="https://www.youtube.com/embed/{{ blog.videoUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <p class="py-0.5 ml-2">
             Likes: {{ blog.getLikesCount() }} Comments: {{ blog.getCommentsCount() }}
         </p>
