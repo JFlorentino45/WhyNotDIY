@@ -12,15 +12,15 @@
         <a href="{{ path('home') }}" class="block w-screen text-white bg-gray-800 py-2 text-m font-medium">Home</a>
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
               {% if is_granted('ROLE_admin') %}
-                <a href="{{ path('app_admin_blogs') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">All Blogs</a>
+                <a href="{{ path('app_admin_blogs') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">All Posts</a>
                 <a href="{{ path('app_admin_comments') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">Comments</a>
                 <a href="{{ path('app_admin_users') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">Users</a>
                 <a href="{{ path('app_admin_forbidden_words') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">Words</a>
                 <a href="{{ path('app_admin_blacklist') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">Blacklist</a>
                 <a href="{{ path('app_admin_notifications') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">Notifications</a>
               {% else %}
-                <a href="{{ path('app_blog_new') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">Create blog</a>
-                <a href="{{ path('app_blog_mine') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">My blogs</a>
+                <a href="{{ path('app_blog_new') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">Create post</a>
+                <a href="{{ path('app_blog_mine') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">My posts</a>
                 <a href="{{ path('app_user_show', {'id': app.user.id}) }}" class="block text-white bg-gray-800 py-2 text-m font-medium">Profile</a>
               {% endif %}
               <a href="{{ path('logout') }}" class="block text-white bg-gray-800 py-2 text-m font-medium">Logout</a>
@@ -36,7 +36,7 @@
     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
       {% if is_granted('ROLE_admin') %}
         <div class="hidden 2xl:block 2xl:col-start-2">
-          <a href="{{ path('app_admin_blogs') }}" class="2xl:bg-gray-800 2xl:text-gray-300 2xl:hover:bg-gray-700 2xl:hover:text-white 2xl:rounded-md 2xl:px-3 2xl:py-2 2xl:text-m 2xl:font-medium">All Blogs</a>
+          <a href="{{ path('app_admin_blogs') }}" class="2xl:bg-gray-800 2xl:text-gray-300 2xl:hover:bg-gray-700 2xl:hover:text-white 2xl:rounded-md 2xl:px-3 2xl:py-2 2xl:text-m 2xl:font-medium">All Posts</a>
         </div>
         <div class="hidden 2xl:block 2xl:col-start-3">
           <a href="{{ path('app_admin_comments') }}" class="2xl:bg-gray-800 2xl:text-gray-300 2xl:hover:bg-gray-700 2xl:hover:text-white 2xl:rounded-md 2xl:px-3 2xl:py-2 2xl:text-m 2xl:font-medium">Comments</a>
@@ -55,10 +55,10 @@
         </div>
       {% else %}
         <div class="hidden 2xl:block 2xl:col-start-2">
-          <a href="{{ path('app_blog_new') }}" class="2xl:bg-gray-800 2xl:text-gray-300 2xl:hover:bg-gray-700 2xl:hover:text-white 2xl:rounded-md 2xl:px-3 2xl:py-2 2xl:text-m 2xl:font-medium">Create blog</a>
+          <a href="{{ path('app_blog_new') }}" class="2xl:bg-gray-800 2xl:text-gray-300 2xl:hover:bg-gray-700 2xl:hover:text-white 2xl:rounded-md 2xl:px-3 2xl:py-2 2xl:text-m 2xl:font-medium">Create post</a>
         </div>
         <div class="hidden 2xl:block 2xl:col-start-3">
-          <a href="{{ path('app_blog_mine') }}" class="2xl:bg-gray-800 2xl:text-gray-300 2xl:hover:bg-gray-700 2xl:hover:text-white 2xl:rounded-md 2xl:px-3 2xl:py-2 2xl:text-m 2xl:font-medium">My blogs</a>
+          <a href="{{ path('app_blog_mine') }}" class="2xl:bg-gray-800 2xl:text-gray-300 2xl:hover:bg-gray-700 2xl:hover:text-white 2xl:rounded-md 2xl:px-3 2xl:py-2 2xl:text-m 2xl:font-medium">My posts</a>
         </div>
         <div class="hidden 2xl:block 2xl:col-start-11">
           <a href="{{ path('app_user_show', {'id': app.user.id}) }}" class="2xl:bg-gray-800 2xl:text-gray-300 2xl:hover:bg-gray-700 2xl:hover:text-white 2xl:rounded-md 2xl:px-3 2xl:py-2 2xl:text-m 2xl:font-medium">Profile</a>

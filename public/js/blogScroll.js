@@ -41,12 +41,12 @@ $(document).ready(function () {
             offset += 5;
             loading = false;
           } else {
-            $("#pagination-loader").html("No more blogs to load.");
+            $("#pagination-loader").html("No more posts to load.");
           }
         })
         .fail(function (error) {
-          console.error("Error loading blogs:", error);
-          $("#pagination-loader").html("An error occurred while loading blogs.");
+          console.error("Error loading posts:", error);
+          $("#pagination-loader").html("An error occurred while loading posts.");
         });
     }
   });

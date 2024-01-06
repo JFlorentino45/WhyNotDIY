@@ -20,7 +20,7 @@ $(document).ready(function () {
         if (response.trim() != "") {
           $("#blog-container").append(response);
         } else {
-          $("#pagination-loader").html("No matching blogs found.");
+          $("#pagination-loader").html("No matching posts found.");
         }
       });
     }
@@ -48,7 +48,7 @@ $(document).ready(function () {
           if (response.trim() != "") {
             $("#blog-container").append(response);
           } else {
-            $("#pagination-loader").html("No matching blogs found.");
+            $("#pagination-loader").html("No matching posts found.");
           }
         }
       );

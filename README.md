@@ -1,4 +1,4 @@
-# WhyNotDIY
+# blog_project
 
 Coded using Symfony 6.4 in VSCode
 
@@ -6,12 +6,12 @@ Database: PHPMyAdmin
 
 Triggers in Database (handling reports and verified):
 
-(AFTER UPDATE on post and comment)
+(AFTER UPDATE on blog and comment)
 
     BEGIN
     IF NEW.verified = '1' THEN
         DELETE FROM reports_b
-        WHERE post_id_id = NEW.id;
+        WHERE blog_id_id = NEW.id;
     END IF;
     END
 
@@ -19,15 +19,15 @@ Triggers in Database (handling reports and verified):
 
     BEGIN
     
-    DECLARE post_count INT;
+    DECLARE blog_count INT;
 
-    SELECT COUNT(*) INTO post_count
+    SELECT COUNT(*) INTO blog_count
     FROM reports_b
-    WHERE post_id_id = NEW.post_id_id;
+    WHERE blog_id_id = NEW.blog_id_id;
 
-    IF post_count = 10 THEN
-        UPDATE post
+    IF blog_count = 10 THEN
+        UPDATE blog
         SET hidden = '1'
-        WHERE id = NEW.post_id_id;
+        WHERE id = NEW.blog_id_id;
     END IF;
     END

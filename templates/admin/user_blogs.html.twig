@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Blogs{% endblock %}
+{% block title %}Posts{% endblock %}
 
 {% block javascripts %}
     {{ parent()}}
@@ -11,7 +11,7 @@
 <main>
     <section class="flex flex-col bg-white bg-opacity-60 w-fit px-6 rounded-md mx-auto">
         <p class="text-4xl mx-auto mt-2">
-            Blogs by {{ userName }}
+            Posts by {{ userName }}
         </p>
         {% for blog in blogs %}
             <div class="flex-col blog-item py-4 bg-gray-400 bg-opacity-40 rounded-md mb-6 px-2">

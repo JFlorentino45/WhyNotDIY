@@ -17,7 +17,7 @@
             <tr>
                 <td class="border border-slate-300 text-xl px-2">
                     {% if report.type == 'blog' %}
-                        This blog has recieved {{report.getReportsCount()}} reports</td>
+                        This post has recieved {{report.getReportsCount()}} reports</td>
                         <td class="border border-slate-300 text-xl px-2">
                             <button><a class="block w-fit rounded bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white px-4 py-1 ml-2 mb-2" href="{{ path('app_admin_blog', {'id': report.id}) }}">show</a></button>
                         </td>

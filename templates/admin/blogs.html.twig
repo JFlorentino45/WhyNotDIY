@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}All Blogs{% endblock %}
+{% block title %}All Posts{% endblock %}
 
 {% block javascripts %}
     {{ parent()}}
@@ -11,7 +11,7 @@
 <main id="scroller">
     <section class="flex flex-col bg-white bg-opacity-60 w-fit px-6 rounded-md mx-auto">
         <p class="text-4xl mx-auto mt-2">
-            All Blogs
+            All Posts
         </p>
         <div id="blog-container">
             {% for blog in blogs %}
