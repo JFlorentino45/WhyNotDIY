@@ -87,7 +87,7 @@ class BlogRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function searchBlogs($term): array
+    public function findSearchBlogs(string $term): array
     {
         return $this->createQueryBuilder('b')
             ->Where('b.hidden = 0')
@@ -96,6 +96,19 @@ class BlogRepository extends ServiceEntityRepository
             ->orderBy('b.createdAt', 'DESC')
             ->setMaxResults(7)
             ->setFirstResult(0)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findSearchMoreBlogs(string $term, int $offset): array
+    {
+        return $this->createQueryBuilder('b')
+            ->Where('b.hidden = 0')
+            ->andWhere('b.title LIKE :term OR b.text LIKE :term')
+            ->setParameter('term', '%' . $term . '%')
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults(5)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
     }

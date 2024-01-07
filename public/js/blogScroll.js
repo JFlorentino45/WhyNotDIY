@@ -1,9 +1,9 @@
 $(document).ready(function () {
-    var offset = 7;
-    var loading = false;
+    let offset = 7;
+    let loading = false;
   
     $(window).scroll(function () {
-      var scrollPercentage =
+      const scrollPercentage =
         ($(window).scrollTop() / ($(document).height() - $(window).height())) *
         100;
   
@@ -15,25 +15,34 @@ $(document).ready(function () {
   
     function loadMoreBlogs() {
       $("#pagination-loader").html("Loading...");
-      var baseUrl;
+      let baseUrl = "";
       switch ($("#url").data("url")) {
         case "home":
-          var baseUrl = "/load-more-blogs";
+          if (isSearching) {
+            baseUrl = "/search-more-blogs";
+          } else {
+            baseUrl = "/load-more-blogs";
+          }
           break;
         case "Ablogs":
-          var baseUrl = "/admin/load-more-blogs";
+          baseUrl = "/admin/load-more-blogs";
           break;
         case "myBlogs":
-          var baseUrl = "/blog/load-more-blogs";
+          baseUrl = "/blog/load-more-blogs";
           break;
         case "userBlogs":
-          var baseUrl = "/blog/load-user-blogs/" + $("#user").data("user");
+          baseUrl = "/blog/load-user-blogs/" + $("#user").data("user");
           break;
         case "catBlogs":
-          var baseUrl = "/categories/load-blogs/" + $("#id").data("id");
+          baseUrl = "/categories/load-blogs/" + $("#id").data("id");
           break;
       }
-      var loadUrl = baseUrl + "?offset=" + offset;
+      let loadUrl = baseUrl + "?offset=" + offset;
+
+      if (isSearching) {
+        loadUrl += "&term=" + searchTerm
+      }
+
       $.get(loadUrl)
         .done(function (response) {
           if (response.trim() !== "") {

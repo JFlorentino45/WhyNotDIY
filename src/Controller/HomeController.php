@@ -53,7 +53,19 @@ class HomeController extends AbstractController
     public function searchBlogs(Request $request): Response
     {
         $searchTerm = $request->query->get('term');
-        $blogs = $this->blogRepository->searchBlogs($searchTerm);
+        $blogs = $this->blogRepository->findSearchBlogs($searchTerm);
+
+        $html = $this->renderView('home/_blog_items.html.twig', ['blogs' => $blogs]);
+
+        return new Response($html);
+    }
+
+    #[Route('/search-more-blogs', name: 'search_more_blogs', methods: ['GET'])]
+    public function searchMoreBlogs(Request $request): Response
+    {
+        $offset = $request->query->get('offset');
+        $searchTerm = $request->query->get('term');
+        $blogs = $this->blogRepository->findSearchMoreBlogs($searchTerm, $offset);
 
         $html = $this->renderView('home/_blog_items.html.twig', ['blogs' => $blogs]);
 
