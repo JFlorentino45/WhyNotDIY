@@ -66,4 +66,17 @@ class CategoriesController extends AbstractController
 
         return new Response($html);
     }
+
+    #[Route('/search-more-blogs/{id}', name: 'search_more_blogs', methods: ['GET'])]
+    public function searchMoreBlogs(Request $request, Categories $categories): Response
+    {
+        $id = $categories->getId();
+        $offset = $request->query->get('offset');
+        $searchTerm = $request->query->get('term');
+        $blogs = $this->blogRepository->findCatSearchMoreBlogs($searchTerm, $offset, $id);
+
+        $html = $this->renderView('home/_blog_items.html.twig', ['blogs' => $blogs]);
+
+        return new Response($html);
+    }
 }

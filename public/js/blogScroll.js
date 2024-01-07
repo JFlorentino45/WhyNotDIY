@@ -34,7 +34,11 @@ $(document).ready(function () {
           baseUrl = "/blog/load-user-blogs/" + $("#user").data("user");
           break;
         case "catBlogs":
-          baseUrl = "/categories/load-blogs/" + $("#id").data("id");
+          if (isSearching) {
+            baseUrl = "/categories/search-more-blogs/" + $("#id").data("id");
+          } else {
+            baseUrl = "/categories/load-blogs/" + $("#id").data("id");
+          }
           break;
       }
       let loadUrl = baseUrl + "?offset=" + offset;
