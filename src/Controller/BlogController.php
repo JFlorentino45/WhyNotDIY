@@ -54,22 +54,18 @@ class BlogController extends AbstractController
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
     public function new(Request $request, Recaptcha3Validator $recaptcha3Validator): Response
     {
-        //used for creating new blogs
         $blog = new Blog();
         $form = $this->createForm(BlogType::class, $blog);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            //check if bot
             $score = $recaptcha3Validator->getLastResponse()->getScore();
             if ($score <= 0.5) {
                 return $this->redirectToRoute('logout');
             }
-            //get title and text data to pass into check
             $title = $form->get('title')->getData();
             $text = $form->get('text')->getData();
             if ($this->forbiddenWordService->isForbidden($title) || $this->forbiddenWordService->isForbidden($text)) {
-                //if the title or text contains 'direct' forbidden words, pop up message
                 $this->addFlash('error', '*Blog contains forbidden words.');
 
             } else {
@@ -77,7 +73,6 @@ class BlogController extends AbstractController
                 $serviceTitle = $this->forbiddenWordService->containsForbiddenWord($title);
 
                 if ($serviceTitle['found'] || $serviceText['found']) {
-                    //if the 'forbidden words' are part of another word, send notification to verfiy
                     $adminNotification = new AdminNotification();
                     $adminNotification->setCreatedAt(now());
                     $message = "";

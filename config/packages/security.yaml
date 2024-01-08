@@ -10,7 +10,6 @@ security:
         class: App\Entity\User
         property: emailAddress
     users_in_memory: { memory: null }
-    # used to reload user from session & other features (e.g. switch_user)
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -19,7 +18,7 @@ security:
       lazy: true
       provider: app_user_provider
       login_throttling:
-        max_attempts: 3
+        max_attempts: 4
       logout:
         path: logout
         target: home
