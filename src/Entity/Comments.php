@@ -157,7 +157,6 @@ class Comments
     public function removeReport(ReportsC $report): static
     {
         if ($this->reports->removeElement($report)) {
-            // set the owning side to null (unless already changed)
             if ($report->getCommentId() === $this) {
                 $report->setCommentId(null);
             }

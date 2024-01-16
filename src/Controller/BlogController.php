@@ -66,7 +66,7 @@ class BlogController extends AbstractController
             $title = $form->get('title')->getData();
             $text = $form->get('text')->getData();
             if ($this->forbiddenWordService->isForbidden($title) || $this->forbiddenWordService->isForbidden($text)) {
-                $this->addFlash('error', '*Blog contains forbidden words.');
+                $this->addFlash('error', '*Post contains forbidden words.');
 
             } else {
                 $serviceText = $this->forbiddenWordService->containsForbiddenWord($text);
@@ -80,13 +80,13 @@ class BlogController extends AbstractController
                         $titleWord = is_array($serviceTitle['word']) ? implode(', ', $serviceTitle['word']) : $serviceTitle['word'];
                         $textWord = is_array($serviceText['word']) ? implode(', ', $serviceText['word']) : $serviceText['word'];
     
-                        $message = "A blog's title and text may contain forbidden words. Please verify";
+                        $message = "A post's title and text may contain forbidden words. Please verify";
                         $word = ['Title: ' . $titleWord . ' Text: ' . $textWord];
                     } elseif ($serviceText['found']) {
-                        $message = "A blog's text may contain a forbidden word. Please verify.";
+                        $message = "A post's text may contain a forbidden word. Please verify.";
                         $word = $serviceText['word'];
                     } else {
-                        $message = "A blog title may contain a forbidden word. Please verify.";
+                        $message = "A post's title may contain a forbidden word. Please verify.";
                         $word = $serviceTitle['word'];
                     }
                     $adminNotification->setText($message);
@@ -101,12 +101,12 @@ class BlogController extends AbstractController
                     $this->entityManager->persist($adminNotification);
                     $this->entityManager->flush();
                     
-                    $this->addFlash('success', '*Blog created.');
+                    $this->addFlash('success', '*Post created.');
                     return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                 } else {
                     $this->entityManager->persist($blog);
                     $this->entityManager->flush();
-                    $this->addFlash('success', '*Blog created.');
+                    $this->addFlash('success', '*Post created.');
                     return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                 }
             }
@@ -246,7 +246,7 @@ class BlogController extends AbstractController
                 $title = $form->get('title')->getData();
                 $text = $form->get('text')->getData();
                 if ($this->forbiddenWordService->isForbidden($title) || $this->forbiddenWordService->isForbidden($text)) {
-                    $this->addFlash('error', '*Blog contains forbidden words.');
+                    $this->addFlash('error', '*Post contains forbidden words.');
                 } else {
                     $serviceText = $this->forbiddenWordService->containsForbiddenWord($text);
                     $serviceTitle = $this->forbiddenWordService->containsForbiddenWord($title);
@@ -259,13 +259,13 @@ class BlogController extends AbstractController
                             $titleWord = is_array($serviceTitle['word']) ? implode(', ', $serviceTitle['word']) : $serviceTitle['word'];
                             $textWord = is_array($serviceText['word']) ? implode(', ', $serviceText['word']) : $serviceText['word'];
         
-                            $message = "A blog's title and text may contain forbidden words. Please verify";
+                            $message = "A post's title and text may contain forbidden words. Please verify";
                             $word = ['Title: ' . $titleWord . ' Text: ' . $textWord];
                         } elseif ($serviceText['found']) {
-                            $message = "A blog's text may contain a forbidden word. Please verify.";
+                            $message = "A post's text may contain a forbidden word. Please verify.";
                             $word = $serviceText['word'];
                         } else {
-                            $message = "A blog title may contain a forbidden word. Please verify.";
+                            $message = "A post title may contain a forbidden word. Please verify.";
                             $word = $serviceTitle['word'];
                         }
                         $adminNotification->setText($message);
@@ -281,13 +281,13 @@ class BlogController extends AbstractController
                         $this->entityManager->persist($adminNotification);
                         $this->entityManager->flush();
                     
-                        $this->addFlash('success', '*Blog updated.');
+                        $this->addFlash('success', '*Post updated.');
                         return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                     } else {
                         $blog->setVerified(false);
                         $this->entityManager->persist($blog);
                         $this->entityManager->flush();
-                        $this->addFlash('success', '*Blog updated.');
+                        $this->addFlash('success', '*Post updated.');
                         return $this->redirectToRoute('app_blog_show', ['id' => $blog->getId()]);
                     }
                 }
@@ -340,7 +340,7 @@ class BlogController extends AbstractController
         }
 
         if ($blog->isReportedByUser($user)) {
-            $this->addFlash('warning', '*Blog already reported.');
+            $this->addFlash('warning', '*Post already reported.');
             return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
         } else {
             $report = new ReportsB();
@@ -351,7 +351,7 @@ class BlogController extends AbstractController
         }
     
         $this->entityManager->flush();
-        $this->addFlash('warning', '*Blog Reported.');
+        $this->addFlash('warning', '*Post Reported.');
         return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
 
     }
@@ -371,7 +371,7 @@ class BlogController extends AbstractController
             $this->entityManager->remove($blog);
             $this->entityManager->flush();
         }
-    $this->addFlash('success', '*Blog deleted.');
+    $this->addFlash('success', '*Post deleted.');
     return $this->redirectToRoute('app_blog_mine', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -41,25 +41,24 @@ class Blog
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?User $createdBy = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categories $category = null;
+    
+    #[ORM\Column(nullable: false)]
+    private ?bool $hidden = null;
+    
+    #[ORM\Column(nullable: false)]
+    private ?bool $verified = null;
+
+    #[ORM\OneToMany(mappedBy: 'blog_id', targetEntity: ReportsB::class)]
+    private Collection $reports;
+    
     #[ORM\OneToMany(mappedBy: 'BlogId', targetEntity: Likes::class)]
     private Collection $likes;
 
     #[ORM\OneToMany(mappedBy: 'blog', targetEntity: Comments::class, cascade: ['persist', 'remove'])]
     private Collection $comments;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Categories $category = null;
-
-    #[ORM\OneToMany(mappedBy: 'blog_id', targetEntity: ReportsB::class)]
-    private Collection $reports;
-
-    #[ORM\Column(nullable: false)]
-    private ?bool $hidden = null;
-
-    #[ORM\Column(nullable: false)]
-    private ?bool $verified = null;
-
 
     public function __construct()
     {
